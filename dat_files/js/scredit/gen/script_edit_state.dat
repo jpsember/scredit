@@ -1,0 +1,11 @@
+// Encapsulates the state of an editor, including all entities that need to be
+// saved and restored to support undo/redo operations
+
+extern js.scredit.EditorElement;
+
+fields {
+  *EditorElement elements;
+  *int selected_elements;
+  *EditorElement clipboard;
+  IPoint duplication_offset;
+}

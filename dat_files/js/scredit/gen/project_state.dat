@@ -1,0 +1,8 @@
+fields {
+  int version = 1;
+  IRect app_frame;
+  int current_script_index;
+  bool require_images;
+  float zoom_factor = 1.0;
+  int add_box_corner_index = 2;
+}

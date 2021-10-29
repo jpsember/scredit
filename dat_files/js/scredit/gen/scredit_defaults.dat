@@ -1,0 +1,4 @@
+fields {
+  RecentFilesList recent_projects;
+  bool dev_features;
+}

@@ -1,0 +1,6 @@
+// This is the app config structure, i.e. the 'json command line arguments' structure,
+// not to be confused with the app defaults.
+//
+fields {
+  File project_dir;
+}
