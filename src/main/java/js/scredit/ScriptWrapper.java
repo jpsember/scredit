@@ -159,7 +159,7 @@ public final class ScriptWrapper extends BaseObject {
     if (isNone())
       return;
     String content = DataUtil.toString(mScriptData);
-    if (false && alert("not flushing any changes for now"))
+    if (true && alert("not flushing any changes for now"))
       return;
     if (Files.S.writeIfChanged(scriptFile(), content)) {
       if (verbose())
