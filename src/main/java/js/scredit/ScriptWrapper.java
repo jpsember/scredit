@@ -34,6 +34,8 @@ import js.base.BaseObject;
 import js.data.DataUtil;
 import js.file.Files;
 import js.geometry.IPoint;
+import js.geometry.MyMath;
+import js.graphics.ImgEffects;
 import js.graphics.ImgUtil;
 import js.json.JSMap;
 import js.graphics.ScriptUtil;
@@ -99,8 +101,56 @@ public final class ScriptWrapper extends BaseObject {
   public BufferedImage image() {
     BufferedImage image = sImageCache.get(imageFile());
     if (image == null)
-      image = sImageCache.put(imageFile(), ImgUtil.read(imageFile()));
+      image = sImageCache.put(imageFile(), readImage(imageFile()));
     return image;
+  }
+
+  /**
+   * Read a BufferedImage, with special treatment for .rax files
+   */
+  private static BufferedImage readImage(File file) {
+    if (!Files.getExtension(file).equals(ImgUtil.RAX_EXT))
+      return ImgUtil.read(file);
+
+    IPoint[] dim = new IPoint[1];
+    short[] pix = ImgUtil.readRax(Files.openInputStream(file), dim);
+    IPoint imageSize = dim[0];
+
+    short min = pix[0];
+    short max = pix[0];
+    for (short p : pix) {
+      if (p < min)
+        min = p;
+      if (p > max)
+        max = p;
+    }
+
+    // Don't attempt normalization if there's a strange distribution
+    int range = max - min;
+    if (range > 500) {
+      final int MAX_PIXEL_VALUE = 0x8000;
+      int lowCutoffValue = min;
+      int highCutoffValue = max;
+      float scale = ((float) MAX_PIXEL_VALUE) / (highCutoffValue - lowCutoffValue);
+      float translate = -lowCutoffValue;
+      normalizeToDepth(pix, translate, scale, 15);
+    }
+    BufferedImage img = ImgUtil.to8BitRGBBufferedImage(imageSize, pix);
+    return ImgEffects.sharpen(img);
+  }
+
+  /**
+   * Apply linear normalization to image, translating pixels then scaling, and
+   * clamping to a particular depth
+   */
+  private static void normalizeToDepth(short[] pix, float translate, float scale, int depth) {
+    short maxPixelValue = (short) ((1 << depth) - 1);
+    for (int i = 0; i < pix.length; i++) {
+      short inPixel = pix[i];
+      int p = (int) ((inPixel + translate) * scale);
+      p = MyMath.clamp(p, 0, maxPixelValue);
+      pix[i] = (short) p;
+    }
   }
 
   private static ObjectCache<File, BufferedImage> sImageCache = new ObjectCache<>(100);

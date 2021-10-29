@@ -91,6 +91,11 @@ final class EditorElementRegistry {
       return (EditorElement) parser.parse(m);
     }
 
+    @Override
+    public EditorElement withProperties(ElementProperties properties) {
+      throw notSupported();
+    }
+
     public ElementProperties properties() {
       throw notSupported();
     }
