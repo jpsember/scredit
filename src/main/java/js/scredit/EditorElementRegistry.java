@@ -69,7 +69,6 @@ final class EditorElementRegistry {
   private void registerFactory(EditorElement factory) {
     String name = factory.tag();
     mElementFactoryMap.put(name, factory);
-    alert("registering factory for tag",name,"factory:",factory.getClass().getSimpleName());
   }
 
   private final Map<String, EditorElement> mElementFactoryMap = concurrentHashMap();
