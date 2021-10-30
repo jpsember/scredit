@@ -33,6 +33,7 @@ import js.graphics.gen.ElementProperties;
 import js.json.JSMap;
 import js.scredit.elem.EditableMaskElement;
 import js.scredit.elem.EditablePointElement;
+import js.scredit.elem.EditablePolygonElement;
 import js.scredit.elem.EditableRectElement;
 
 /**
@@ -64,6 +65,7 @@ final class EditorElementRegistry {
     registerFactory(EditablePointElement.DEFAULT_INSTANCE);
     registerFactory(EditableRectElement.DEFAULT_INSTANCE);
     registerFactory(EditableMaskElement.DEFAULT_INSTANCE);
+    registerFactory(EditablePolygonElement.DEFAULT_INSTANCE);
   }
 
   private void registerFactory(EditorElement factory) {

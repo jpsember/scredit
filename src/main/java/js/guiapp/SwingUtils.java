@@ -58,6 +58,7 @@ public final class SwingUtils {
     return sSwingThread;
   }
 
+  @Deprecated // This seems to not work reliably
   public static void assertSwingThread() {
     if (Thread.currentThread() != getEventDispatchThread()) {
       // Issue #56: display a full(er) stack trace to try to track down the cause

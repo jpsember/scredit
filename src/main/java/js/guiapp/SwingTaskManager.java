@@ -68,7 +68,6 @@ public class SwingTaskManager extends BaseObject {
   }
 
   private void backgroundTask() {
-    SwingUtils.assertSwingThread();
     log("executing background task", System.currentTimeMillis());
     for (Runnable r : mTaskList) {
       try {

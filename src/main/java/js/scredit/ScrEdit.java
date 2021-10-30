@@ -320,7 +320,7 @@ public final class ScrEdit extends GUIApp {
       desiredProjFile = recentProjects().getMostRecentFile();
     if (Files.empty(desiredProjFile))
       desiredProjFile = Files.currentDirectory();
-    
+
     if (!desiredProjFile.isDirectory()) {
       pr("*** No such project directory:", desiredProjFile);
       desiredProjFile = Files.currentDirectory();
@@ -477,7 +477,7 @@ public final class ScrEdit extends GUIApp {
     createMenuBarIfNec();
 
     String alertText = null;
-    if (currentProject().isDefault())
+    if (!currentProject().defined())
       alertText = "No project selected; open one from the Project menu";
     else if (!currentProject().definedAndNonEmpty())
       alertText = "This project is empty! Open another from the Project menu";
@@ -580,7 +580,10 @@ public final class ScrEdit extends GUIApp {
     mTaskTicker++;
     flushScript();
     if ((mTaskTicker & 0x3) == 0) {
-      flushProject();
+      if (currentProject().defined())
+        flushProject();
+      else
+        alert("wtf? current project was not defined");
       AppDefaults.sharedInstance().flush();
     }
   }

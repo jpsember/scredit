@@ -31,7 +31,6 @@ import static js.base.Tools.*;
 
 import js.base.BaseObject;
 import js.file.Files;
-import js.guiapp.SwingUtils;
 
 public final class AppDefaults extends BaseObject {
 
@@ -64,7 +63,6 @@ public final class AppDefaults extends BaseObject {
   }
 
   public ScreditDefaults.Builder edit() {
-    SwingUtils.assertSwingThread();
     if (verbose())
       log("Editing ScreditDefaults");
     read();

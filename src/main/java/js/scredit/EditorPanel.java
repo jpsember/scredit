@@ -296,6 +296,10 @@ public class EditorPanel extends JPanel implements UserEventSource, MouseListene
     mGraphics.drawLine(p1.ix(), p1.iy(), p2.ix(), p2.iy());
   }
 
+  public void renderLine(IPoint p1, IPoint p2) {
+    mGraphics.drawLine(p1.x, p1.y, p2.x, p2.y);
+  }
+
   public void renderLine(float x0, float y0, float x1, float y1) {
     renderLine(new FPoint(x0, y0), new FPoint(x1, y1));
   }
