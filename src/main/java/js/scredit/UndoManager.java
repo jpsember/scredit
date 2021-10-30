@@ -73,17 +73,7 @@ public class UndoManager extends BaseObject {
     if (command.skipUndo())
       return;
     command = command.build();
-
-    // Throw out any older 'redoable' commands that will now be stale
-    {
-      boolean popped = false;
-      while (mCommandHistory.size() > mCommandHistoryCursor) {
-        pop(mCommandHistory);
-        popped = true;
-      }
-      if (popped)
-        log("after popping older 'redoables':", INDENT, this);
-    }
+    clearRedoable();
 
     if (!mergeWithPreviousCommand(command)) {
       mCommandHistory.add(command);
@@ -96,6 +86,12 @@ public class UndoManager extends BaseObject {
       mCommandHistory.subList(0, del).clear();
     }
     log("record:", INDENT, command, CR, this);
+  }
+
+  public void discardLastCommand() {
+    checkState(mCommandHistoryCursor > 0, "no command exists to be discarded");
+    mCommandHistoryCursor--;
+    clearRedoable();
   }
 
   /**
@@ -197,6 +193,17 @@ public class UndoManager extends BaseObject {
       list.add(desc);
     }
     return m;
+  }
+
+  private void clearRedoable() {
+    // Throw out any older 'redoable' commands that will now be stale
+    boolean popped = false;
+    while (mCommandHistory.size() > mCommandHistoryCursor) {
+      pop(mCommandHistory);
+      popped = true;
+    }
+    if (popped)
+      log("after popping older 'redoables':", INDENT, this);
   }
 
   private List<Command> mCommandHistory = arrayList();

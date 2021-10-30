@@ -64,6 +64,11 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
   }
 
   @Override
+  public String toString() {
+    return toJson().prettyPrint();
+  }
+
+  @Override
   public boolean contains(int paddingPixels, IPoint pt) {
     IRect paddedBounds = bounds().withInset(-paddingPixels);
     return paddedBounds.contains(pt);
@@ -164,7 +169,7 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
       paint = PAINT_DISABLED;
       break;
     case NOMINAL:
-      todo("set color based on flavor(?)");
+      // todo("set color based on flavor(?)");
       paint = PAINT_NOMINAL;
       break;
     case SELECTED:
@@ -206,9 +211,9 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
     }
     if (mInsertVertex != null) {
       if (pt1 != null)
-        renderLine(panel, scale, pt1, mInsertVertex, true);
+        renderLine(panel, scale, pt1, mInsertVertex, false);
       if (pt2 != null)
-        renderLine(panel, scale, mInsertVertex, pt2, true);
+        renderLine(panel, scale, mInsertVertex, pt2, false);
       panel.renderDisc(mInsertVertex, VERTEX_RADIUS * scale);
     }
 
@@ -223,7 +228,7 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
     FPoint p1 = i1.toFPoint();
     FPoint p2 = i2.toFPoint();
     panel.renderLine(p1, p2);
-    if (!withArrows)
+    if (curveMode() || !withArrows)
       return;
 
     if (MyMath.distanceBetween(p1, p2) < scale * REQUIRED_LENGTH_FOR_ARROWS)
@@ -250,7 +255,7 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
 
   private static final Paint PAINT_NOMINAL = Paint.newBuilder().width(4).color(119, 52, 235).build();
   private static final Paint PAINT_DISABLED = Paint.newBuilder().width(3).color(119, 52, 235, 64).build();
-  private static final Paint PAINT_SELECTED = Paint.newBuilder().width(8).color(255, 0, 0).build();
+  private static final Paint PAINT_SELECTED = Paint.newBuilder().width(4).color(255, 0, 0).build();
 
   private final boolean mCurveMode;
   private IPoint mInsertVertex;

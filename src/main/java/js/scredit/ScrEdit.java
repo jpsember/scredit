@@ -453,12 +453,9 @@ public final class ScrEdit extends GUIApp {
   /**
    * Delete the last registered command from the undo list, in case the command
    * didn't end up producing anything useful, e.g. an incomplete polygon.
-   * 
-   * Note: 'this' isn't used; we assume it (or something it was merged into) is
-   * the most recent registered command. We return this as a convenience
    */
-  public void discard() {
-    pr("...discard needs implementation");
+  public void discardLastCommand() {
+    undoManager().discardLastCommand();
   }
 
   public UndoManager undoManager() {

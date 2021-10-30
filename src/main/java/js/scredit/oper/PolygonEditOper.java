@@ -257,6 +257,7 @@ public class PolygonEditOper extends EditorOper implements UserEvent.Listener {
   private void attemptMerge(EditablePolygonElement p) {
     if (!mCurveMode)
       return;
+
     Polygon a = p.polygon();
     if (!a.isOpen())
       return;
@@ -279,7 +280,6 @@ public class PolygonEditOper extends EditorOper implements UserEvent.Listener {
       bIndex = i;
     }
     if (polyCount > 1) {
-      pr("multiple polycounts, aborting");
       return;
     }
 
@@ -311,7 +311,7 @@ public class PolygonEditOper extends EditorOper implements UserEvent.Listener {
 
     // Discard the 'add polygon' operation, since we're about to merge it; we will
     // want the result of the merge to be the one added to the undo history
-    editor().discard();
+    editor().discardLastCommand();
 
     StateTools.remove(mCommand, mSlot);
     if (bIndex >= 0) {
@@ -321,7 +321,6 @@ public class PolygonEditOper extends EditorOper implements UserEvent.Listener {
       mCommand.description("Close curve polygon");
     }
     StateTools.addNewElement(mCommand, closedPolygon);
-    //    mCommand.finalState().objects().add(closedPolygon);
     mCommand.mergeDisabled(true);
     editor().perform(mCommand);
   }
