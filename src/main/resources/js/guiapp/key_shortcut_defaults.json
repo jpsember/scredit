@@ -14,6 +14,8 @@
 "box_add": {"code" : 32},
 "pt_add" : { "code" : 80 },
 "mask_add" : { "code" : 77 },
+"polygon_add" : {"code" : 89 },
+"curve_add" : {"code" : 79 },
 
 "cut" : {"code" : 88, "flags" : "c"},
 "copy" : {"code" : 67, "flags" : "c"},

@@ -251,6 +251,8 @@ public final class ScrEdit extends GUIApp {
     addItem("box_add", "Add Box", new RectAddOper());
     addItem("mask_add", "Add Mask", new MaskAddOper());
     addItem("pt_add", "Add Point", new PointAddOper());
+    addItem("polygon_add", "Add Polygon", PolygonEditOper.buildAddOper(this));
+    addItem("curve_add", "Add Curve", PolygonEditOper.buildAddCurveOper(this));
   }
 
   private void addViewMenu(OurMenuBar m) {
@@ -446,6 +448,17 @@ public final class ScrEdit extends GUIApp {
   public void perform(CommandOper oper) {
     oper.setEditor(this);
     mUserEventManager.perform(oper);
+  }
+
+  /**
+   * Delete the last registered command from the undo list, in case the command
+   * didn't end up producing anything useful, e.g. an incomplete polygon.
+   * 
+   * Note: 'this' isn't used; we assume it (or something it was merged into) is
+   * the most recent registered command. We return this as a convenience
+   */
+  public void discard() {
+    pr("...discard needs implementation");
   }
 
   public UndoManager undoManager() {

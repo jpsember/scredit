@@ -27,6 +27,8 @@ package js.scredit.elem;
 import static js.base.Tools.*;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 import js.geometry.FPoint;
 import js.geometry.IPoint;
@@ -43,7 +45,7 @@ import js.guiapp.UserOperation;
 import js.scredit.EditorElement;
 import js.scredit.EditorPanel;
 import js.scredit.ScrEdit;
-import js.scredit.oper.RectEditOper;
+import js.scredit.oper.PolygonEditOper;
 
 public final class EditablePolygonElement extends PolygonElement implements EditorElement {
 
@@ -56,7 +58,7 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
     return new EditablePolygonElement(elem.properties(), elem.polygon(), false);
   }
 
-  private EditablePolygonElement(ElementProperties properties, Polygon polygon, boolean curveMode) {
+  public EditablePolygonElement(ElementProperties properties, Polygon polygon, boolean curveMode) {
     super(properties, polygon);
     mCurveMode = curveMode;
   }
@@ -76,35 +78,76 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
     return new EditablePolygonElement(properties(), polygon, curveMode());
   }
 
+  private ArrayList<IPoint> getVertices(Polygon p) {
+    ArrayList<IPoint> lst = arrayList();
+    for (IPoint vert : p.vertices())
+      lst.add(vert);
+    return lst;
+  }
+
+  /**
+   * Add a point at a particular location, shifting following points to make
+   * room; return new polygon
+   */
+  public EditablePolygonElement withAddPoint(int ptIndex, IPoint point) {
+    List<IPoint> v = getVertices(polygon());
+    v.add(ptIndex, point);
+    return withPolygon(polygon().withVertices(v));
+  }
+
+  public EditablePolygonElement withDeletedPoint(int ptIndex) {
+    List<IPoint> v = getVertices(polygon());
+    v.remove(ptIndex);
+    return withPolygon(polygon().withVertices(v));
+  }
+
+  public EditablePolygonElement withSetPoint(int ptIndex, IPoint point) {
+    checkState(ptIndex >= 0 && ptIndex < polygon().numVertices(), "attempt to store point", ptIndex,
+        "for size", polygon().numVertices());
+    List<IPoint> v = getVertices(polygon());
+    v.set(ptIndex, point);
+    return withPolygon(polygon().withVertices(v));
+  }
+
+  /**
+   * For displaying polygon being edited, a vertex to be added and the position
+   * it is to be inserted at
+   */
+  public EditablePolygonElement withInsertVertex(int position, IPoint vertexOrNull) {
+    EditablePolygonElement p = new EditablePolygonElement(properties(), polygon(), curveMode());
+    p.mInsertVertex = vertexOrNull;
+    p.mInsertPosition = position;
+    return p;
+  }
+
   public boolean curveMode() {
     return mCurveMode;
   }
 
   @Override
   public UserOperation isEditingSelectedObject(ScrEdit editor, int slot, UserEvent event) {
-    int edElement = -1;
-    int paddingPixels = editor.paddingPixels();
+
+    UserOperation ret = null;
+
     IPoint pt = event.getWorldLocation();
-    IRect r = bounds().withInset((int) (-paddingPixels * .75f));
-    for (int c = 0; c < 4; c++) {
-      IPoint corn = r.corner(c);
-      float dist = MyMath.distanceBetween(corn, pt);
-      if (dist < paddingPixels) {
-        return new RectEditOper(editor, event, slot, c);
+    float tolerance = editor.paddingPixels();
+    float toleranceSq = tolerance * tolerance;
+    int edElement = -1;
+    float closestDistSq = 0;
+    for (int v = 0; v < polygon().numVertices(); v++) {
+      IPoint vertex = polygon().vertex(v);
+      float distSq = MyMath.squaredDistanceBetween(vertex, pt);
+      if (distSq >= toleranceSq)
+        continue;
+      if (edElement < 0 || distSq < closestDistSq) {
+        edElement = v;
+        closestDistSq = distSq;
       }
     }
-    if (edElement < 0)
-      for (int edge = 0; edge < 4; edge++) {
-        IPoint ep0 = r.corner(edge);
-        IPoint ep1 = r.corner((edge + 1) & 3);
-        float dist = MyMath.ptDistanceToSegment(pt.toFPoint(), ep0.toFPoint(), ep1.toFPoint(), null);
-        if (dist < paddingPixels) {
-          edElement = edge + 4;
-          return new RectEditOper(editor, event, slot, edge + 4);
-        }
-      }
 
-    return null;
+    if (edElement >= 0)
+      ret = PolygonEditOper.buildEditExistingOper(editor, event, slot, edElement);
+    return ret;
   }
 
   @Override

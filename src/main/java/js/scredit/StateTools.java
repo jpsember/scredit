@@ -57,6 +57,15 @@ public final class StateTools {
     return addOrReplaceHelper(b, element, slot);
   }
 
+  public static void remove(Command.Builder b, int slot) {
+    if (slot < 0 || slot >= b.newState().elements().size())
+      badArg("slot", slot, "doesn't exist:", INDENT, b);
+    ScriptEditState.Builder s = b.newState().toBuilder();
+    s.elements().remove(slot);
+    s.selectedElements(null);
+    b.newState(s);
+  }
+
   /**
    * Construct a subset of a list of elements
    */
