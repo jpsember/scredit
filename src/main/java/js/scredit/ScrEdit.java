@@ -54,6 +54,8 @@ import js.system.SystemUtil;
 
 public final class ScrEdit extends GUIApp {
 
+  public static final boolean DISABLE_FLUSH_CHANGES = false && alert("Saving script changes is DISABLED");
+
   public static void main(String[] args) {
     new ScrEdit().startApplication(args);
   }
@@ -252,7 +254,11 @@ public final class ScrEdit extends GUIApp {
     addItem("mask_add", "Add Mask", new MaskAddOper());
     addItem("pt_add", "Add Point", new PointAddOper());
     addItem("polygon_add", "Add Polygon", PolygonEditOper.buildAddOper(this));
-    addItem("curve_add", "Add Curve", PolygonEditOper.buildAddCurveOper(this));
+    {
+      EditorOper oper = PolygonEditOper.buildAddCurveOper(this);
+      addItem("curve_add", "Add Curve", oper);
+      addItem("curve_add2", "Add Curve (2)", oper);
+    }
   }
 
   private void addViewMenu(OurMenuBar m) {

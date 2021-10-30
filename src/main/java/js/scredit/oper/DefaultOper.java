@@ -256,6 +256,12 @@ public final class DefaultOper extends EditorOper implements UserEvent.Listener 
     if (editor().state().selectedElements().length != 1)
       return null;
     int editableSlot = editor().state().selectedElements()[0];
+
+    if (editor().state().elements().size() <= editableSlot) {
+      die("findOperationForEditableObject selected elements disagrees with elements:", INDENT,
+          editor().state());
+    }
+
     EditorElement obj = (EditorElement) editor().state().elements().get(editableSlot);
     return obj.isEditingSelectedObject(editor(), editableSlot, mInitialDownEvent);
   }
