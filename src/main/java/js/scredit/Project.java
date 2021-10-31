@@ -118,7 +118,7 @@ public final class Project extends BaseObject {
       badState("Illegal method for default project");
   }
 
-  private static String[] sFileExtColor = { ImgUtil.JPEG_EXT, "jpeg", ImgUtil.PNG_EXT };
+  private static String[] sFileExtImages = { ImgUtil.JPEG_EXT, "jpeg", ImgUtil.PNG_EXT, ImgUtil.RAX_EXT };
   private static String[] sFileExtAnnotation = { Files.EXT_JSON };
 
   private void buildScriptList() {
@@ -127,7 +127,7 @@ public final class Project extends BaseObject {
     List<ScriptWrapper> scripts = arrayList();
     mScripts = scripts;
 
-    for (File imageFile : FileUtils.listFiles(directory(), sFileExtColor, false)) {
+    for (File imageFile : FileUtils.listFiles(directory(), sFileExtImages, false)) {
       File scriptFile = ScriptUtil.scriptPathForImage(imageFile);
       ScriptWrapper script = new ScriptWrapper(scriptFile);
       scripts.add(script);
