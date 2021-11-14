@@ -37,8 +37,11 @@ import js.geometry.IPoint;
 import js.geometry.MyMath;
 import js.graphics.ImgEffects;
 import js.graphics.ImgUtil;
+import js.graphics.MonoImageUtil;
 import js.json.JSMap;
 import js.graphics.ScriptUtil;
+import js.graphics.gen.ImageStats;
+import js.graphics.gen.MonoImage;
 import js.graphics.gen.Script;
 
 /**
@@ -112,30 +115,21 @@ public final class ScriptWrapper extends BaseObject {
     if (!Files.getExtension(file).equals(ImgUtil.RAX_EXT))
       return ImgUtil.read(file);
 
-    IPoint[] dim = new IPoint[1];
-    short[] pix = ImgUtil.readRax(Files.openInputStream(file), dim);
-    IPoint imageSize = dim[0];
+    MonoImage monoImage = ImgUtil.readRax(Files.openInputStream(file));
+    ImageStats s = MonoImageUtil.generateRangeStatsOnly(monoImage);
 
-    short min = pix[0];
-    short max = pix[0];
-    for (short p : pix) {
-      if (p < min)
-        min = p;
-      if (p > max)
-        max = p;
-    }
-
+    int range = s.range();
     // Don't attempt normalization if there's a strange distribution
-    int range = max - min;
+    //int range = max - min;
     if (range > 500) {
-      final int MAX_PIXEL_VALUE = 0x8000;
-      int lowCutoffValue = min;
-      int highCutoffValue = max;
-      float scale = ((float) MAX_PIXEL_VALUE) / (highCutoffValue - lowCutoffValue);
+      todo("can we use the MonoImageUtil.normalizeImageMagick here?");
+      int lowCutoffValue = s.min();
+      int highCutoffValue = s.max();
+      float scale = ((float) MonoImageUtil.MAX_PIXEL_VALUE) / (highCutoffValue - lowCutoffValue);
       float translate = -lowCutoffValue;
-      normalizeToDepth(pix, translate, scale, 15);
+      normalizeToDepth(monoImage.pixels(), translate, scale, 15);
     }
-    BufferedImage img = ImgUtil.to8BitRGBBufferedImage(imageSize, pix);
+    BufferedImage img = ImgUtil.to8BitRGBBufferedImage(monoImage.size(), monoImage.pixels());
     return ImgEffects.sharpen(img);
   }
 

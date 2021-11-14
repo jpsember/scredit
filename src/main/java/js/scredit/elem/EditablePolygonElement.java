@@ -64,11 +64,6 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
   }
 
   @Override
-  public String toString() {
-    return toJson().prettyPrint();
-  }
-
-  @Override
   public boolean contains(int paddingPixels, IPoint pt) {
     IRect paddedBounds = bounds().withInset(-paddingPixels);
     return paddedBounds.contains(pt);
