@@ -148,7 +148,16 @@ public final class Project extends BaseObject {
         }
       }
     }
+
+    // Sort the scripts by filename 
+    scripts.sort(SCRIPT_NAME_COMPARATOR);
   }
+
+  private static final Comparator<ScriptWrapper> SCRIPT_NAME_COMPARATOR = (a, b) -> {
+    String na = Files.basename(a.scriptFile());
+    String nb = Files.basename(b.scriptFile());
+    return na.compareTo(nb);
+  };
 
   // ------------------------------------------------------------------
   // Project state
