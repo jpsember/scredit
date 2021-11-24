@@ -27,6 +27,7 @@ package js.scredit;
 import static js.base.Tools.*;
 
 import js.graphics.ScriptElement;
+import js.graphics.gen.ElementProperties;
 import js.guiapp.UserEvent;
 import js.guiapp.UserOperation;
 import js.geometry.IPoint;
@@ -87,4 +88,10 @@ public interface EditorElement extends ScriptElement {
   default void render(EditorPanel editorPanel, Render appearance) {
     throw notSupported("render unsupported for element:", getClass().getSimpleName());
   }
+
+  /**
+   * Construct a duplicate of this element, but with new properties
+   */
+  EditorElement withProperties(ElementProperties properties);
+
 }

@@ -74,6 +74,11 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
     return withPolygon(polygon().applyTransform(m));
   }
 
+  @Override
+  public EditablePolygonElement withProperties(ElementProperties properties) {
+    return new EditablePolygonElement(properties, polygon(), curveMode());
+  }
+
   public EditablePolygonElement withPolygon(Polygon polygon) {
     return new EditablePolygonElement(properties(), polygon, curveMode());
   }

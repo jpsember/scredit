@@ -54,6 +54,11 @@ public class EditableRectElement extends RectElement implements EditorElement {
     return new EditableRectElement(obj.properties(), obj.bounds());
   }
 
+  @Override
+  public EditableRectElement withProperties(ElementProperties properties) {
+    return new EditableRectElement(properties, bounds());
+  }
+
   public EditableRectElement withBounds(IRect newBounds) {
     return new EditableRectElement(properties(), newBounds);
   }

@@ -30,7 +30,6 @@ import js.graphics.gen.ElementProperties;
 import js.scredit.gen.ScriptEditState;
 import js.scredit.EditorElement;
 import js.scredit.ScrEdit;
-import js.scredit.StateTools;
 import js.scredit.gen.Command.Builder;
 
 public class SetCategoryOper extends CommandOper {
@@ -49,19 +48,20 @@ public class SetCategoryOper extends CommandOper {
   public boolean constructCommand(Builder b) {
     ScriptEditState oldState = b.newState();
     ScriptEditState.Builder editState = oldState.toBuilder();
-    
+
+    boolean changed = false;
     for (int slot : oldState.selectedElements()) {
       EditorElement originalObj = oldState.elements().get(slot);
-      todo("have utility method to construct new editor element, one with new properties");
       ElementProperties oldProp = originalObj.properties();
       ElementProperties newProp = oldProp.toBuilder().category(mNewCategory);
-      editState.elements().set(slot, originalObj.toEditorElement(originalObj.withProperties(newProp)));
+      if (!newProp.equals(oldProp))
+        changed = true;
+      editState.elements().set(slot, originalObj.withProperties(newProp));
     }
-  //  pr("old state:",oldState);
     ScriptEditState newState = editState.build();
-    
+
     b.newState(newState);
-    return StateTools.stateChanged(oldState, newState);
+    return changed;
   }
 
   private int mNewCategory;
