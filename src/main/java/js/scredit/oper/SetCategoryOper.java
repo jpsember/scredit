@@ -30,6 +30,7 @@ import js.graphics.gen.ElementProperties;
 import js.scredit.gen.ScriptEditState;
 import js.scredit.EditorElement;
 import js.scredit.ScrEdit;
+import js.scredit.StateTools;
 import js.scredit.gen.Command.Builder;
 
 public class SetCategoryOper extends CommandOper {
@@ -39,29 +40,28 @@ public class SetCategoryOper extends CommandOper {
   }
 
   public SetCategoryOper(ScrEdit editor, int newCategory) {
+    loadTools();
     setEditor(editor);
     mNewCategory = newCategory;
   }
 
   @Override
   public boolean constructCommand(Builder b) {
-    ScriptEditState.Builder s = b.newState().toBuilder();
-    boolean changed = false;
-    for (int slot : s.selectedElements()) {
-      EditorElement originalObj = s.elements().get(slot);
+    ScriptEditState oldState = b.newState();
+    ScriptEditState.Builder editState = oldState.toBuilder();
+    
+    for (int slot : oldState.selectedElements()) {
+      EditorElement originalObj = oldState.elements().get(slot);
+      todo("have utility method to construct new editor element, one with new properties");
       ElementProperties oldProp = originalObj.properties();
       ElementProperties newProp = oldProp.toBuilder().category(mNewCategory);
-      if (!oldProp.equals(newProp)) {
-        EditorElement updatedObj = originalObj.toEditorElement(originalObj.withProperties(newProp));
-        changed = true;
-        s.elements().set(slot, updatedObj);
-      }
+      editState.elements().set(slot, originalObj.toEditorElement(originalObj.withProperties(newProp)));
     }
-    todo(
-        "can we have a generic 'check if new state differs from old' to determine quickly if operation should be enabled?");
-    if (changed)
-      b.newState(s);
-    return changed;
+  //  pr("old state:",oldState);
+    ScriptEditState newState = editState.build();
+    
+    b.newState(newState);
+    return StateTools.stateChanged(oldState, newState);
   }
 
   private int mNewCategory;

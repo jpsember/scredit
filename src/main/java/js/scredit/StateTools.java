@@ -104,4 +104,41 @@ public final class StateTools {
     return slot;
   }
 
+  /**
+   * Determine if ScriptEditStates differ
+   * 
+   * We can't always rely upon hashCode or equals methods to do this, since some
+   * contained objects don't necessarily follow the appropriate contracts
+   */
+  public static boolean stateChanged(ScriptEditState oldState, ScriptEditState newState) {
+    do {
+      if (!elementsSame(oldState.clipboard(), newState.clipboard()))
+        break;
+
+      return false;
+    } while (false);
+    return true;
+
+  }
+
+  private static boolean elementsSame(List<EditorElement> e1, List<EditorElement> e2) {
+    if (e1 == e2)
+      return true;
+    if (e1.size() != e2.size())
+      return false;
+    int i = -1;
+    for (EditorElement a : e1) {
+      i++;
+      EditorElement b = e2.get(i);
+      if (!elementsSame(a, b))
+        return false;
+    }
+    return true;
+  }
+
+  private static boolean elementsSame(
+  EditorElement e1, EditorElement e2)
+  {return true;
+  }
+
 }

@@ -239,11 +239,11 @@ public final class DefaultOper extends EditorOper implements UserEvent.Listener 
         }
         event.setOperation(oper);
       } else {
-        oper = SelectElemenentsWithBoxOper.build(editor(), mInitialDownEvent);
+        oper = SelectElementsWithBoxOper.build(editor(), mInitialDownEvent);
         event.setOperation(oper);
       }
     } else {
-      event.setOperation(SelectElemenentsWithBoxOper.build(editor(), mInitialDownEvent));
+      event.setOperation(SelectElementsWithBoxOper.build(editor(), mInitialDownEvent));
     }
   }
 

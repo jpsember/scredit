@@ -41,7 +41,7 @@ import js.scredit.ScrEdit;
 import js.scredit.SlotList;
 import js.scredit.gen.ScriptEditState;
 
-public class SelectElemenentsWithBoxOper extends EditorOper implements UserEvent.Listener {
+public class SelectElementsWithBoxOper extends EditorOper implements UserEvent.Listener {
 
   @Override
   public void processUserEvent(UserEvent event) {
@@ -57,10 +57,10 @@ public class SelectElemenentsWithBoxOper extends EditorOper implements UserEvent
   }
 
   public static UserOperation build(ScrEdit editor, UserEvent event) {
-    return new SelectElemenentsWithBoxOper(editor, event);
+    return new SelectElementsWithBoxOper(editor, event);
   }
 
-  private SelectElemenentsWithBoxOper(ScrEdit editor, UserEvent event) {
+  private SelectElementsWithBoxOper(ScrEdit editor, UserEvent event) {
     loadTools();
     setEditor(editor);
     mInitialEvent = event;
