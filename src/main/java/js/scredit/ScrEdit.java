@@ -255,6 +255,8 @@ public final class ScrEdit extends GUIApp {
     addItem("mask_add", "Add Mask", new MaskAddOper());
     addItem("pt_add", "Add Point", new PointAddOper());
     addItem("polygon_add", "Add Polygon", PolygonEditOper.buildAddOper(this));
+    addItem("rotation_toggle", "Toggle Rotation", new ToggleRotationOper(this));
+      
     {
       EditorOper oper = PolygonEditOper.buildAddCurveOper(this);
       addItem("curve_add", "Add Curve", oper);

@@ -26,22 +26,18 @@ package js.scredit.oper;
 
 import static js.base.Tools.*;
 
+import js.graphics.RectElement;
 import js.graphics.gen.ElementProperties;
 import js.scredit.gen.ScriptEditState;
 import js.scredit.EditorElement;
 import js.scredit.ScrEdit;
 import js.scredit.gen.Command.Builder;
 
-public class SetCategoryOper extends CommandOper {
+public class ToggleRotationOper extends CommandOper {
 
-  public static SetCategoryOper buildSetCategoryOper(ScrEdit editor, int category) {
-    return new SetCategoryOper(editor, category);
-  }
-
- private SetCategoryOper(ScrEdit editor, int newCategory) {
+  public ToggleRotationOper(ScrEdit editor) {
     loadTools();
     setEditor(editor);
-    mNewCategory = newCategory;
   }
 
   @Override
@@ -52,17 +48,16 @@ public class SetCategoryOper extends CommandOper {
     boolean changed = false;
     for (int slot : oldState.selectedElements()) {
       EditorElement originalObj = oldState.elements().get(slot);
-      ElementProperties oldProp = originalObj.properties();
-      ElementProperties newProp = oldProp.toBuilder().category(mNewCategory);
-      if (!newProp.equals(oldProp))
+      if (originalObj.is(RectElement.DEFAULT_INSTANCE)) {
+        ElementProperties oldProp = originalObj.properties();
+        ElementProperties newProp = oldProp.toBuilder().rotation(oldProp.rotation() != null ? null : 0);
         changed = true;
-      editState.elements().set(slot, originalObj.withProperties(newProp));
+        editState.elements().set(slot, originalObj.withProperties(newProp));
+      }
     }
     ScriptEditState newState = editState.build();
-
     b.newState(newState);
     return changed;
   }
 
-  private int mNewCategory;
 }
