@@ -115,6 +115,24 @@ public class EditableRectElement extends RectElement implements EditorElement {
       panel.renderFrame(r1);
     }
 
+    todo("We should have a generic category renderer for rects AND polygons AND...");
+
+    // Render category, if appropriate
+
+    if (properties().category() != null) {
+      String categoryString = "" + properties().category();
+      panel.apply(CATEGORY_TEXT);
+
+      panel.renderText(categoryString, bounds.x, bounds.y - 20);
+
+      if (true && alert("emphasizing categories")) {
+        panel.apply(CATEGORY_TEXT_BIG);
+        final float TITLE_OFFSET = 16;
+        panel.renderText(categoryString, bounds.midX(), bounds.y - TITLE_OFFSET);
+      }
+
+    }
+
     panel.popFocus();
   }
 
@@ -163,5 +181,7 @@ public class EditableRectElement extends RectElement implements EditorElement {
   }
 
   private static final Paint BLACK_LINE = Paint.newBuilder().width(1).color(Color.BLACK).build();
+  private static final Paint CATEGORY_TEXT = Paint.newBuilder().bigFont(1f).color(Color.WHITE).build();
+  private static final Paint CATEGORY_TEXT_BIG = Paint.newBuilder().bigFont(2.0f).color(Color.WHITE).build();
 
 }

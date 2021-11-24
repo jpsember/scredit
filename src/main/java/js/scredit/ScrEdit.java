@@ -207,6 +207,7 @@ public final class ScrEdit extends GUIApp {
       addFileMenu(m);
       addEditMenu(m);
       addViewMenu(m);
+      addCategoryMenu(m);
     }
     mFrame.frame().setJMenuBar(m.jmenuBar());
   }
@@ -266,6 +267,12 @@ public final class ScrEdit extends GUIApp {
     addItem("zoom_in", "Zoom In", ZoomOper.buildIn());
     addItem("zoom_out", "Zoom Out", ZoomOper.buildOut());
     addItem("zoom_reset", "Zoom Reset", ZoomOper.buildReset());
+  }
+
+  private void addCategoryMenu(OurMenuBar m) {
+    m.addMenu("Category");
+    for (int i = 0; i < 10; i++)
+      m.addItem("category_" + i, "" + i, SetCategoryOper.buildSetCategoryOper(this, i));
   }
 
   private JMenuItem addItem(String hotKeyId, String displayedName, UserOperation operation) {

@@ -234,7 +234,6 @@ public final class KeyboardShortcutManager extends BaseObject {
     throw badArg("failed parsing KeyEvent code:", quote(value));
   }
 
-
   private JSMap mRegistry;
   private Set<String> mOperationNames = hashSet();
   private Map<String, HotKey> mOperationHotKeyMap = hashMap();

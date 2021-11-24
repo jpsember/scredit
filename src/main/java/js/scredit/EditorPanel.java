@@ -308,6 +308,11 @@ public class EditorPanel extends JPanel implements UserEventSource, MouseListene
     return renderFrame(rect, 0);
   }
 
+  public EditorPanel renderText(String text, float x, float y) {
+    mGraphics.drawString(text, x, y);
+    return this;
+  }
+
   public EditorPanel renderFrame(FRect rect, float radius) {
     if (mActivePaint.isFill()) {
       RectangularShape r;

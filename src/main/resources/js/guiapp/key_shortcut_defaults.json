@@ -28,5 +28,16 @@
 "select_none" : {  "code" : 27},
 "select_all" : {  "code" : 65, "flags" : "c"},
 
+"category_0" : {"code":48},
+"category_1" : {"code":49},
+"category_2" : {"code":50},
+"category_3" : {"code":51},
+"category_4" : {"code":52},
+"category_5" : {"code":53},
+"category_6" : {"code":54},
+"category_7" : {"code":55},
+"category_8" : {"code":56},
+"category_9" : {"code":57},
+
 // This is helpful:  https://stackoverflow.com/questions/15313469
 }
