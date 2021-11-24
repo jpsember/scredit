@@ -34,7 +34,6 @@ import js.base.BaseObject;
 import js.data.DataUtil;
 import js.file.Files;
 import js.geometry.IPoint;
-import js.geometry.MyMath;
 import js.graphics.ImgEffects;
 import js.graphics.ImgUtil;
 import js.graphics.MonoImageUtil;
@@ -116,35 +115,15 @@ public final class ScriptWrapper extends BaseObject {
       return ImgUtil.read(file);
 
     MonoImage monoImage = ImgUtil.readRax(Files.openInputStream(file));
-    ImageStats s = MonoImageUtil.generateRangeStatsOnly(monoImage);
+    ImageStats s = MonoImageUtil.generateStats(monoImage);
 
     int range = s.range();
     // Don't attempt normalization if there's a strange distribution
-    //int range = max - min;
     if (range > 500) {
-      todo("can we use the MonoImageUtil.normalizeImageMagick here?");
-      int lowCutoffValue = s.min();
-      int highCutoffValue = s.max();
-      float scale = ((float) MonoImageUtil.MAX_PIXEL_VALUE) / (highCutoffValue - lowCutoffValue);
-      float translate = -lowCutoffValue;
-      normalizeToDepth(monoImage.pixels(), translate, scale, 15);
+      monoImage = MonoImageUtil.normalizedImageMagick(monoImage, s);
     }
     BufferedImage img = ImgUtil.to8BitRGBBufferedImage(monoImage.size(), monoImage.pixels());
     return ImgEffects.sharpen(img);
-  }
-
-  /**
-   * Apply linear normalization to image, translating pixels then scaling, and
-   * clamping to a particular depth
-   */
-  private static void normalizeToDepth(short[] pix, float translate, float scale, int depth) {
-    short maxPixelValue = (short) ((1 << depth) - 1);
-    for (int i = 0; i < pix.length; i++) {
-      short inPixel = pix[i];
-      int p = (int) ((inPixel + translate) * scale);
-      p = MyMath.clamp(p, 0, maxPixelValue);
-      pix[i] = (short) p;
-    }
   }
 
   private static ObjectCache<File, BufferedImage> sImageCache = new ObjectCache<>(100);

@@ -70,7 +70,7 @@ public class EditableRectElement extends RectElement implements EditorElement {
 
   @Override
   public EditableRectElement applyTransform(Matrix m) {
-    todo("This doesn't take into account effect of scaling or rotating");
+    todo("!This doesn't take into account effect of scaling or rotating");
     IPoint center = bounds().midPoint();
     IPoint newCenter = m.apply(center);
     IRect newBounds = bounds().translatedBy(IPoint.difference(newCenter, center));
@@ -121,16 +121,9 @@ public class EditableRectElement extends RectElement implements EditorElement {
 
     if (properties().category() != null) {
       String categoryString = "" + properties().category();
-      panel.apply(CATEGORY_TEXT);
-
-      panel.renderText(categoryString, bounds.x, bounds.y - 20);
-
-      if (true && alert("emphasizing categories")) {
-        panel.apply(CATEGORY_TEXT_BIG);
-        final float TITLE_OFFSET = 16;
-        panel.renderText(categoryString, bounds.midX(), bounds.y - TITLE_OFFSET);
-      }
-
+      panel.apply(appearance == Render.SELECTED ? CATEGORY_TEXT_SELECTED : CATEGORY_TEXT);
+      final float TITLE_OFFSET = 16;
+      panel.renderText(categoryString, bounds.midX(), bounds.y - TITLE_OFFSET);
     }
 
     panel.popFocus();
@@ -181,7 +174,9 @@ public class EditableRectElement extends RectElement implements EditorElement {
   }
 
   private static final Paint BLACK_LINE = Paint.newBuilder().width(1).color(Color.BLACK).build();
-  private static final Paint CATEGORY_TEXT = Paint.newBuilder().bigFont(1f).color(Color.WHITE).build();
-  private static final Paint CATEGORY_TEXT_BIG = Paint.newBuilder().bigFont(2.0f).color(Color.WHITE).build();
+  private static final Paint CATEGORY_TEXT = PAINT_NOMINAL.toBuilder().color(200, 100, 255).bigFont(1.6f)
+      .build();
+  private static final Paint CATEGORY_TEXT_SELECTED = CATEGORY_TEXT.toBuilder().bigFont(2.2f)
+      .color(Color.YELLOW).build();
 
 }
