@@ -183,7 +183,15 @@ public final class ScrEdit extends GUIApp {
   }
 
   public int paddingPixels() {
-    return (int) (20 / projectState().zoomFactor());
+    return (int) (20 / zoomFactor());
+  }
+
+  /**
+   * This is needed for some operations that occur outside of rendering
+   * operation
+   */
+  public float zoomFactor() {
+    return projectState().zoomFactor();
   }
 
   // ------------------------------------------------------------------
@@ -256,7 +264,7 @@ public final class ScrEdit extends GUIApp {
     addItem("pt_add", "Add Point", new PointAddOper());
     addItem("polygon_add", "Add Polygon", PolygonEditOper.buildAddOper(this));
     addItem("rotation_toggle", "Toggle Rotation", new ToggleRotationOper(this));
-      
+
     {
       EditorOper oper = PolygonEditOper.buildAddCurveOper(this);
       addItem("curve_add", "Add Curve", oper);

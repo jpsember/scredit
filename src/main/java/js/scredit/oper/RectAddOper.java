@@ -204,7 +204,7 @@ public class RectAddOper extends EditorOper implements UserEvent.Listener {
     IRect guide = guideRect(choosingOrigin);
 
     p.apply(sGuidePaint);
-    p.render(constructGuidePath(guide, cornerIndex(), editor().projectState().zoomFactor()));
+    p.render(constructGuidePath(guide, cornerIndex(), editor().zoomFactor()));
 
     // Use the normal box rendering method to draw the guide rectangle;
     // it is less confusing for the user

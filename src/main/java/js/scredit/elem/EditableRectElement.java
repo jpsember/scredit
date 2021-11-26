@@ -28,7 +28,6 @@ import static js.base.Tools.*;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 
 import js.geometry.FPoint;
@@ -40,6 +39,7 @@ import js.geometry.MyMath;
 import js.graphics.Paint;
 import js.graphics.RectElement;
 import js.graphics.ScriptElement;
+import js.graphics.ScriptUtil;
 import js.graphics.gen.ElementProperties;
 import js.guiapp.UserEvent;
 import js.guiapp.UserOperation;
@@ -202,9 +202,31 @@ public class EditableRectElement extends RectElement implements EditorElement {
 
     todo("If box has rotation, determine if clicked on circle and return appopriate rotation operation");
 
+    IPoint pt = event.getWorldLocation();
+
+    if (ScriptUtil.hasRotation(this)) {
+
+      // We need to reproduce the same distance calcs that we used when rendering
+      float zoom = editor.zoomFactor();
+      float zm = 1f / zoom;
+
+      FPoint midpoint = bounds().midPoint().toFPoint();
+
+      float radius = MyMath.magnitudeOfRay(bounds().width, bounds().height) / 2;
+      radius = Math.max(radius + 25 * zm, 100 * zm);
+      float dist = MyMath.distanceBetween(midpoint, pt.toFPoint());
+      pr("dist:", dist, "radius:", radius, "zoom:", zoom, "diff:", Math.abs(dist - radius), "scaled diff:",
+          Math.abs(dist - radius) / zm);
+      final float GRAB_TOLERANCE = 35;
+
+      if (Math.abs(dist - radius) < GRAB_TOLERANCE * zm) {
+        todo("generate user operation to rotate");
+        pr("yes");
+      }
+    }
+
     int edElement = -1;
     int paddingPixels = editor.paddingPixels();
-    IPoint pt = event.getWorldLocation();
     IRect r = bounds().withInset((int) (-paddingPixels * .75f));
     for (int c = 0; c < 4; c++) {
       IPoint corn = r.corner(c);

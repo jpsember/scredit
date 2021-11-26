@@ -70,7 +70,7 @@ public class EditorPanel extends JPanel implements UserEventSource, MouseListene
     ScriptWrapper script = getScript();
     if (!script.isNone()) {
       mGraphics = (Graphics2D) g;
-      mCurrentZoom = mEditor.projectState().zoomFactor();
+      mCurrentZoom = mEditor.zoomFactor();
       super.paintComponent(g);
       todo("!maybe need special handling in case there's an exception?");
       paintContents();
