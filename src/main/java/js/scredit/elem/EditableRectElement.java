@@ -46,6 +46,7 @@ import js.guiapp.UserOperation;
 import js.scredit.EditorElement;
 import js.scredit.EditorPanel;
 import js.scredit.ScrEdit;
+import js.scredit.oper.AdjustBoxRotationOper;
 import js.scredit.oper.RectEditOper;
 
 public class EditableRectElement extends RectElement implements EditorElement {
@@ -89,8 +90,7 @@ public class EditableRectElement extends RectElement implements EditorElement {
   private static final Paint PAINT_NOMINAL = Paint.newBuilder().width(4).color(119, 52, 235).build();
   private static final Paint PAINT_DISABLED = Paint.newBuilder().width(3).color(119, 52, 235, 64).build();
   private static final Paint PAINT_SELECTED = Paint.newBuilder().width(8).color(252, 232, 3).build();
-  private static final Paint DISC = Paint.newBuilder().width(3).color(Color.YELLOW).build();
-  private static final Paint DISC_LIGHT = DISC.toBuilder().color(255, 255, 0, 128).width(1).build();
+  private static final Paint DISC = Paint.newBuilder().width(4).color(255, 255, 0, 128).build();
   private static final Paint DISC_GUIDE = DISC.toBuilder().color(82, 212, 47).width(2).build();
   private static final Paint DISC_GUIDE_BGND = DISC_GUIDE.toBuilder().color(0, 0, 0, 128).width(3.5f).build();
 
@@ -135,12 +135,9 @@ public class EditableRectElement extends RectElement implements EditorElement {
         FPoint center = bounds.midPoint();
         float radius = MyMath.magnitudeOfRay(bounds.width, bounds.height) / 2;
         radius = Math.max(radius + 25, 100);
-        panel.apply(DISC);
         Graphics2D g = panel.graphics();
+        panel.apply(DISC);
         g.draw(new Ellipse2D.Double(center.x - radius, center.y - radius, 2 * radius, 2 * radius));
-        panel.apply(DISC_LIGHT);
-        float rad2 = radius - 10;
-        g.draw(new Ellipse2D.Double(center.x - rad2, center.y - rad2, 2 * rad2, 2 * rad2));
 
         // Construct list of vertices in disc space
         //
@@ -200,30 +197,7 @@ public class EditableRectElement extends RectElement implements EditorElement {
   @Override
   public UserOperation isEditingSelectedObject(ScrEdit editor, int slot, UserEvent event) {
 
-    todo("If box has rotation, determine if clicked on circle and return appopriate rotation operation");
-
     IPoint pt = event.getWorldLocation();
-
-    if (ScriptUtil.hasRotation(this)) {
-
-      // We need to reproduce the same distance calcs that we used when rendering
-      float zoom = editor.zoomFactor();
-      float zm = 1f / zoom;
-
-      FPoint midpoint = bounds().midPoint().toFPoint();
-
-      float radius = MyMath.magnitudeOfRay(bounds().width, bounds().height) / 2;
-      radius = Math.max(radius + 25 * zm, 100 * zm);
-      float dist = MyMath.distanceBetween(midpoint, pt.toFPoint());
-      pr("dist:", dist, "radius:", radius, "zoom:", zoom, "diff:", Math.abs(dist - radius), "scaled diff:",
-          Math.abs(dist - radius) / zm);
-      final float GRAB_TOLERANCE = 35;
-
-      if (Math.abs(dist - radius) < GRAB_TOLERANCE * zm) {
-        todo("generate user operation to rotate");
-        pr("yes");
-      }
-    }
 
     int edElement = -1;
     int paddingPixels = editor.paddingPixels();
@@ -245,6 +219,24 @@ public class EditableRectElement extends RectElement implements EditorElement {
           return new RectEditOper(editor, event, slot, edge + 4);
         }
       }
+
+    if (event.isDownVariant() && !event.hasModifierKeys() && ScriptUtil.hasRotation(this)) {
+
+      // We need to reproduce the same distance calcs that we used when rendering
+      float zoom = editor.zoomFactor();
+      float zm = 1f / zoom;
+
+      FPoint midpoint = bounds().midPoint().toFPoint();
+
+      float radius = MyMath.magnitudeOfRay(bounds().width, bounds().height) / 2;
+      radius = Math.max(radius + 25 * zm, 100 * zm);
+      float dist = MyMath.distanceBetween(midpoint, pt.toFPoint());
+      final float GRAB_TOLERANCE = 35;
+
+      if (Math.abs(dist - radius) < GRAB_TOLERANCE * zm) {
+        return new AdjustBoxRotationOper(editor, event, slot);
+      }
+    }
 
     return null;
   }
