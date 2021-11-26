@@ -27,7 +27,11 @@ package js.scredit.elem;
 import static js.base.Tools.*;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 
+import js.geometry.FPoint;
 import js.geometry.FRect;
 import js.geometry.IPoint;
 import js.geometry.IRect;
@@ -85,6 +89,14 @@ public class EditableRectElement extends RectElement implements EditorElement {
   private static final Paint PAINT_NOMINAL = Paint.newBuilder().width(4).color(119, 52, 235).build();
   private static final Paint PAINT_DISABLED = Paint.newBuilder().width(3).color(119, 52, 235, 64).build();
   private static final Paint PAINT_SELECTED = Paint.newBuilder().width(8).color(252, 232, 3).build();
+  private static final Paint DISC = Paint.newBuilder().width(3).color(Color.YELLOW).build();
+  private static final Paint DISC_LIGHT = DISC.toBuilder().color(255, 255, 0, 128).width(1).build();
+  private static final Paint DISC_GUIDE = DISC.toBuilder().color(82, 212, 47).width(2).build();
+  private static final Paint DISC_GUIDE_BGND = DISC_GUIDE.toBuilder().color(0, 0, 0, 128).width(3.5f).build();
+
+  private static final FPoint[] sDiscPoints = new FPoint[9];
+  private static final FPoint[] sViewPoints = new FPoint[sDiscPoints.length];
+  private static final int[] sSegmentScript = { 0, 1, 2, 3, 4, 5, 7, 6, 8, 6 };
 
   @Override
   public void render(EditorPanel panel, Render appearance) {
@@ -118,6 +130,49 @@ public class EditableRectElement extends RectElement implements EditorElement {
       // Draw single pixel black frame around the colored frame to distinguish frame from background
       FRect r1 = bounds.withInset(-(1 + PAINT_SELECTED.width()));
       panel.renderFrame(r1);
+
+      if (properties().rotation() != null) {
+        FPoint center = bounds.midPoint();
+        float radius = MyMath.magnitudeOfRay(bounds.width, bounds.height) / 2;
+        radius = Math.max(radius + 25, 100);
+        panel.apply(DISC);
+        Graphics2D g = panel.graphics();
+        g.draw(new Ellipse2D.Double(center.x - radius, center.y - radius, 2 * radius, 2 * radius));
+        panel.apply(DISC_LIGHT);
+        float rad2 = radius - 10;
+        g.draw(new Ellipse2D.Double(center.x - rad2, center.y - rad2, 2 * rad2, 2 * rad2));
+
+        // Construct list of vertices in disc space
+        //
+        int j = 0;
+        for (int i = -1; i <= 1; i++) {
+          float y = (-i * radius * .2f);
+          float x = MyMath.sqrtf(radius * radius - y * y);
+          sDiscPoints[j++] = new FPoint(-x, y);
+          sDiscPoints[j++] = new FPoint(x, y);
+        }
+        sDiscPoints[j++] = new FPoint(0, sDiscPoints[5].y);
+        float dy = sDiscPoints[5].y - sDiscPoints[0].y;
+        float dx = dy * 2.2f;
+        sDiscPoints[j++] = new FPoint(-dx, sDiscPoints[0].y);
+        sDiscPoints[j++] = new FPoint(dx, sDiscPoints[0].y);
+
+        // Construct list of these points transformed to view space
+        //
+        Matrix tfm = Matrix.preMultiply(Matrix.getRotate(properties().rotation() * MyMath.M_DEG),
+            Matrix.getTranslate(center));
+        j = -1;
+        for (FPoint pt : sDiscPoints) {
+          j++;
+          sViewPoints[j] = tfm.apply(pt);
+        }
+
+        for (int pass = 0; pass < 2; pass++) {
+          panel.apply(pass == 0 ? DISC_GUIDE_BGND : DISC_GUIDE);
+          for (int i = 0; i < sSegmentScript.length; i += 2)
+            panel.renderLine(sViewPoints[sSegmentScript[i]], sViewPoints[sSegmentScript[i + 1]]);
+        }
+      }
     }
 
     todo("We should have a generic category renderer for rects AND polygons AND...");
@@ -144,6 +199,9 @@ public class EditableRectElement extends RectElement implements EditorElement {
 
   @Override
   public UserOperation isEditingSelectedObject(ScrEdit editor, int slot, UserEvent event) {
+
+    todo("If box has rotation, determine if clicked on circle and return appopriate rotation operation");
+
     int edElement = -1;
     int paddingPixels = editor.paddingPixels();
     IPoint pt = event.getWorldLocation();
