@@ -35,6 +35,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.*;
 
 import javax.swing.*;
+import javax.swing.Box.Filler;
 
 import js.data.IntArray;
 import js.geometry.*;
@@ -352,10 +353,30 @@ public class EditorPanel extends JPanel implements UserEventSource, MouseListene
       mGraphics.draw(shape);
   }
 
+  public void renderCategory(EditorElement element, FRect bounds, Render appearance) {
+    if (element.properties().category() == null)
+      return;
+    String categoryString = "" + element.properties().category();
+    final float TITLE_OFFSET = 16;
+
+    if (appearance == Render.SELECTED) {
+      apply(CATEGORY_TEXT_BGND);
+      renderFrame(new FRect(bounds.midX() - 8, bounds.y - 60, 48, 54));
+    }
+
+    apply(appearance == Render.SELECTED ? CATEGORY_TEXT_SELECTED : CATEGORY_TEXT);
+    renderText(categoryString, bounds.midX(), bounds.y - TITLE_OFFSET);
+  }
+
   private void assertRendering() {
     if (mGraphics == null)
       badState("method only available while rendering");
   }
+
+  private static final Paint CATEGORY_TEXT = Paint.newBuilder().color(200, 100, 255).bigFont(1.6f).build();
+  private static final Paint CATEGORY_TEXT_SELECTED = CATEGORY_TEXT.toBuilder().bigFont(2.2f)
+      .color(Color.YELLOW).build();
+  private static final Paint CATEGORY_TEXT_BGND = Paint.newBuilder().fill().color(0, 0, 0, 128).build();
 
   private Graphics2D mGraphics;
   private Float mCurrentZoom;

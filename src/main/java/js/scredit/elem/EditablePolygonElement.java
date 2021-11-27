@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import js.geometry.FPoint;
+import js.geometry.FRect;
 import js.geometry.IPoint;
 import js.geometry.IRect;
 import js.geometry.Matrix;
@@ -39,6 +40,7 @@ import js.geometry.Polygon;
 import js.graphics.Paint;
 import js.graphics.PolygonElement;
 import js.graphics.ScriptElement;
+import js.graphics.ScriptUtil;
 import js.graphics.gen.ElementProperties;
 import js.guiapp.UserEvent;
 import js.guiapp.UserOperation;
@@ -217,11 +219,15 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
       panel.renderDisc(mInsertVertex, VERTEX_RADIUS * scale);
     }
 
-    // TODO: render title?
-
     if (appearance == Render.SELECTED && !curveMode())
       for (IPoint pt : polygon().vertices())
         panel.renderDisc(pt, VERTEX_RADIUS * scale);
+
+    if (ScriptUtil.hasCategory(this)) {
+      FRect bounds = panel.pushFocusOn(bounds().toRect());
+      panel.renderCategory(this, bounds, appearance);
+      panel.popFocus();
+    }
   }
 
   private void renderLine(EditorPanel panel, float scale, IPoint i1, IPoint i2, boolean withArrows) {
