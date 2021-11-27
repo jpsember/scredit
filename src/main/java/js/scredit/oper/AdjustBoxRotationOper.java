@@ -29,7 +29,6 @@ import static js.base.Tools.*;
 import js.data.IntArray;
 import js.geometry.FPoint;
 import js.geometry.IPoint;
-import js.geometry.IRect;
 import js.geometry.MyMath;
 import js.graphics.gen.ElementProperties;
 import js.guiapp.UserEvent;
@@ -55,18 +54,8 @@ public class AdjustBoxRotationOper extends EditorOper implements UserEvent.Liste
     mCommand = editor().buildCommand("Adjust Box Rotation");
     EditorElement elem = mCommand.newState().elements().get(mSlot);
     mOriginalElem = (EditableRectElement) elem;
-    mOriginalAngle = MyMath.polarAngle(FPoint.difference(mMouseDownLoc.toFPoint(), origin()));
-    FPoint origRadialPt = MyMath.pointOnCircle(origin(), mOriginalAngle, radius());
-    mGrabOffset = FPoint.difference(origRadialPt, mMouseDownLoc.toFPoint());
-  }
-
-  private FPoint origin() {
-    return mOriginalElem.bounds().midPoint().toFPoint();
-  }
-
-  private float radius() {
-    IRect r = mOriginalElem.bounds();
-    return MyMath.magnitudeOfRay(r.width / 2, r.height / 2);
+    float angle = MyMath.polarAngle(FPoint.difference(mMouseDownLoc.toFPoint(), origin()));
+    mAngleOffset = toRadians(mOriginalElem.properties().rotation()) - toRadians(toDegrees(angle));
   }
 
   @Override
@@ -78,13 +67,9 @@ public class AdjustBoxRotationOper extends EditorOper implements UserEvent.Liste
 
     case UserEvent.CODE_DRAG: {
       FPoint mouseLoc = event.getWorldLocation().toFPoint();
-      mouseLoc = FPoint.sum(mouseLoc, mGrabOffset);
       float newAngle = MyMath.polarAngle(FPoint.difference(mouseLoc, origin()));
-      float angleDiff = (newAngle - mOriginalAngle);
       ElementProperties.Builder properties = mOriginalElem.properties().toBuilder();
-      float ang = properties.rotation() * MyMath.M_DEG + angleDiff;
-      ang = MyMath.clamp(ang, -85 * MyMath.M_DEG, 85 * MyMath.M_DEG);
-      properties.rotation(Math.round(ang / MyMath.M_DEG));
+      properties.rotation(MyMath.clamp(toDegrees(newAngle + mAngleOffset), -85, 85));
       StateTools.replaceAndSelectItem(mCommand, mSlot, mOriginalElem.withProperties(properties));
       editor().perform(mCommand);
     }
@@ -102,10 +87,22 @@ public class AdjustBoxRotationOper extends EditorOper implements UserEvent.Liste
     return IntArray.with(mSlot);
   }
 
+  private int toDegrees(float radians) {
+    return Math.round(MyMath.normalizeAngle(radians) / MyMath.M_DEG);
+  }
+
+  private float toRadians(float degrees) {
+    return MyMath.normalizeAngle(degrees * MyMath.M_DEG);
+  }
+
+  private FPoint origin() {
+    return mOriginalElem.bounds().midPoint().toFPoint();
+  }
+
   private int mSlot;
   private IPoint mMouseDownLoc;
   private Command.Builder mCommand;
   private EditableRectElement mOriginalElem;
-  private FPoint mGrabOffset;
-  private float mOriginalAngle;
+  private float mAngleOffset;
+
 }
