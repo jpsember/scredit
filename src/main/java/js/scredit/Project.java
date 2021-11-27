@@ -42,7 +42,12 @@ import org.apache.commons.io.FileUtils;
 
 public final class Project extends BaseObject {
 
-  public static final Project DEFAULT_INSTANCE = new Project(Files.DEFAULT);
+  public static final Project DEFAULT_INSTANCE = new Project();
+
+  private Project() {
+    mDirectory = null;
+    mProjectFile = null;
+  }
 
   public Project(File directory) {
     mDirectory = directory;
@@ -106,7 +111,7 @@ public final class Project extends BaseObject {
   }
 
   public boolean isDefault() {
-    return this == DEFAULT_INSTANCE;
+    return mDirectory == null;
   }
 
   public File directory() {
