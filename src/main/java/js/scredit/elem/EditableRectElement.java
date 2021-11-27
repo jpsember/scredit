@@ -39,7 +39,6 @@ import js.geometry.MyMath;
 import js.graphics.Paint;
 import js.graphics.RectElement;
 import js.graphics.ScriptElement;
-import js.graphics.ScriptUtil;
 import js.graphics.gen.ElementProperties;
 import js.guiapp.UserEvent;
 import js.guiapp.UserOperation;
@@ -80,7 +79,7 @@ public class EditableRectElement extends RectElement implements EditorElement {
 
   @Override
   public EditableRectElement applyTransform(Matrix m) {
-    todo("!This doesn't take into account effect of scaling or rotating");
+    //todo("!This doesn't take into account effect of scaling or rotating");
     IPoint center = bounds().midPoint();
     IPoint newCenter = m.apply(center);
     IRect newBounds = bounds().translatedBy(IPoint.difference(newCenter, center));
@@ -94,9 +93,9 @@ public class EditableRectElement extends RectElement implements EditorElement {
   private static final Paint DISC_GUIDE = DISC.toBuilder().color(82, 212, 47).width(2).build();
   private static final Paint DISC_GUIDE_BGND = DISC_GUIDE.toBuilder().color(0, 0, 0, 128).width(3.5f).build();
 
-  private static final FPoint[] sDiscPoints = new FPoint[9];
+  private static final FPoint[] sDiscPoints = new FPoint[6];
   private static final FPoint[] sViewPoints = new FPoint[sDiscPoints.length];
-  private static final int[] sSegmentScript = { 0, 1, 2, 3, 4, 5, 7, 6, 8, 6 };
+  private static final int[] sSegmentScript = { 0, 1, 2, 3, 4, 5 };
 
   @Override
   public void render(EditorPanel panel, Render appearance) {
@@ -131,7 +130,8 @@ public class EditableRectElement extends RectElement implements EditorElement {
       FRect r1 = bounds.withInset(-(1 + PAINT_SELECTED.width()));
       panel.renderFrame(r1);
 
-      if (properties().rotation() != null) {
+      //if (properties().rotation() != null)
+      {
         FPoint center = bounds.midPoint();
         float radius = MyMath.magnitudeOfRay(bounds.width, bounds.height) / 2;
         radius = Math.max(radius + 25, 100);
@@ -139,40 +139,40 @@ public class EditableRectElement extends RectElement implements EditorElement {
         panel.apply(DISC);
         g.draw(new Ellipse2D.Double(center.x - radius, center.y - radius, 2 * radius, 2 * radius));
 
-        // Construct list of vertices in disc space
-        //
-        int j = 0;
-        for (int i = -1; i <= 1; i++) {
-          float y = (-i * radius * .2f);
-          float x = MyMath.sqrtf(radius * radius - y * y);
-          sDiscPoints[j++] = new FPoint(-x, y);
-          sDiscPoints[j++] = new FPoint(x, y);
-        }
-        sDiscPoints[j++] = new FPoint(0, sDiscPoints[5].y);
-        float dy = sDiscPoints[5].y - sDiscPoints[0].y;
-        float dx = dy * 2.2f;
-        sDiscPoints[j++] = new FPoint(-dx, sDiscPoints[0].y);
-        sDiscPoints[j++] = new FPoint(dx, sDiscPoints[0].y);
+        // If there is already a rotation, draw guide 
 
-        // Construct list of these points transformed to view space
-        //
-        Matrix tfm = Matrix.preMultiply(Matrix.getRotate(properties().rotation() * MyMath.M_DEG),
-            Matrix.getTranslate(center));
-        j = -1;
-        for (FPoint pt : sDiscPoints) {
-          j++;
-          sViewPoints[j] = tfm.apply(pt);
-        }
+        if (properties().rotation() != null) {
+          // Construct list of vertices in disc space
+          //
+          int j = 0;
+          for (int i = -1; i <= 1; i++) {
+            float y = (-i * radius * .2f);
+            float x = MyMath.sqrtf(radius * radius - y * y);
+            sDiscPoints[j++] = new FPoint(-x, y);
+            sDiscPoints[j++] = new FPoint(x, y);
+          }
 
-        for (int pass = 0; pass < 2; pass++) {
-          panel.apply(pass == 0 ? DISC_GUIDE_BGND : DISC_GUIDE);
-          for (int i = 0; i < sSegmentScript.length; i += 2)
-            panel.renderLine(sViewPoints[sSegmentScript[i]], sViewPoints[sSegmentScript[i + 1]]);
+          // Construct list of these points transformed to view space
+          //
+          Matrix tfm = Matrix.preMultiply(Matrix.getRotate(properties().rotation() * MyMath.M_DEG),
+              Matrix.getTranslate(center));
+          j = -1;
+          for (FPoint pt : sDiscPoints) {
+            j++;
+            sViewPoints[j] = tfm.apply(pt);
+          }
+
+          for (int pass = 0; pass < 2; pass++) {
+            panel.apply(pass == 0 ? DISC_GUIDE_BGND : DISC_GUIDE);
+            int[] script = sSegmentScript;
+            for (int i = 0; i < script.length; i += 2)
+              panel.renderLine(sViewPoints[script[i]], sViewPoints[script[i + 1]]);
+          }
         }
       }
     }
 
-    todo("We should have a generic category renderer for rects AND polygons AND...");
+    todo("!We should have a generic category renderer for rects AND polygons AND...");
 
     // Render category, if appropriate
 
@@ -220,7 +220,7 @@ public class EditableRectElement extends RectElement implements EditorElement {
         }
       }
 
-    if (event.isDownVariant() && !event.hasModifierKeys() && ScriptUtil.hasRotation(this)) {
+    if (event.isDownVariant() && !event.hasModifierKeys()) {
 
       // We need to reproduce the same distance calcs that we used when rendering
       float zoom = editor.zoomFactor();

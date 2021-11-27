@@ -30,6 +30,7 @@ import js.data.IntArray;
 import js.geometry.FPoint;
 import js.geometry.IPoint;
 import js.geometry.MyMath;
+import js.graphics.ScriptUtil;
 import js.graphics.gen.ElementProperties;
 import js.guiapp.UserEvent;
 import js.scredit.EditorElement;
@@ -55,7 +56,7 @@ public class AdjustBoxRotationOper extends EditorOper implements UserEvent.Liste
     EditorElement elem = mCommand.newState().elements().get(mSlot);
     mOriginalElem = (EditableRectElement) elem;
     float angle = MyMath.polarAngle(FPoint.difference(mMouseDownLoc.toFPoint(), origin()));
-    mAngleOffset = toRadians(mOriginalElem.properties().rotation()) - toRadians(toDegrees(angle));
+    mAngleOffset = toRadians(ScriptUtil.rotationDegreesOrZero(mOriginalElem)) - toRadians(toDegrees(angle));
   }
 
   @Override
