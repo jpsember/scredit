@@ -166,6 +166,7 @@ public final class ScrEdit extends GUIApp {
       @Override
       public void windowClosing(WindowEvent e) {
         if (requestWindowClose()) {
+          closeProject();
           jFrame.setVisible(false);
           jFrame.dispose();
           mFrame = null;
@@ -359,6 +360,8 @@ public final class ScrEdit extends GUIApp {
   }
 
   private void flushProject() {
+    if (!currentProject().defined())
+      return;
     // Store the app frame location, in case it has changed
     projectState().appFrame(mFrame.bounds());
     currentProject().flush();
