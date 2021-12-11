@@ -31,6 +31,7 @@ import static js.base.Tools.*;
 
 import js.base.BaseObject;
 import js.file.Files;
+import js.graphics.ScriptUtil;
 
 public final class AppDefaults extends BaseObject {
 
@@ -73,13 +74,12 @@ public final class AppDefaults extends BaseObject {
     log("flushDefaults", INDENT, mDefaults);
     boolean written = Files.S.writeIfChanged(file(), mDefaults.build().toString());
     if (written) {
-      pr("(AppDefaults written)");
       log("...changes saved");
     }
   }
 
   private File file() {
-    return new File(Files.homeDirectory(), ".scredit_defaults.json");
+    return new File(ScriptUtil.scriptProjectsDirectory(), "scredit_defaults.json");
   }
 
   private ScreditDefaults.Builder mDefaults;

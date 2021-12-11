@@ -35,7 +35,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.*;
 
 import javax.swing.*;
-import javax.swing.Box.Filler;
 
 import js.data.IntArray;
 import js.geometry.*;

@@ -238,11 +238,18 @@ public final class ScrEdit extends GUIApp {
   private void addFileMenu(OurMenuBar m) {
     m.addMenu("File", null);
     UserOperation prevOper = new FileStepOper(-1);
-    UserOperation nextOper = new FileStepOper(1);
+    UserOperation nextOper = new FileStepOper(1);   
+    UserOperation prevUsedOper = new FileStepUsedOper(-1);
+    UserOperation nextUsedOper = new FileStepUsedOper(1);
     addItem("script_step_bwd", "Prev", prevOper);
     addItem("script_step_fwd", "Next", nextOper);
+    addItem("script_step_bwd2", "Prev_", prevOper);
+    addItem("script_step_fwd2", "Next_", nextOper);
     addItem("script_page_bwd", "Page Bwd", new FileStepOper(-1).withAccel());
     addItem("script_page_fwd", "Page Fwd", new FileStepOper(1).withAccel());
+    addItem("script_used_prev", "Prev Used", prevUsedOper);
+    addItem("script_used_next", "Next Used", nextUsedOper);
+  
   }
 
   private void addEditMenu(OurMenuBar m) {
