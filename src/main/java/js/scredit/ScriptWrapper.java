@@ -131,13 +131,25 @@ public final class ScriptWrapper extends BaseObject {
   public void flush() {
     if (isNone())
       return;
-    String content = DataUtil.toString(mScriptData);
     if (ScrEdit.DISABLE_FLUSH_CHANGES)
       return;
-    if (Files.S.writeIfChanged(scriptFile(), content)) {
-      if (verbose())
-        log("flushed changes; new content:", INDENT, mScriptData);
+
+    if (ScriptUtil.isUseful(mScriptData)) {
+      String content = DataUtil.toString(mScriptData);
+      if (Files.S.writeIfChanged(scriptFile(), content)) {
+        if (verbose())
+          log("flushed changes; new content:", INDENT, mScriptData);
+      }
+    } else {
+      if (scriptFile().exists()) {
+        if (todo("finish this code")) {
+          pr("....script file should be deleted:", INDENT, Files.readString(scriptFile()));
+          return;
+        }
+        Files.S.deleteFile(scriptFile());
+      }
     }
+
   }
 
   private File imageFile() {
