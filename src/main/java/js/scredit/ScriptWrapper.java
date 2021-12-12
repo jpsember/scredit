@@ -142,10 +142,8 @@ public final class ScriptWrapper extends BaseObject {
       }
     } else {
       if (scriptFile().exists()) {
-        if (todo("finish this code")) {
-          pr("....script file should be deleted:", INDENT, Files.readString(scriptFile()));
-          return;
-        }
+        if (verbose())
+          log("deleting useless script:", INDENT, mScriptData);
         Files.S.deleteFile(scriptFile());
       }
     }
