@@ -238,7 +238,7 @@ public final class ScrEdit extends GUIApp {
   private void addFileMenu(OurMenuBar m) {
     m.addMenu("File", null);
     UserOperation prevOper = new FileStepOper(-1);
-    UserOperation nextOper = new FileStepOper(1);   
+    UserOperation nextOper = new FileStepOper(1);
     UserOperation prevUsedOper = new FileStepUsedOper(-1);
     UserOperation nextUsedOper = new FileStepUsedOper(1);
     addItem("script_step_bwd", "Prev", prevOper);
@@ -249,7 +249,6 @@ public final class ScrEdit extends GUIApp {
     addItem("script_page_fwd", "Page Fwd", new FileStepOper(1).withAccel());
     addItem("script_used_prev", "Prev Used", prevUsedOper);
     addItem("script_used_next", "Next Used", nextUsedOper);
-  
   }
 
   private void addEditMenu(OurMenuBar m) {
@@ -406,7 +405,14 @@ public final class ScrEdit extends GUIApp {
         pr("*** No EditorElement parser found for tag:", quote(element.tag()));
         continue;
       }
-      editorElements.add(parser.toEditorElement(element));
+      EditorElement elem = parser.toEditorElement(element);
+      todo("!get rid of validation if no longer required");
+      EditorElement validatedElement = elem.validate();
+      if (validatedElement == null) {
+        pr("*** failed to validate element:", INDENT, elem);
+        continue;
+      }
+      editorElements.add(validatedElement);
     }
 
     setState(ScriptEditState.newBuilder() //

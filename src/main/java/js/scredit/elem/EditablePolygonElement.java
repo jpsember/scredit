@@ -67,6 +67,8 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
 
   @Override
   public boolean contains(int paddingPixels, IPoint pt) {
+    if (!alert("disabled for now") && !polygon().isWellDefined())
+      return false;
     IRect paddedBounds = bounds().withInset(-paddingPixels);
     return paddedBounds.contains(pt);
   }
@@ -79,6 +81,15 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
   @Override
   public EditablePolygonElement withProperties(ElementProperties properties) {
     return new EditablePolygonElement(properties, polygon(), curveMode());
+  }
+
+  @Override
+  public EditablePolygonElement validate() {
+    Polygon p = polygon();
+    if (p.numVertices() < (p.isClosed() ? 3 : 2)) {
+      return null;
+    }
+    return this;
   }
 
   public EditablePolygonElement withPolygon(Polygon polygon) {

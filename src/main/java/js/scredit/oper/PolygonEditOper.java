@@ -40,7 +40,7 @@ public class PolygonEditOper extends EditorOper implements UserEvent.Listener {
     setEditor(editor);
     mAddMode = true;
     mCurveMode = curveMode;
-    //warnVerbose();
+    alertVerbose();
   }
 
   /**
@@ -60,10 +60,7 @@ public class PolygonEditOper extends EditorOper implements UserEvent.Listener {
       mCommand = editor().buildCommand("Add Polygon");
       mVertexIndex = 0;
       setState(mCurveMode ? STATE_STARTING_CURVE : STATE_UP);
-      //  mCommand.finalState().clearSelection();
-      //  mSlot = mCommand.initialState().objects().size();
 
-      //int flavor = 0; // TODO: support different flavors
       boolean open = mCurveMode;
       if (false && alert("always open; need to debug editing open non-curve poly"))
         open = true;
@@ -75,8 +72,6 @@ public class PolygonEditOper extends EditorOper implements UserEvent.Listener {
       mSlot = StateTools.addNewElement(mCommand, polygon);
       editor().setMouseCursor(Cursor.HAND_CURSOR);
 
-      //  StateTools.addNewElement(mCommand,  polygon.withProperties(polygon.properties().
-      //  mCommand.newState().elements().addSelected(polygon);
       mMouseOffset = IPoint.ZERO;
     } else {
       mCommand = editor().buildCommand("Adjust Polygon");
@@ -168,7 +163,7 @@ public class PolygonEditOper extends EditorOper implements UserEvent.Listener {
   }
 
   private void processCurveUserEvent(UserEvent event) {
-    log("processCurveUserEvent", INDENT, this, CR, event);
+    //log("processCurveUserEvent", INDENT, this, CR, event);
 
     switch (event.getCode()) {
 
@@ -176,6 +171,8 @@ public class PolygonEditOper extends EditorOper implements UserEvent.Listener {
       if (mState == STATE_STARTING_CURVE && !event.isRight()) {
         setState(STATE_ADJUST);
       } else {
+        if (alert("extra logging"))
+          pr("curve done; writing:", INDENT, mCommand.newState().elements());
         editor().perform(mCommand);
         event.clearOperation();
       }
@@ -243,7 +240,7 @@ public class PolygonEditOper extends EditorOper implements UserEvent.Listener {
 
     if (!p.polygon().isWellDefined()) {
       log("...removing incomplete edit polygon");
-      // mCommand.finalState().objects().remove(mSlot);
+      StateTools.remove(mCommand, mSlot);
       editor().perform(mCommand);
       todo("discard this last performed command");
       return;

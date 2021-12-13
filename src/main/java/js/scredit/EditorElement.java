@@ -90,6 +90,14 @@ public interface EditorElement extends ScriptElement {
   }
 
   /**
+   * Validate this element. If invalid, return null; else, a valid element
+   * (perhaps just 'this')
+   */
+  default EditorElement validate() {
+    return this;
+  }
+
+  /**
    * Construct a duplicate of this element, but with new properties
    */
   EditorElement withProperties(ElementProperties properties);
