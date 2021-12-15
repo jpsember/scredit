@@ -333,6 +333,7 @@ public final class ScrEdit extends GUIApp {
     recentProjects().setCurrentFile(project.directory());
     AppDefaults.sharedInstance().edit().recentProjects(recentProjects().state());
     addUIElements();
+    mInfoPanel.opening(project);
 
     replaceCurrentScriptWith(currentProject().script());
 
@@ -461,6 +462,10 @@ public final class ScrEdit extends GUIApp {
     }
   }
 
+  public ScriptWrapper currentScript() {
+    return mScript;
+  }
+
   private ScriptWrapper mScript = ScriptWrapper.DEFAULT_INSTANCE;
   private ScriptEditState mState = ScriptEditState.DEFAULT_INSTANCE;
 
@@ -541,9 +546,8 @@ public final class ScrEdit extends GUIApp {
     } else {
       if (0 != (repaintFlags & REPAINT_EDITOR))
         mEditorPanel.repaint();
-      if (0 != (repaintFlags & REPAINT_INFO)) {
-        todo("!info panel");
-      }
+      if (0 != (repaintFlags & REPAINT_INFO))
+        mInfoPanel.refresh();
     }
   }
 
@@ -569,6 +573,7 @@ public final class ScrEdit extends GUIApp {
     mComponentsContainer = parentPanel;
 
     mEditorPanel = new EditorPanel(this, mUserEventManager);
+    mInfoPanel = new InfoPanel(this);
     mControlPanel = new JPanel() {
       @Override
       public Dimension getPreferredSize() {
@@ -585,8 +590,8 @@ public final class ScrEdit extends GUIApp {
       todo("!add other panels as required");
       parentPanel.add(subPanel, BorderLayout.CENTER);
     }
-
     parentPanel.add(mControlPanel, BorderLayout.EAST);
+    parentPanel.add(mInfoPanel, BorderLayout.SOUTH);
     contentPane().add(parentPanel, BorderLayout.CENTER);
 
     // WTF, apparently this is necessary to get repainting to occur; see
@@ -607,6 +612,7 @@ public final class ScrEdit extends GUIApp {
 
   /* private */ JPanel mComponentsContainer;
   private EditorPanel mEditorPanel;
+  private InfoPanel mInfoPanel;
   private JPanel mControlPanel;
 
   // ------------------------------------------------------------------

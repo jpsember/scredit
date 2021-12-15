@@ -100,6 +100,7 @@ public final class Project extends BaseObject {
     else
       scriptIndex = MyMath.clamp(scriptIndex, 0, scriptCount());
     state().currentScriptIndex(scriptIndex);
+    
   }
 
   public boolean definedAndNonEmpty() {

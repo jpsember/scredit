@@ -40,7 +40,7 @@ public class PolygonEditOper extends EditorOper implements UserEvent.Listener {
     setEditor(editor);
     mAddMode = true;
     mCurveMode = curveMode;
-    alertVerbose();
+    //alertVerbose();
   }
 
   /**
@@ -171,8 +171,6 @@ public class PolygonEditOper extends EditorOper implements UserEvent.Listener {
       if (mState == STATE_STARTING_CURVE && !event.isRight()) {
         setState(STATE_ADJUST);
       } else {
-        if (alert("extra logging"))
-          pr("curve done; writing:", INDENT, mCommand.newState().elements());
         editor().perform(mCommand);
         event.clearOperation();
       }
@@ -222,6 +220,7 @@ public class PolygonEditOper extends EditorOper implements UserEvent.Listener {
   @Override
   public void stop() {
     EditablePolygonElement p = activePolygon();
+    log("stopping editing:", INDENT, p);
     p = p.withInsertVertex(-1, null);
     writeActivePolygon(p);
 
@@ -238,11 +237,19 @@ public class PolygonEditOper extends EditorOper implements UserEvent.Listener {
       }
     }
 
+    if (alert("extra logging")) {
+      EditablePolygonElement p2 = activePolygon();
+      if (p2.polygon().isWellDefined() != p.polygon().isWellDefined()) {
+        pr("we have a problem, p:", INDENT, p);
+        pr("p2:", INDENT, p2);
+      }
+    }
+
     if (!p.polygon().isWellDefined()) {
       log("...removing incomplete edit polygon");
       StateTools.remove(mCommand, mSlot);
       editor().perform(mCommand);
-      todo("discard this last performed command");
+      editor().discardLastCommand();
       return;
     }
 
