@@ -325,6 +325,7 @@ public final class ScrEdit extends GUIApp {
     closeProject();
 
     Project project = new Project(file);
+    
     // If there are recent projects, use their state as the default for this one in case it is a new project
     project.setDefaultState(Project.readProjectState(recentProjects().getMostRecentFile()));
 

@@ -61,6 +61,7 @@ public final class Project extends BaseObject {
     mDefaultState = defaultState.build();
   }
 
+  @Deprecated // Used only once, in ScrEdit
   public static ProjectState readProjectState(File projectDirectoryOrNull) {
     return readProjectState(projectDirectoryOrNull, null);
   }
@@ -88,6 +89,7 @@ public final class Project extends BaseObject {
     return projectState;
   }
 
+  @Deprecated // Used only once, in ScrEdit
   public void open() {
     mProjectState = readProjectState(directory(), mDefaultState).toBuilder();
     buildScriptList();
@@ -100,7 +102,6 @@ public final class Project extends BaseObject {
     else
       scriptIndex = MyMath.clamp(scriptIndex, 0, scriptCount());
     state().currentScriptIndex(scriptIndex);
-    
   }
 
   public boolean definedAndNonEmpty() {
@@ -191,7 +192,7 @@ public final class Project extends BaseObject {
     int index = state().currentScriptIndex();
     int count = scriptCount();
     if (index >= count) {
-      pr("current ExtScript has index", index, "which exceeds size", count, "!!!!");
+      pr("scriptIndex", index, "exceeds count", count, "!!!!");
       index = (count == 0) ? -1 : 0;
     }
     return index;
