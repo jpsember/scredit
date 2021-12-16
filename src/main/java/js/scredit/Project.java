@@ -54,20 +54,8 @@ public final class Project extends BaseObject {
     mProjectFile = isDefault() ? null : ScriptUtil.projectFileForProject(directory);
   }
 
-  /**
-   * Specify a ProjectState to use in case the project has none
-   */
-  public void setDefaultState(ProjectState defaultState) {
-    mDefaultState = defaultState.build();
-  }
-
-  @Deprecated // Used only once, in ScrEdit
-  public static ProjectState readProjectState(File projectDirectoryOrNull) {
-    return readProjectState(projectDirectoryOrNull, null);
-  }
-
-  private static ProjectState readProjectState(File projectDirectoryOrNull, ProjectState defaultState) {
-    defaultState = nullTo(defaultState, ProjectState.DEFAULT_INSTANCE);
+  public static ProjectState readProjectState(File projectDirectoryOrNull, ProjectState defaultStateOrNull) {
+    ProjectState defaultState = nullTo(defaultStateOrNull, ProjectState.DEFAULT_INSTANCE);
     ProjectState projectState = defaultState;
     if (!Files.empty(projectDirectoryOrNull)) {
       File stateFile = ScriptUtil.projectFileForProject(projectDirectoryOrNull);
@@ -89,9 +77,8 @@ public final class Project extends BaseObject {
     return projectState;
   }
 
-  @Deprecated // Used only once, in ScrEdit
-  public void open() {
-    mProjectState = readProjectState(directory(), mDefaultState).toBuilder();
+  public void open(ProjectState defaultStateOrNull) {
+    mProjectState = readProjectState(directory(), defaultStateOrNull).toBuilder();
     buildScriptList();
 
     // Make sure script index is legal
@@ -227,6 +214,5 @@ public final class Project extends BaseObject {
   private final File mDirectory;
   private final File mProjectFile;
   private List<ScriptWrapper> mScripts;
-  private ProjectState mDefaultState;
 
 }
