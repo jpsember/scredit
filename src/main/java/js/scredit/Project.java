@@ -189,9 +189,10 @@ public final class Project extends BaseObject {
 
   public void flush() {
     String newContent = DataUtil.toString(state());
-    if (Files.S.writeIfChanged(mProjectFile, newContent))
-      // pr("...Project changes written:", mProjectFile, INDENT, state()) //
-      ;
+    if (Files.S.writeIfChanged(mProjectFile, newContent)) {
+      if (verbose())
+        log("...Project changes written:", mProjectFile, INDENT, state());
+    }
   }
 
   private ProjectState.Builder mProjectState = ProjectState.newBuilder();
