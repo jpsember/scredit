@@ -54,7 +54,7 @@ public class InfoPanel extends JPanel {
     m.columns(".x").open();
     {
       m.addLabel("Script:");
-      mFilePath = m.monospaced().addText();
+      mFilePath = m.monospaced().large().addText();
       mMessageField = m.skip().monospaced().addText();
     }
     m.addVertGrow();
@@ -70,13 +70,15 @@ public class InfoPanel extends JPanel {
     if (!script.isNone()) {
       Project project = mEditor.currentProject();
       StringBuilder sb = new StringBuilder();
-      sb.append(project.scriptIndex());
+      // Use one-based numbering for script index (instead of zero)
+      sb.append(1 + project.scriptIndex());
       sb.append("/");
       sb.append(project.scriptCount());
       sb.append(" ");
       String nameOnly = script.name();
       sb.append(nameOnly);
 
+      if (false) // Not terribly useful
       {
         IPoint imageSize = script.imageSize();
         if (imageSize.nonZero()) {

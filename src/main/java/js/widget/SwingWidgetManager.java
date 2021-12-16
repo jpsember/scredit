@@ -809,6 +809,12 @@ public final class SwingWidgetManager extends WidgetManager {
     case WidgetManager.SIZE_SMALL:
       fontSize = 12;
       break;
+    case WidgetManager.SIZE_LARGE:
+      fontSize = 22;
+      break;
+    case WidgetManager.SIZE_HUGE:
+      fontSize = 28;
+      break;
     default:
       alert("unsupported widget font size:", widgetFontSize);
       fontSize = 16;

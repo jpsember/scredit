@@ -54,31 +54,53 @@ public final class Project extends BaseObject {
     mProjectFile = isDefault() ? null : ScriptUtil.projectFileForProject(directory);
   }
 
-  public static ProjectState readProjectState(File projectDirectoryOrNull, ProjectState defaultStateOrNull) {
-    ProjectState defaultState = nullTo(defaultStateOrNull, ProjectState.DEFAULT_INSTANCE);
-    ProjectState projectState = defaultState;
-    if (!Files.empty(projectDirectoryOrNull)) {
-      File stateFile = ScriptUtil.projectFileForProject(projectDirectoryOrNull);
+  private ProjectState readProjectState(File projectForDefaultStateOrNull) {
+    log("readProjectState, directory:", directory());
+    log("projectForDefaultStateOrNull:", Files.infoMap(projectForDefaultStateOrNull));
+
+    ProjectState projectState = null;
+
+    {
+      File stateFile = ScriptUtil.projectFileForProject(directory());
       if (stateFile.exists()) {
+        log("parsing state from existing state file:", stateFile);
         try {
           JSMap m = JSMap.fromFileIfExists(stateFile);
-          ProjectState.Builder b = defaultState.parse(m).toBuilder();
-          if (b.version() != defaultState.version()) {
-            if (b.version() != 0)
+          if (m.containsKey("version")) {
+            if (m.getInt("version") != ProjectState.DEFAULT_INSTANCE.version()) {
               badArg("Project version is out of date");
-            b.version(defaultState.version());
+            }
           }
-          projectState = b.build();
+          projectState = Files.parseAbstractDataOpt(ProjectState.DEFAULT_INSTANCE, m);
         } catch (Throwable t) {
           pr("trouble parsing", stateFile, INDENT, t);
         }
       }
     }
+
+    if (projectState == null) {
+      log("project state is null");
+      if (Files.nonEmpty(projectForDefaultStateOrNull)) {
+        File stateFile = ScriptUtil.projectFileForProject(projectForDefaultStateOrNull);
+        if (verbose())
+          log("looking for template state in:", Files.infoMap(projectForDefaultStateOrNull));
+        if (stateFile.exists()) {
+          projectState = Files.parseAbstractDataOpt(ProjectState.DEFAULT_INSTANCE, stateFile);
+        }
+      }
+    }
+
+    if (projectState == null) {
+      log("project state is still null, setting to default");
+      projectState = ProjectState.DEFAULT_INSTANCE;
+    }
+    log("returning state:", INDENT, projectState);
     return projectState;
   }
 
-  public void open(ProjectState defaultStateOrNull) {
-    mProjectState = readProjectState(directory(), defaultStateOrNull).toBuilder();
+  public void open(File projectForDefaultStateOrNull) {
+    log("Project.open, dir:", directory(), INDENT, "projForDefState:", projectForDefaultStateOrNull);
+    mProjectState = readProjectState(projectForDefaultStateOrNull).toBuilder();
     buildScriptList();
 
     // Make sure script index is legal
@@ -87,7 +109,8 @@ public final class Project extends BaseObject {
     if (scriptCount() == 0)
       scriptIndex = 0;
     else
-      scriptIndex = MyMath.clamp(scriptIndex, 0, scriptCount());
+      scriptIndex = MyMath.clamp(scriptIndex, 0, scriptCount() - 1);
+    log("correcting state script index from", state().currentScriptIndex(), "to", scriptIndex);
     state().currentScriptIndex(scriptIndex);
   }
 
@@ -133,9 +156,11 @@ public final class Project extends BaseObject {
       if (annotDir.exists()) {
         if (verbose())
           log("looking for scripts in:", Files.infoMap(annotDir));
+        int logCount = 0;
         for (File scriptFile : FileUtils.listFiles(annotDir, sFileExtAnnotation, false)) {
           String rootName = Files.basename(scriptFile);
-          log("reading script:", rootName);
+          if (logCount++ < 10)
+            log("reading script:", rootName);
           if (!fileRootSet.add(rootName))
             continue;
           scripts.add(new ScriptWrapper(scriptFile));
