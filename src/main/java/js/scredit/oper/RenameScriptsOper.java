@@ -61,14 +61,7 @@ public final class RenameScriptsOper extends EditorOper {
 
     editor().closeProject();
 
-    File temporaryProjectDir;
-    for (int attempt = 0;; attempt++) {
-      temporaryProjectDir = renameBase(projDirectory, "_SKIP_rename_scripts_dir_" + attempt);
-      if (!temporaryProjectDir.exists())
-        break;
-      alert("temporary directory already exists:", temporaryProjectDir);
-    }
-    checkState(!temporaryProjectDir.exists(), "temp directory already exists:", temporaryProjectDir);
+    File temporaryProjectDir = chooseTempDirectory();
     File temporaryScriptDir = ScriptUtil.scriptDirForProject(temporaryProjectDir);
     Files.S.mkdirs(temporaryScriptDir);
 
@@ -96,6 +89,17 @@ public final class RenameScriptsOper extends EditorOper {
     editor().openProject(proj.directory());
   }
 
+  private File chooseTempDirectory() {
+    File tempDir;
+    for (int attempt = 0;; attempt++) {
+      tempDir = Files.getDesktopFile("_temp_rename_scripts_dir_" + attempt);
+      if (!tempDir.exists())
+        break;
+      alert("temporary directory already exists:", tempDir);
+    }
+    return tempDir;
+  }
+
   private void copyAndRename(File sourceFile, File targetDirectory) {
     String base = Files.basename(sourceFile);
     String newName = mRenameMap.get(base);
@@ -103,13 +107,6 @@ public final class RenameScriptsOper extends EditorOper {
     File targetFile = new File(targetDirectory, Files.setExtension(newName, Files.getExtension(sourceFile)));
     checkState(!targetFile.exists());
     Files.S.copyFile(sourceFile, targetFile);
-  }
-
-  private static File renameBase(File file, String newBaseName) {
-    File parent = Files.parent(file);
-    String ext = Files.getExtension(file);
-    File newName = new File(parent, Files.setExtension(newBaseName, ext));
-    return newName;
   }
 
   private Map<String, String> constructRenameMap() {
