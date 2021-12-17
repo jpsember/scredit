@@ -46,12 +46,15 @@ public final class AppDefaults extends BaseObject {
   private static final AppDefaults sSharedInstance;
 
   static {
-    loadTools();
     sSharedInstance = new AppDefaults();
-    //sSharedInstance.alertVerbose();
   }
 
   // ------------------------------------------------------------------
+
+  private AppDefaults() {
+    loadTools();
+    alertVerbose();
+  }
 
   public ScreditDefaults read() {
     // We may be reading this before we've started up the app, i.e. outside of the Swing thread
@@ -64,18 +67,15 @@ public final class AppDefaults extends BaseObject {
   }
 
   public ScreditDefaults.Builder edit() {
-    if (verbose())
-      log("Editing ScreditDefaults");
     read();
     return mDefaults;
   }
 
   public void flush() {
-    log("flushDefaults", INDENT, mDefaults);
+    log("flushDefaults");
     boolean written = Files.S.writeIfChanged(file(), mDefaults.build().toString());
-    if (written) {
-      log("...changes saved");
-    }
+    if (written)
+      log("...changes saved to", file(), INDENT, mDefaults);
   }
 
   private File file() {

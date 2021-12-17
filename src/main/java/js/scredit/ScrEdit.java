@@ -71,6 +71,7 @@ public final class ScrEdit extends GUIApp {
 
   private ScrEdit() {
     setDevMode(AppDefaults.sharedInstance().read().devFeatures());
+    //alertVerbose();
   }
 
   @Override
@@ -124,8 +125,10 @@ public final class ScrEdit extends GUIApp {
 
     @Override
     public void perform() {
-      if (cmdLineArgs().hasNextArg())
+      if (cmdLineArgs().hasNextArg()) {
         mStartProjectFile = new File(cmdLineArgs().nextArg());
+        log(DASHES, "set start project:", INDENT, mStartProjectFile, VERT_SP);
+      }
       if (cmdLineArgs().hasNextArg())
         throw badArg("Unexpected argument(s):", cmdLineArgs().peekNextArg());
       if (devMode()) {
@@ -249,6 +252,8 @@ public final class ScrEdit extends GUIApp {
     addItem("script_page_fwd", "Page Fwd", new FileStepOper(1).withAccel());
     addItem("script_used_prev", "Prev Used", prevUsedOper);
     addItem("script_used_next", "Next Used", nextUsedOper);
+    addItem("script_jump_first", "First", new FileJumpOper(-1));
+    addItem("script_jump_last", "Last", new FileJumpOper(1));
   }
 
   private void addEditMenu(OurMenuBar m) {
@@ -589,7 +594,6 @@ public final class ScrEdit extends GUIApp {
     {
       JPanel subPanel = new JPanel(new BorderLayout());
       subPanel.add(mEditorPanel, BorderLayout.CENTER);
-      todo("!add other panels as required");
       parentPanel.add(subPanel, BorderLayout.CENTER);
     }
     parentPanel.add(mControlPanel, BorderLayout.EAST);

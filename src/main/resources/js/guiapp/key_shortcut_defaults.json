@@ -8,6 +8,10 @@
 "script_step_fwd2" : { "code" : 68 },
 "script_step_bwd2" : { "code" : 83 },
 
+"script_jump_first" : {  "code" : 37,
+                         "flags" : "cs" },
+"script_jump_last" : {  "code" : 39,
+                        "flags" : "cs" },
 "script_used_next" : { "code" : 93 },
 "script_used_prev" : { "code" : 91 },
 

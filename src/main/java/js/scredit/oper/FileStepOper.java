@@ -36,6 +36,7 @@ import js.scredit.Project;
 public final class FileStepOper extends EditorOper {
 
   public FileStepOper(int stepVelocity) {
+    loadTools();
     mStepVelocity = stepVelocity;
     mStepSpeed = Math.abs(mStepVelocity);
   }
@@ -57,24 +58,23 @@ public final class FileStepOper extends EditorOper {
 
     while (mNextFileIndex == null) {
       int filteredSpeed = Math.abs(mStepVelocity);
-      if (mAccelFlag) {
-        todo("put filtered speed, etc in app defaults");
-        float stepAccelFactor = 1.2f;
-        float stepAccelSpeedMin = 0f;
-        float stepAccelSpeedMax = 100f;
 
-        if (filteredSpeed <= 0) {
+      if (mAccelFlag) {
+        float stepAccelFactor = 1.2f;
+        float stepAccelSpeedMax = 100f;
+        {
           long time = System.currentTimeMillis();
           long elapsed = time - mLastOperationTime;
+          final int ACCEL_INTERVAL = 300;
+          final int DECEL_INTERVAL = 800;
           float speed = mStepSpeed;
-          if (elapsed < 300) {
-            speed = Math.min(speed * stepAccelFactor, stepAccelSpeedMin);
-            if (stepAccelSpeedMax > 0)
-              speed = Math.min(speed, stepAccelSpeedMax);
-          } else if (elapsed > 600) {
+          if (elapsed < ACCEL_INTERVAL) {
+            speed = Math.min(speed * stepAccelFactor, stepAccelSpeedMax);
+          } else if (elapsed > DECEL_INTERVAL) {
             speed = stepSpeed();
           }
           mStepSpeed = speed;
+          log("elapsed:", elapsed, "speed:", speed);
           filteredSpeed = (int) mStepSpeed;
         }
       }

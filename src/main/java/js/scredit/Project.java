@@ -85,7 +85,8 @@ public final class Project extends BaseObject {
         if (verbose())
           log("looking for template state in:", Files.infoMap(projectForDefaultStateOrNull));
         if (stateFile.exists()) {
-          projectState = Files.parseAbstractDataOpt(ProjectState.DEFAULT_INSTANCE, stateFile);
+          projectState = Files.parseAbstractDataOpt(ProjectState.DEFAULT_INSTANCE, stateFile).toBuilder()//
+              .currentScriptIndex(0);
         }
       }
     }
@@ -95,7 +96,7 @@ public final class Project extends BaseObject {
       projectState = ProjectState.DEFAULT_INSTANCE;
     }
     log("returning state:", INDENT, projectState);
-    return projectState;
+    return projectState.build();
   }
 
   public void open(File projectForDefaultStateOrNull) {
