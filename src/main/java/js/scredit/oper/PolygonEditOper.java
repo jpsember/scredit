@@ -261,7 +261,7 @@ public class PolygonEditOper extends EditorOper implements UserEvent.Listener {
       }
     }
 
-    if (alert("extra logging")) {
+    if (false && alert("extra logging")) {
       EditablePolygonElement p2 = activePolygon();
       if (p2.polygon().isWellDefined() != p.polygon().isWellDefined()) {
         pr("we have a problem, p:", INDENT, p);

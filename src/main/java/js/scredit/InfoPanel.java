@@ -73,10 +73,9 @@ public class InfoPanel extends JPanel {
     if (!script.isNone()) {
       Project project = mEditor.currentProject();
       StringBuilder sb = new StringBuilder();
-      // Use one-based numbering for script index (instead of zero)
-      sb.append(1 + project.scriptIndex());
+      sb.append(project.scriptIndex());
       sb.append("/");
-      sb.append(project.scriptCount());
+      sb.append(project.scriptCount() - 1);
       sb.append(" ");
       String nameOnly = script.name();
       sb.append(nameOnly);
