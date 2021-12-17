@@ -53,7 +53,7 @@ public final class AppDefaults extends BaseObject {
 
   private AppDefaults() {
     loadTools();
-    alertVerbose();
+    //alertVerbose();
   }
 
   public ScreditDefaults read() {

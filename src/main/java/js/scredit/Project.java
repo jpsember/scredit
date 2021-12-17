@@ -145,14 +145,16 @@ public final class Project extends BaseObject {
     List<ScriptWrapper> scripts = arrayList();
     mScripts = scripts;
 
-    checkpoint("buildScriptList start");
+    if (ScrEdit.ISSUE_14)
+      checkpoint("buildScriptList start");
     for (File imageFile : FileUtils.listFiles(directory(), sFileExtImages, false)) {
       File scriptFile = ScriptUtil.scriptPathForImage(imageFile);
       ScriptWrapper script = new ScriptWrapper(scriptFile);
       scripts.add(script);
       fileRootSet.add(Files.removeExtension(imageFile.getName()));
     }
-    checkpoint("read all image files and scripts");
+    if (ScrEdit.ISSUE_14)
+      checkpoint("read all image files and scripts");
 
     if (!state.requireImages()) {
       File annotDir = ScriptUtil.scriptDirForProject(directory());
@@ -160,7 +162,8 @@ public final class Project extends BaseObject {
         if (verbose())
           log("looking for scripts in:", Files.infoMap(annotDir));
         int logCount = 0;
-        checkpoint("reading scripts without images");
+        if (ScrEdit.ISSUE_14)
+          checkpoint("reading scripts without images");
         for (File scriptFile : FileUtils.listFiles(annotDir, sFileExtAnnotation, false)) {
           String rootName = Files.basename(scriptFile);
           if (logCount++ < 10)
@@ -169,12 +172,14 @@ public final class Project extends BaseObject {
             continue;
           scripts.add(new ScriptWrapper(scriptFile));
         }
-        checkpoint("done reading scripts without images");
+        if (ScrEdit.ISSUE_14)
+          checkpoint("done reading scripts without images");
       }
     }
 
     // Sort the scripts by filename 
-    checkpoint("sorting scripts");
+    if (ScrEdit.ISSUE_14)
+        checkpoint("sorting scripts");
     scripts.sort(SCRIPT_NAME_COMPARATOR);
   }
 

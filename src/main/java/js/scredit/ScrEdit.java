@@ -54,7 +54,7 @@ import js.system.SystemUtil;
 
 public final class ScrEdit extends GUIApp {
 
-  public static final boolean ISSUE_14 = true && alert("ISSUE_14 logging");
+  public static final boolean ISSUE_14 = false && alert("ISSUE_14 logging");
   public static final boolean DISABLE_FLUSH_CHANGES = false && alert("Saving script changes is DISABLED");
 
   public static void main(String[] args) {
@@ -262,6 +262,7 @@ public final class ScrEdit extends GUIApp {
         openProject(recentProjects().getCurrentFile());
       }
     }));
+    addItem("rename_scripts", "Rename Scripts", new RenameScriptsOper());
   }
 
   private void addFileMenu(OurMenuBar m) {
@@ -377,13 +378,11 @@ public final class ScrEdit extends GUIApp {
 
     if (ISSUE_14)
       pr("EditorPanel requesting focus");
-    
+
     // Make sure the UI is updated to represent this project's state,
     // and to make sure the keyboard shortcuts work (something to do with focus?)
     //
     performRepaint(REPAINT_ALL);
-      
-    //mEditorPanel.requestFocus();
   }
 
   private void openAppropriateProject() {
@@ -601,6 +600,10 @@ public final class ScrEdit extends GUIApp {
       String name = dir.getName();
       title = title + " " + name;
     }
+
+    if (ScrEdit.devMode())
+      title = title + " !!! DEV MODE !!!";
+
     mFrame.frame().setTitle(title);
   }
 

@@ -88,10 +88,6 @@ public class InfoPanel extends JPanel {
           sb.append(" (" + imageSize.x + " x " + imageSize.y + ")");
         }
       }
-
-      if (ScrEdit.devMode())
-        sb.append(" !!! dev_features is TRUE !!!");
-
       scriptDisplay = sb.toString();
     }
     mFilePath.setText(scriptDisplay);
