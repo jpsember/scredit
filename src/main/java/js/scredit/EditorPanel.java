@@ -231,6 +231,10 @@ public class EditorPanel extends JPanel implements UserEventSource, MouseListene
 
   @Override
   public void mouseMoved(MouseEvent ev) {
+    if (ScrEdit.ISSUE_14) {
+      alert("ignoring mouseMoved event");
+      return;
+    }
     generateMouseEvent(ev, UserEvent.CODE_MOVE);
   }
 

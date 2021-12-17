@@ -377,7 +377,13 @@ public final class ScrEdit extends GUIApp {
 
     if (ISSUE_14)
       pr("EditorPanel requesting focus");
-    mEditorPanel.requestFocus();
+    
+    // Make sure the UI is updated to represent this project's state,
+    // and to make sure the keyboard shortcuts work (something to do with focus?)
+    //
+    performRepaint(REPAINT_ALL);
+      
+    //mEditorPanel.requestFocus();
   }
 
   private void openAppropriateProject() {
