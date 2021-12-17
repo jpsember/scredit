@@ -53,21 +53,10 @@ public final class ScriptWrapper extends BaseObject {
 
   private ScriptWrapper() {
     mScriptFile = Files.DEFAULT;
-    todo("can mScriptFile be final?");
   }
 
   public ScriptWrapper(File scriptPath) {
     mScriptFile = scriptPath;
-  }
-
-  public void setName(File scriptPath) {
-    todo("does this need to be public, given that we are closing/reopening project?");
-    checkState(defined());
-    mScriptFile = scriptPath;
-    if (mImageFile != null) {
-      mImageFile = new File(Files.parent(mImageFile),
-          Files.setExtension(Files.basename(scriptPath), Files.getExtension(mImageFile)));
-    }
   }
 
   public boolean isNone() {
@@ -158,10 +147,9 @@ public final class ScriptWrapper extends BaseObject {
         Files.S.deleteFile(scriptFile());
       }
     }
-
   }
 
-  public File imageFile() {
+  private File imageFile() {
     checkState(hasImage(), "script has no image");
     return mImageFile;
   }
@@ -205,7 +193,7 @@ public final class ScriptWrapper extends BaseObject {
 
   // ------------------------------------------------------------------
 
-  private File mScriptFile;
+  private final File mScriptFile;
   // File containing script's image, or Files.DEFAULT if there is no image
   private File mImageFile;
   private Script mScriptData;

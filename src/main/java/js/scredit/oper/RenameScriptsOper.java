@@ -27,10 +27,12 @@ package js.scredit.oper;
 import static js.base.Tools.*;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map;
 
+import js.file.DirWalk;
 import js.file.Files;
+import js.graphics.ImgUtil;
+import js.graphics.ScriptUtil;
 import js.scredit.Project;
 import js.scredit.ScriptWrapper;
 
@@ -61,57 +63,59 @@ public final class RenameScriptsOper extends EditorOper {
 
     editor().closeProject();
 
-    mRenamedFiles = arrayList();
+    File tempProj = renameBase(proj.directory(), "___temp___");
+    File tempScript;
+    checkState(!tempProj.exists(), "temp directory already exists:", tempProj);
+    tempScript = ScriptUtil.scriptDirForProject(tempProj);
+    Files.S.mkdirs(tempScript);
 
-    // Rename all scripts and images to new names including prefix
+    // Copy and rename scripts from project directory to temporary new directory
     //
     for (int i = 0; i < proj.scriptCount(); i++) {
       ScriptWrapper w = proj.script(i);
-      File sc = w.scriptFile();
-      File resultFile = rename(sc);
-      if (w.hasImage()) {
-        rename(w.imageFile());
-      }
-      w.setName(resultFile);
+      rename(w.scriptFile(), tempScript);
     }
 
-    // Remove prefixes from renamed files
+    // Copy and rename images
     //
-    for (File sourceFile : mRenamedFiles) {
-      File targetFile = new File(Files.parent(sourceFile), chompPrefix(sourceFile.getName(), WORK_PREFIX));
-      checkState(!targetFile.exists());
-      pr("renaming:", INDENT, sourceFile, CR, targetFile);
-      Files.S.moveFile(sourceFile, targetFile);
+    {
+      DirWalk w = new DirWalk(proj.directory()).withExtensions(ImgUtil.IMAGE_EXTENSIONS).withRecurse(false);
+      for (File f : w.files()) {
+        rename(f, tempProj);
+      }
     }
+
+    // Delete old project directory, and rename temp to it
+    //
+    todo("Not replacing project directory with temp");
 
     editor().openProject(proj.directory());
   }
 
-  private static final String WORK_PREFIX = "________";
-
-  private File rename(File sourceFile) {
+  private void rename(File sourceFile, File targetDirectory) {
     if (!sourceFile.exists())
-      return sourceFile;
+      return;
     String base = Files.basename(sourceFile);
     String newName = mRenameMap.get(base);
     checkState(newName != null);
-    File targetFileFinal = new File(Files.parent(sourceFile),
-        Files.setExtension(newName, Files.getExtension(sourceFile)));
-    File targetFile = new File(Files.parent(sourceFile),
-        Files.setExtension(WORK_PREFIX + newName, Files.getExtension(sourceFile)));
+    File targetFile = new File(targetDirectory, Files.setExtension(newName, Files.getExtension(sourceFile)));
     checkState(!targetFile.exists());
     pr("renaming:", INDENT, sourceFile, CR, targetFile);
-    Files.S.moveFile(sourceFile, targetFile);
-    mRenamedFiles.add(targetFile);
-    return targetFileFinal;
+    Files.S.copyFile(sourceFile, targetFile);
   }
 
-  private List<File> mRenamedFiles;
+  private static File renameBase(File file, String newBaseName) {
+    File parent = Files.parent(file);
+    String ext = Files.getExtension(file);
+    File newName = new File(parent, Files.setExtension(newBaseName, ext));
+    return newName;
+  }
 
   private void constructRenameMap() {
     Map<String, String> mp = hashMap();
     Project proj = editor().currentProject();
     mChanges = false;
+    boolean conflicts = false;
     if (proj.definedAndNonEmpty()) {
       int nDigits = (int) Math.ceil(Math.log10(proj.scriptCount()));
       String fmt = "%0" + nDigits + "d";
@@ -124,6 +128,12 @@ public final class RenameScriptsOper extends EditorOper {
           mChanges = true;
         if (prevMapping != null)
           throw badArg("duplicate key:", base, w.scriptFile());
+        pr("storing rename mapping:", INDENT, base, "->", newName);
+        if (!conflicts) {
+          File renamedFile = renameBase(w.scriptFile(), newName);
+          if (renamedFile.exists())
+            conflicts = true;
+        }
       }
     }
     mRenameMap = mp;
