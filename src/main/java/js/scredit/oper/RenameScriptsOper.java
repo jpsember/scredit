@@ -61,7 +61,8 @@ public final class RenameScriptsOper extends EditorOper {
 
     editor().closeProject();
 
-    File temporaryProjectDir = chooseTempDirectory();
+    File temporaryProjectDir = Files.createTempDir("ScrEdit_RenameScriptsOper");
+    Files.S.mkdirs(temporaryProjectDir);
     File temporaryScriptDir = ScriptUtil.scriptDirForProject(temporaryProjectDir);
     Files.S.mkdirs(temporaryScriptDir);
 
@@ -87,17 +88,6 @@ public final class RenameScriptsOper extends EditorOper {
     Files.S.moveDirectory(temporaryProjectDir, projDirectory);
 
     editor().openProject(proj.directory());
-  }
-
-  private File chooseTempDirectory() {
-    File tempDir;
-    for (int attempt = 0;; attempt++) {
-      tempDir = Files.getDesktopFile("_temp_rename_scripts_dir_" + attempt);
-      if (!tempDir.exists())
-        break;
-      alert("temporary directory already exists:", tempDir);
-    }
-    return tempDir;
   }
 
   private void copyAndRename(File sourceFile, File targetDirectory) {

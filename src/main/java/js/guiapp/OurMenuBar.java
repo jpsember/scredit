@@ -86,15 +86,17 @@ public final class OurMenuBar {
   public JMenuItem addItem(String hotKeyId, String displayedName, UserOperation operation) {
     MenuItem menuItem = new MenuItem(displayedName, operation, mActiveMenu, mEventManager);
 
-    KeyboardShortcutManager mgr = mHotKeyManager;
-    HotKey hotKey = mgr.opt(hotKeyId);
-    if (hotKey != null) {
-      mgr.assignHotKeyToOperation(hotKeyId, hotKey);
-      menuItem.setAccelerator(KeyboardShortcutManager.compileKeystroke(hotKey));
-    } else {
-      alert("no hot key found with id:", hotKeyId);
+    if (!nullOrEmpty(hotKeyId)) {
+      KeyboardShortcutManager mgr = mHotKeyManager;
+      HotKey hotKey = mgr.opt(hotKeyId);
+      if (hotKey != null) {
+        mgr.assignHotKeyToOperation(hotKeyId, hotKey);
+        menuItem.setAccelerator(KeyboardShortcutManager.compileKeystroke(hotKey));
+      } else {
+        alert("no hot key found with id:", hotKeyId);
+      }
     }
-
+    
     if (mSeparatorPending) {
       mSeparatorPending = false;
       mActiveMenu.addSeparator();

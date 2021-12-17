@@ -67,8 +67,6 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
 
   @Override
   public boolean contains(int paddingPixels, IPoint pt) {
-    if (!alert("disabled for now") && !polygon().isWellDefined())
-      return false;
     IRect paddedBounds = bounds().withInset(-paddingPixels);
     return paddedBounds.contains(pt);
   }
