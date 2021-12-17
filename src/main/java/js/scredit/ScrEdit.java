@@ -621,14 +621,16 @@ public final class ScrEdit extends GUIApp {
 
     mEditorPanel = new EditorPanel(this, mUserEventManager);
     mInfoPanel = new InfoPanel(this);
-    mControlPanel = new JPanel() {
-      @Override
-      public Dimension getPreferredSize() {
-        todo("!this is a placeholder until there's an actual control panel");
-        return new IPoint(120, 40).toDimension();
-      }
-    };
-    mControlPanel.setBackground(Color.blue);
+    if (false) {
+      mControlPanel = new JPanel() {
+        @Override
+        public Dimension getPreferredSize() {
+          todo("!this is a placeholder until there's an actual control panel");
+          return new IPoint(120, 40).toDimension();
+        }
+      };
+      mControlPanel.setBackground(Color.blue);
+    }
 
     // Allow the control panel to occupy the full vertical height by putting it in its own panel
     {
@@ -636,7 +638,8 @@ public final class ScrEdit extends GUIApp {
       subPanel.add(mEditorPanel, BorderLayout.CENTER);
       parentPanel.add(subPanel, BorderLayout.CENTER);
     }
-    parentPanel.add(mControlPanel, BorderLayout.EAST);
+    if (mControlPanel != null)
+      parentPanel.add(mControlPanel, BorderLayout.EAST);
     parentPanel.add(mInfoPanel, BorderLayout.SOUTH);
     contentPane().add(parentPanel, BorderLayout.CENTER);
 
