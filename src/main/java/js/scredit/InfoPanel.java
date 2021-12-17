@@ -64,6 +64,9 @@ public class InfoPanel extends JPanel {
   }
 
   public void refresh() {
+    if (ScrEdit.ISSUE_14)
+      pr("InfoPanel.refresh");
+
     ScriptWrapper script = mEditor.currentScript();
 
     String scriptDisplay = "";
@@ -86,8 +89,10 @@ public class InfoPanel extends JPanel {
         }
       }
 
-      scriptDisplay = sb.toString();
+      if (ScrEdit.devMode())
+        sb.append(" !!! dev_features is TRUE !!!");
 
+      scriptDisplay = sb.toString();
     }
     mFilePath.setText(scriptDisplay);
   }

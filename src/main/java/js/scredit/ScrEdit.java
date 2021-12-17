@@ -54,6 +54,7 @@ import js.system.SystemUtil;
 
 public final class ScrEdit extends GUIApp {
 
+  public static final boolean ISSUE_14 = true && alert("ISSUE_14 logging");
   public static final boolean DISABLE_FLUSH_CHANGES = false && alert("Saving script changes is DISABLED");
 
   public static void main(String[] args) {
@@ -64,6 +65,31 @@ public final class ScrEdit extends GUIApp {
   public String getVersion() {
     return "1.0";
   }
+
+  // ------------------------------------------------------------------
+  // Development mode
+  // ------------------------------------------------------------------
+
+  /**
+   * Determine if we're in development mode. If so, it will generate alert and
+   * todo messages
+   */
+  public static boolean devMode() {
+    if (sDevModeFlag == null)
+      setDevMode(true);
+    return sDevModeFlag;
+  }
+
+  /**
+   * Set development mode. This can only be set once. If it hasn't been
+   * explicitly set, it will be set true when devMode() is first called
+   */
+  public static void setDevMode(boolean flag) {
+    checkState(sDevModeFlag == null || sDevModeFlag == flag, "dev mode flag already set");
+    sDevModeFlag = flag;
+  }
+
+  private static Boolean sDevModeFlag;
 
   // ------------------------------------------------------------------
   // Construction
@@ -348,6 +374,10 @@ public final class ScrEdit extends GUIApp {
     mFrame.setBounds(projectState().appFrame());
     updateTitle();
     discardMenuBar();
+
+    if (ISSUE_14)
+      pr("EditorPanel requesting focus");
+    mEditorPanel.requestFocus();
   }
 
   private void openAppropriateProject() {
