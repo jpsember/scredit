@@ -28,17 +28,15 @@ import java.io.File;
 import java.util.*;
 
 import js.base.BaseObject;
+import js.base.Pair;
 import js.data.DataUtil;
 import js.file.Files;
 import js.geometry.MyMath;
 import js.json.*;
 import js.scredit.gen.ProjectState;
-import js.graphics.ImgUtil;
 import js.graphics.ScriptUtil;
 
 import static js.base.Tools.*;
-
-import org.apache.commons.io.FileUtils;
 
 public final class Project extends BaseObject {
 
@@ -136,58 +134,24 @@ public final class Project extends BaseObject {
       badState("Illegal method for default project");
   }
 
-  private static String[] sFileExtImages = { ImgUtil.JPEG_EXT, "jpeg", ImgUtil.PNG_EXT, ImgUtil.RAX_EXT };
-  private static String[] sFileExtAnnotation = { Files.EXT_JSON };
-
   private void buildScriptList() {
-    ProjectState state = state();
-    Set<String> fileRootSet = hashSet();
+    List<Pair<String, String>> scriptFileList = ScriptUtil.buildScriptList(directory());
     List<ScriptWrapper> scripts = arrayList();
-    mScripts = scripts;
 
     if (ScrEdit.ISSUE_14)
       checkpoint("buildScriptList start");
-    for (File imageFile : FileUtils.listFiles(directory(), sFileExtImages, false)) {
-      File scriptFile = ScriptUtil.scriptPathForImage(imageFile);
-      ScriptWrapper script = new ScriptWrapper(scriptFile);
-      scripts.add(script);
-      fileRootSet.add(Files.removeExtension(imageFile.getName()));
-    }
-    if (ScrEdit.ISSUE_14)
-      checkpoint("read all image files and scripts");
 
-    if (!state.requireImages()) {
-      File annotDir = ScriptUtil.scriptDirForProject(directory());
-      if (annotDir.exists()) {
-        if (verbose())
-          log("looking for scripts in:", Files.infoMap(annotDir));
-        int logCount = 0;
-        if (ScrEdit.ISSUE_14)
-          checkpoint("reading scripts without images");
-        for (File scriptFile : FileUtils.listFiles(annotDir, sFileExtAnnotation, false)) {
-          String rootName = Files.basename(scriptFile);
-          if (logCount++ < 10)
-            log("reading script:", rootName);
-          if (!fileRootSet.add(rootName))
-            continue;
-          scripts.add(new ScriptWrapper(scriptFile));
-        }
-        if (ScrEdit.ISSUE_14)
-          checkpoint("done reading scripts without images");
-      }
-    }
+    File scriptsDirectory = ScriptUtil.scriptDirForProject(directory());
 
-    // Sort the scripts by filename 
-    if (ScrEdit.ISSUE_14)
-        checkpoint("sorting scripts");
-    scripts.sort(SCRIPT_NAME_COMPARATOR);
+    int logCount = 0;
+    for (Pair<String, String> entry : scriptFileList) {
+      File scriptFile = new File(scriptsDirectory, entry.second);
+      if (logCount++ < 10)
+        log("reading script:", entry.second);
+      scripts.add(new ScriptWrapper(scriptFile));
+    }
+    mScripts = scripts;
   }
-
-  private static final Comparator<ScriptWrapper> SCRIPT_NAME_COMPARATOR = (a, b) -> {
-    String na = Files.basename(a.scriptFile());
-    String nb = Files.basename(b.scriptFile());
-    return na.compareTo(nb);
-  };
 
   // ------------------------------------------------------------------
   // Project state
