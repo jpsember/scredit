@@ -28,6 +28,9 @@ import java.awt.FileDialog;
 import java.io.File;
 
 import javax.swing.JFrame;
+
+import js.file.Files;
+
 import static js.base.Tools.*;
 
 public final class SwingUtils {
@@ -36,8 +39,8 @@ public final class SwingUtils {
     FileDialog fileChooser = new FileDialog((JFrame) null, prompt, FileDialog.LOAD);
     // See: https://coderanch.com/t/645553/java/JFileChooser-Mac-OSX
     System.setProperty("apple.awt.fileDialogForDirectories", "true");
-    if (startDirOrNull != null)
-      fileChooser.setDirectory(startDirOrNull.getParent());
+    if (Files.nonEmpty(startDirOrNull))
+      fileChooser.setDirectory(startDirOrNull.getPath());
     fileChooser.setVisible(true);
     String filename = fileChooser.getFile();
     String directory = fileChooser.getDirectory();

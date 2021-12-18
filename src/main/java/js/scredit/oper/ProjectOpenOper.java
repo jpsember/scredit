@@ -26,6 +26,8 @@ package js.scredit.oper;
 
 import java.io.File;
 
+import static js.base.Tools.*;
+
 import js.file.Files;
 import js.guiapp.SwingUtils;
 import js.scredit.Project;
@@ -34,7 +36,10 @@ public class ProjectOpenOper extends EditorOper {
 
   @Override
   public void start() {
+    loadTools();
     File defaultDirectory = null;
+
+    // If there's an existing project or recent project, start requester in its parent directory
     Project project = editor().currentProject();
     if (project.defined())
       defaultDirectory = project.directory();
@@ -42,6 +47,10 @@ public class ProjectOpenOper extends EditorOper {
       // Use most recent project (if there is one)
       defaultDirectory = editor().recentProjects().getMostRecentFile();
     }
+
+    if (!Files.empty(defaultDirectory) && !defaultDirectory.isDirectory())
+      defaultDirectory = null;
+
     File file = SwingUtils.displayOpenDirectoryFileRequester(
         Files.empty(defaultDirectory) ? null : Files.parent(defaultDirectory), "Open Project");
     if (Files.empty(file))
