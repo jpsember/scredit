@@ -28,13 +28,13 @@ import java.io.File;
 import java.util.*;
 
 import js.base.BaseObject;
-import js.base.Pair;
 import js.data.DataUtil;
 import js.file.Files;
 import js.geometry.MyMath;
 import js.json.*;
 import js.scredit.gen.ProjectState;
 import js.graphics.ScriptUtil;
+import js.graphics.gen.ScriptFileEntry;
 
 import static js.base.Tools.*;
 
@@ -135,7 +135,7 @@ public final class Project extends BaseObject {
   }
 
   private void buildScriptList() {
-    List<Pair<String, String>> scriptFileList = ScriptUtil.buildScriptList(directory());
+    List<ScriptFileEntry> scriptFileList = ScriptUtil.buildScriptList(directory());
     List<ScriptWrapper> scripts = arrayList();
 
     if (ScrEdit.ISSUE_14)
@@ -144,10 +144,10 @@ public final class Project extends BaseObject {
     File scriptsDirectory = ScriptUtil.scriptDirForProject(directory());
 
     int logCount = 0;
-    for (Pair<String, String> entry : scriptFileList) {
-      File scriptFile = new File(scriptsDirectory, entry.second);
+    for (ScriptFileEntry entry : scriptFileList) {
+      File scriptFile = new File(scriptsDirectory, entry.scriptName());
       if (logCount++ < 10)
-        log("reading script:", entry.second);
+        log("reading script:", entry.scriptName());
       scripts.add(new ScriptWrapper(scriptFile));
     }
     mScripts = scripts;
