@@ -1,6 +1,7 @@
 {               ".version" : { "code" : 3 },
 "project_open" : { "code" : "O", "flags" : "c" },
 "project_close" : { "code" : "W", "flags" : "c" },
+"project_open_next" : {  "code" : "o","flags" : "cm"},
 
 "script_step_bwd" : {"code" : 37},
 "script_step_fwd" : {"code" : 39},
