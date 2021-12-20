@@ -264,7 +264,9 @@ public final class ScrEdit extends GUIApp {
     }));
     addItem("project_open_next", "Open Next", new OpenNextProjectOper());
     m.addSeparator();
-    addItem("", "Rename Scripts", new RenameScriptsOper());
+    if (false)
+      addItem("", "Rename Scripts", new RenameScriptsOper());
+    addItem("project_find_problems", "Find Problems", new FindProblemsOper());
   }
 
   private void addFileMenu(OurMenuBar m) {
