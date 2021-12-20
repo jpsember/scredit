@@ -50,7 +50,6 @@ public final class FindProblemsOper extends EditorOper {
     for (int i = 0; i < proj.scriptCount(); i++) {
       ScriptWrapper w = proj.script(i);
       mProbMap = null;
-      //mCurrScript = w.name();
 
       if (!w.hasImage()) {
         addProb("no image");
