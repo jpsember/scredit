@@ -39,6 +39,7 @@ import js.geometry.MyMath;
 import js.geometry.Polygon;
 import js.graphics.Paint;
 import js.graphics.PolygonElement;
+import js.graphics.PolygonSmoother;
 import js.graphics.ScriptElement;
 import js.graphics.ScriptUtil;
 import js.graphics.gen.ElementProperties;
@@ -50,6 +51,9 @@ import js.scredit.ScrEdit;
 import js.scredit.oper.PolygonEditOper;
 
 public final class EditablePolygonElement extends PolygonElement implements EditorElement {
+
+  public static final boolean SMOOTHING = true
+      && alert("Special handling while developing Catmull-Rom spline algorithm");
 
   public static final EditablePolygonElement DEFAULT_INSTANCE = new EditablePolygonElement(
       PolygonElement.DEFAULT_INSTANCE.properties(), PolygonElement.DEFAULT_INSTANCE.polygon(), false);
@@ -236,6 +240,19 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
       FRect bounds = panel.pushFocusOn(bounds().toRect());
       panel.renderCategory(this, bounds, appearance);
       panel.popFocus();
+    }
+
+    if (SMOOTHING) {
+      if (ScriptUtil.categoryOrZero(this) == 1) {
+        if (polygon().isClosed() && polygon().isWellDefined()) {
+          Polygon sm = new PolygonSmoother().withPolygon(polygon()).result();
+          last = sm.lastVertex();
+          for (IPoint pt : sm.vertices()) {
+            renderLine(panel, scale, last, pt, false);
+            last = pt;
+          }
+        }
+      }
     }
   }
 

@@ -111,7 +111,7 @@ public final class ScriptWrapper extends BaseObject {
    * Read a BufferedImage, with special treatment for .rax files
    */
   private static BufferedImage readImage(File file) {
-    if (!Files.getExtension(file).equals(ImgUtil.RAX_EXT))
+    if (!Files.getExtension(file).equals(ImgUtil.EXT_RAX))
       return ImgUtil.read(file);
 
     MonoImage monoImage = ImgUtil.readRax(Files.openInputStream(file));

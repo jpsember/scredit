@@ -415,6 +415,7 @@ public final class ScrEdit extends GUIApp {
   private void flushProject() {
     if (!currentProject().defined())
       return;
+    todo("Storing app frame location doesn't seem to be reliable");
     // Store the app frame location, in case it has changed
     projectState().appFrame(mFrame.bounds());
     currentProject().flush();
