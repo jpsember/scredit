@@ -245,7 +245,15 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
     if (SMOOTHING) {
       if (ScriptUtil.categoryOrZero(this) == 1) {
         if (polygon().isClosed() && polygon().isWellDefined()) {
-          Polygon sm = new PolygonSmoother().withPolygon(polygon()).result();
+
+          if (sSmoother == null) {
+            sSmoother = new PolygonSmoother() //
+                // .withTau(0.5f) // (This is the default)
+                .withStepSize(3) //
+                .withInsetDistance(40) //
+            ;
+          }
+          Polygon sm = sSmoother.withPolygon(polygon()).result();
           last = sm.lastVertex();
           for (IPoint pt : sm.vertices()) {
             renderLine(panel, scale, last, pt, false);
@@ -255,6 +263,8 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
       }
     }
   }
+
+  private static PolygonSmoother sSmoother;
 
   private void renderLine(EditorPanel panel, float scale, IPoint i1, IPoint i2, boolean withArrows) {
     FPoint p1 = i1.toFPoint();
