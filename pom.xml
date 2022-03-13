@@ -13,6 +13,9 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
+    <!-- Appends '&' to launch command -->
+    <run.background>true</run.background>
+
     <!--  Custom properties start {~properties:  -->
     <!--  Custom properties end   ~}             -->
 
