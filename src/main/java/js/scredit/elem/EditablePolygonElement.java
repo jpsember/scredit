@@ -247,17 +247,11 @@ public final class EditablePolygonElement extends PolygonElement implements Edit
         if (polygon().isClosed() && polygon().isWellDefined()) {
           if (sSmoother == null) {
             sSmoother = new PolygonSmoother();
-            if (false) {
-              sSmoother //
-                  .withCentripetalFactor(0.3f, 8)//
-              ;
-            } else {
-              sSmoother //
-                  .withTau(0.5f) // (This is the default)
-                  .withStepSize(3) //
-                  .withInsetDistance(40) //
-              ;
-            }
+            sSmoother //
+                .withTau(0.5f) // (This is the default)
+                .withStepSize(3) //
+                .withInsetDistance(40) //
+            ;
           }
           Polygon sm = sSmoother.withPolygon(polygon()).result();
           last = sm.lastVertex();

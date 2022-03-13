@@ -114,7 +114,7 @@ public final class ScriptWrapper extends BaseObject {
     if (!Files.getExtension(file).equals(ImgUtil.EXT_RAX))
       return ImgUtil.read(file);
 
-    MonoImage monoImage = ImgUtil.readRax(Files.openInputStream(file));
+    MonoImage monoImage = ImgUtil.readRax(file);
     ImageStats s = MonoImageUtil.generateStats(monoImage);
 
     int range = s.range();

@@ -104,7 +104,7 @@ public final class DefaultOper extends EditorOper implements UserEvent.Listener 
 
     int paddingPixels = editor().paddingPixels();
 
-    int slot = -1;
+    int slot = INIT_INDEX;
     for (EditorElement element : state.elements()) {
       slot++;
       if (!element.contains(paddingPixels, event.getWorldLocation()))

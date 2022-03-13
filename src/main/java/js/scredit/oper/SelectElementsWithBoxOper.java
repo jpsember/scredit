@@ -83,7 +83,7 @@ public class SelectElementsWithBoxOper extends EditorOper implements UserEvent.L
 
     ScriptEditState state = editor().state();
     IntArray.Builder slots = IntArray.newBuilder();
-    int slot = -1;
+    int slot = INIT_INDEX;
     for (EditorElement element : state.elements()) {
       slot++;
       if (r.contains(element.bounds())) {

@@ -156,7 +156,7 @@ public class EditableRectElement extends RectElement implements EditorElement {
           //
           Matrix tfm = Matrix.preMultiply(Matrix.getRotate(properties().rotation() * MyMath.M_DEG),
               Matrix.getTranslate(center));
-          j = -1;
+          j = INIT_INDEX;
           for (FPoint pt : sDiscPoints) {
             j++;
             sViewPoints[j] = tfm.apply(pt);

@@ -37,7 +37,6 @@ import static js.base.Tools.*;
 
 import js.base.BaseObject;
 import js.data.DataUtil;
-import js.file.Files;
 import js.json.JSList;
 import js.json.JSMap;
 import js.parsing.RegExp;
@@ -173,7 +172,7 @@ public final class KeyboardShortcutManager extends BaseObject {
   }
 
   private void parseRegistry() {
-    JSMap json = new JSMap(Files.readString(this.getClass(), "key_shortcut_defaults.json"));
+    JSMap json = JSMap.fromResource(this.getClass(), "key_shortcut_defaults.json");
     log("parsing hot keys from map:", INDENT, json);
     for (String key : json.keySet()) {
       JSMap m = json.getMap(key);

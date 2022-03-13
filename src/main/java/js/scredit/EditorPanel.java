@@ -170,7 +170,7 @@ public class EditorPanel extends JPanel implements UserEventSource, MouseListene
     int filterCursor = 0;
     {
       ScriptEditState state = mEditor.state();
-      int slot = -1;
+      int slot = INIT_INDEX;
       for (EditorElement element : state.elements()) {
         slot++;
         boolean selected = IntArray.with(state.selectedElements()).contains(slot);

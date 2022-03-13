@@ -124,7 +124,7 @@ public class MergePoly extends BaseObject {
 
   private Pair<Integer, Float> closestVertex(IPoint target, IPoint[] vertices) {
     Pair<Integer, Float> best = null;
-    int i = -1;
+    int i = INIT_INDEX;
     for (IPoint v : vertices) {
       i++;
       float dist = MyMath.distanceBetween(target, v);
