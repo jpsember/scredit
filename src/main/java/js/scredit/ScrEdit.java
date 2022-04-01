@@ -415,7 +415,6 @@ public final class ScrEdit extends GUIApp {
   private void flushProject() {
     if (!currentProject().defined())
       return;
-    todo("Storing app frame location doesn't seem to be reliable");
     // Store the app frame location, in case it has changed
     projectState().appFrame(mFrame.bounds());
     currentProject().flush();
@@ -454,7 +453,6 @@ public final class ScrEdit extends GUIApp {
         continue;
       }
       EditorElement elem = parser.toEditorElement(element);
-      todo("!get rid of validation if no longer required");
       EditorElement validatedElement = elem.validate();
       if (validatedElement == null) {
         pr("*** failed to validate element:", INDENT, elem);

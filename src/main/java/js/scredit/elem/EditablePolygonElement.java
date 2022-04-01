@@ -52,7 +52,7 @@ import js.scredit.oper.PolygonEditOper;
 
 public final class EditablePolygonElement extends PolygonElement implements EditorElement {
 
-  public static final boolean SMOOTHING = true
+  public static final boolean SMOOTHING = false
       && alert("Special handling while developing Catmull-Rom spline algorithm");
 
   public static final EditablePolygonElement DEFAULT_INSTANCE = new EditablePolygonElement(
