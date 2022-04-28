@@ -37,9 +37,6 @@ import js.base.BaseObject;
 import js.file.Files;
 import js.json.*;
 import js.scredit.gen.RecentFilesList;
-import js.guiapp.Enableable;
-import js.guiapp.UserEventManager;
-import js.guiapp.UserOperation;
 
 import static js.base.Tools.*;
 

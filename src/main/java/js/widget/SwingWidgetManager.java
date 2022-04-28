@@ -41,12 +41,6 @@ import static js.base.Tools.*;
 import js.data.DataUtil;
 import js.geometry.IPoint;
 import js.geometry.MyMath;
-import js.widget.Grid;
-import js.widget.GridCell;
-import js.widget.NumericStepper;
-import js.widget.WidgetManager;
-import js.widget.SymbolicNameSet;
-import js.widget.Widget;
 import static js.widget.SwingUtils.*;
 
 /**

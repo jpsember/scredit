@@ -38,7 +38,6 @@ public final class Grid {
     mFree = free;
   }
 
-  @SuppressWarnings("unchecked")
   public <T extends Widget> T widget() {
     return (T) mWidget;
   }

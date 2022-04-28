@@ -33,7 +33,6 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import js.graphics.Paint;
-import js.widget.WidgetManager;
 import static js.base.Tools.*;
 
 public class SwingUtils {

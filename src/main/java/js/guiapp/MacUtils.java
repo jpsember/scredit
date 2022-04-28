@@ -24,36 +24,43 @@
  **/
 package js.guiapp;
 
-import java.awt.image.BufferedImage;
-
-import com.apple.eawt.*;
 
 import static js.base.Tools.*;
 
-import js.file.Files;
-import js.graphics.ImgUtil;
+//import js.file.Files;
+//import js.graphics.ImgUtil;
+//import java.awt.image.BufferedImage;
+//import com.apple.eawt.*;
 
 public final class MacUtils {
+
+  public static final boolean DISABLED = alert("MacUtils disabled; see issue #20");
 
   /**
    * Connect 'quit program' verification code to the system-generated
    * application menu
    */
   public static void setQuitHandler(GUIApp guiApp) {
+
     loadTools();
-    Application app = Application.getApplication();
-    app.disableSuddenTermination();
-    app.setQuitHandler((quitEvent, quitResponse) -> {
-      if (guiApp.requestProgramExit())
-        quitResponse.performQuit();
-      else
-        quitResponse.cancelQuit();
-    });
+
+    if (!DISABLED) {
+      //      Application app = Application.getApplication();
+      //      app.disableSuddenTermination();
+      //      app.setQuitHandler((quitEvent, quitResponse) -> {
+      //        if (guiApp.requestProgramExit())
+      //          quitResponse.performQuit();
+      //        else
+      //          quitResponse.cancelQuit();
+      //      });
+    }
   }
 
   public static void setDockIcon() {
-    BufferedImage iconImage = ImgUtil.read(Files.openResource(MacUtils.class, "dock_icon.png"));
-    Application.getApplication().setDockIconImage(iconImage);
+    if (!DISABLED) {
+      //      BufferedImage iconImage = ImgUtil.read(Files.openResource(MacUtils.class, "dock_icon.png"));
+      //      Application.getApplication().setDockIconImage(iconImage);
+    }
   }
 
   public static void useScreenMenuBar() {

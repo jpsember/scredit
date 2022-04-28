@@ -38,7 +38,6 @@ public abstract class Widget {
     mKey = key;
   }
 
-  @SuppressWarnings("unchecked")
   public final <T extends WidgetManager> T manager() {
     return (T) mManager;
   }
@@ -111,11 +110,11 @@ public abstract class Widget {
   }
 
   public void setEnabled(boolean enabled) {
-    todo("setEnabled not implemented for:" , className());
+    todo("setEnabled not implemented for:", className());
   }
 
   public void setVisible(boolean visible) {
-    todo("setVisible not implemented for:" , className());
+    todo("setVisible not implemented for:", className());
   }
 
   public void doClick() {

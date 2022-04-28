@@ -29,9 +29,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JComponent;
 
-import js.widget.Widget;
-import js.widget.WidgetManager;
-
 /**
  * Subclass of Widget for Swing platforms
  */
@@ -55,7 +52,6 @@ public class SwingWidget extends Widget implements ActionListener {
     return mWrappedComponent;
   }
 
-  @SuppressWarnings("unchecked")
   public final <T extends JComponent> T swingComponent() {
     return (T) component();
   }
