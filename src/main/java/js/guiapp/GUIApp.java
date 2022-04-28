@@ -24,40 +24,27 @@
  **/
 package js.guiapp;
 
-import static js.base.Tools.*;
-
 import javax.swing.SwingUtilities;
 
 import js.app.App;
+import js.system.SystemUtil;
 
 public abstract class GUIApp extends App {
 
-  // ------------------------------------------------------------------
-  // Startup
-  // ------------------------------------------------------------------
-
-  public void startGUI() {
-    loadTools();
-    MacUtils.setDockIcon();
+  /**
+   * 
+   * @param createAndShowGUIMethod
+   *          method to call from Swing thread to construct the GUI and show it
+   */
+  public void startGUI(Runnable createAndShowGUIMethod) {
+    SystemUtil.setConsoleAppFlag(false);
 
     // Start app within Swing thread
     //
     SwingUtilities.invokeLater(() -> {
       SwingUtils.setEventDispatchThread();
-      MacUtils.useScreenMenuBar();
-      createAndShowGUI();
+      createAndShowGUIMethod.run();
     });
   }
-
-  /**
-   * Called from Swing thread to construct UI components within app's JFrame
-   */
-  public abstract void createAndShowGUI();
-
-  /**
-   * Handle a request to quit the application. Return true if allowed, false if
-   * cancelled for some reason
-   */
-  public abstract boolean requestProgramExit();
 
 }

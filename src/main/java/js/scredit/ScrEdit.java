@@ -97,7 +97,7 @@ public final class ScrEdit extends GUIApp {
 
   private ScrEdit() {
     setDevMode(AppDefaults.sharedInstance().read().devFeatures());
-    //alertVerbose();
+    setName("scredit");
   }
 
   @Override
@@ -105,20 +105,13 @@ public final class ScrEdit extends GUIApp {
     registerOper(new ScrEditOper());
   }
 
-  @Override
-  public void createAndShowGUI() {
+  private void createAndShowGUI() {
     mUserEventManager = new UserEventManager(new DefaultOper().setEditor(this));
     mUserEventManager.setListener(this::processUserEvent);
     mKeyboardShortcutManager = new KeyboardShortcutManager();
     createFrame();
     openAppropriateProject();
     startPeriodicBackgroundTask();
-  }
-
-  @Override
-  public boolean requestProgramExit() {
-    stopPeriodicBackgroundTask();
-    return true;
   }
 
   /**
@@ -161,14 +154,12 @@ public final class ScrEdit extends GUIApp {
         SystemUtil.killProcesses("js.scredit");
         SystemUtil.killAfterDelay("js.scredit");
       }
-      startGUI();
+      startGUI(() -> createAndShowGUI());
     }
 
     @Override
     protected List<Object> getAdditionalArgs() {
-      todo(
-          "!Issue #25: These additional args are displayed in a strange location, maybe because there's only a single oper");
-      return arrayList("[ <project directory> ]");
+      return arrayList("[<project directory>]");
     }
 
     @Override
@@ -239,7 +230,6 @@ public final class ScrEdit extends GUIApp {
     mKeyboardShortcutManager.clearAssignedOperationList();
     OurMenuBar m = new OurMenuBar(mUserEventManager, mKeyboardShortcutManager);
     mMenuBar = m;
-    MacUtils.setQuitHandler(this);
     addProjectMenu(m);
     if (currentProject().definedAndNonEmpty()) {
       addFileMenu(m);
@@ -375,7 +365,7 @@ public final class ScrEdit extends GUIApp {
 
     replaceCurrentScriptWith(currentProject().script());
 
-    todo("!restore panel visibilities, etc according to project");
+    // TODO: restore panel visibilities, etc according to project
     mFrame.setBounds(projectState().appFrame());
     updateTitle();
     discardMenuBar();
@@ -673,11 +663,6 @@ public final class ScrEdit extends GUIApp {
   private void startPeriodicBackgroundTask() {
     mSwingTasks = new SwingTaskManager();
     mSwingTasks.addTask(() -> swingBackgroundTask()).start();
-  }
-
-  private void stopPeriodicBackgroundTask() {
-    mSwingTasks.stop();
-    mSwingTasks = null;
   }
 
   private void swingBackgroundTask() {
