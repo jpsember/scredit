@@ -40,6 +40,8 @@ import static js.base.Tools.*;
 
 public final class Project extends BaseObject {
 
+  public static final boolean SCREDIT_PROB = false && alert("investigating ScrEdit problem");
+
   public static final Project DEFAULT_INSTANCE = new Project();
 
   private Project() {
@@ -146,6 +148,9 @@ public final class Project extends BaseObject {
     int logCount = 0;
     for (ScriptFileEntry entry : scriptFileList) {
       File scriptFile = new File(scriptsDirectory, entry.scriptName());
+      if (SCREDIT_PROB) {
+        pr("reading:", scripts.size(), entry.scriptName());
+      }
       if (logCount++ < 10)
         log("reading script:", entry.scriptName());
       scripts.add(new ScriptWrapper(scriptFile));

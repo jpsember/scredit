@@ -102,7 +102,8 @@ public final class ScriptWrapper extends BaseObject {
    */
   public BufferedImage image() {
     BufferedImage image = sImageCache.get(imageFile());
-    if (image == null)
+    if (image == null || Project.SCREDIT_PROB //
+        )
       image = sImageCache.put(imageFile(), readImage(imageFile()));
     return image;
   }

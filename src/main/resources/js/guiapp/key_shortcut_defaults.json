@@ -32,6 +32,8 @@
 "curve_add2" : {"code" : 65 },
 "rotation_toggle" : {"code" : 82, "flags" : "c" },
 
+"yolo_merge" : {"code" : "y", "flags" : "cm" },
+
 "cut" : {"code" : 88, "flags" : "c"},
 "copy" : {"code" : 67, "flags" : "c"},
 "paste" : {"code" : 86, "flags" : "c"},

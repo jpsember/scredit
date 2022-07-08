@@ -38,7 +38,7 @@ public class CopyOper extends CommandOper {
     ScriptEditState.Builder es = b.newState().toBuilder();
     if (es.selectedElements().length == 0)
       return false;
-    StateTools.setDescriptionForSelected(b, "Copy", es.selectedElements().length);
+    StateTools.setDescriptionForSelected(b, "YoloMerge", es.selectedElements().length);
     b.newState(es.clipboard(StateTools.subsetOfElements(es.elements(), es.selectedElements())));
     return true;
   }
