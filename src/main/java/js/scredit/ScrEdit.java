@@ -108,7 +108,7 @@ public final class ScrEdit extends GUIApp {
   private void createAndShowGUI() {
     mUserEventManager = new UserEventManager(new DefaultOper().setEditor(this));
     mUserEventManager.setListener(this::processUserEvent);
-    mKeyboardShortcutManager = new KeyboardShortcutManager();
+    mKeyboardShortcutManager = new KeyboardShortcutManager(this.getClass());
     createFrame();
     openAppropriateProject();
     startPeriodicBackgroundTask();
