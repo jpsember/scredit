@@ -1,4 +1,0 @@
-fields {
-  int code;          // VK_xxx
-  string modifiers;  // String containing zero or more of "acms"
-}

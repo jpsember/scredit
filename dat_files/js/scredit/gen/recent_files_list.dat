@@ -1,4 +1,0 @@
-fields {
-  bool active;
-  *File files;
-}
