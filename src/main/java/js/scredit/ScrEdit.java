@@ -101,8 +101,8 @@ public final class ScrEdit extends GUIApp {
   }
 
   @Override
-  protected void registerOperations() {
-    registerOper(new ScrEditOper());
+  protected AppOper constructAppOper() {
+    return new ScrEditOper();
   }
 
   private void createAndShowGUI() {
@@ -303,8 +303,8 @@ public final class ScrEdit extends GUIApp {
       addItem("curve_add", "Add Curve", oper);
       addItem("curve_add2", "Add Curve (2)", oper);
     }
-    
-    addItem("yolo_merge", "Yolo Merge",new NonMaxSuppressOper());
+
+    addItem("yolo_merge", "Yolo Merge", new NonMaxSuppressOper());
   }
 
   private void addViewMenu(OurMenuBar m) {
