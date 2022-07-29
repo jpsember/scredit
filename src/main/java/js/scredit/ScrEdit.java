@@ -45,6 +45,7 @@ import js.graphics.Paint;
 import js.graphics.ScriptElement;
 import js.graphics.gen.Script;
 import js.guiapp.*;
+import js.json.JSMap;
 import js.scredit.gen.Command;
 import js.scredit.gen.ProjectState;
 import js.scredit.gen.ScreditConfig;
@@ -105,9 +106,12 @@ public final class ScrEdit extends GUIApp {
   }
 
   @Override
+  public JSMap getKeyboardShortcutRegistry() {
+    return JSMap.fromResource(this.getClass(), "key_shortcut_defaults.json");
+  }
+
+  @Override
   public void createAndShowGUI() {
-    todo("Move event manager, keyboard shortcut manager into GUIApp");
-    mKeyboardShortcutManager = new KeyboardShortcutManager(this.getClass());
     createFrame();
     openAppropriateProject();
     startPeriodicBackgroundTask();
@@ -122,8 +126,6 @@ public final class ScrEdit extends GUIApp {
   private boolean requestWindowClose() {
     return true;
   }
-
-  private KeyboardShortcutManager mKeyboardShortcutManager;
 
   @Override
   public AbstractData defaultArgs() {
@@ -206,9 +208,9 @@ public final class ScrEdit extends GUIApp {
   private void createMenuBarIfNec() {
     if (mMenuBar != null)
       return;
-
-    mKeyboardShortcutManager.clearAssignedOperationList();
-    OurMenuBar m = new OurMenuBar( UserEventManager.sharedInstance(), mKeyboardShortcutManager);
+    KeyboardShortcutManager.sharedInstance().clearAssignedOperationList();
+    OurMenuBar m = new OurMenuBar(UserEventManager.sharedInstance(),
+        KeyboardShortcutManager.sharedInstance());
     mMenuBar = m;
     addProjectMenu(m);
     if (currentProject().definedAndNonEmpty()) {
@@ -226,12 +228,13 @@ public final class ScrEdit extends GUIApp {
     m.addMenu("Project");
     addItem("project_open", "Open", new ProjectOpenOper());
     addItem("project_close", "Close", new ProjectCloseOper());
-    mMenuBar.addSubMenu(recentProjects().constructMenu("Open Recent", UserEventManager.sharedInstance(), new UserOperation() {
-      @Override
-      public void start() {
-        openProject(recentProjects().getCurrentFile());
-      }
-    }));
+    mMenuBar.addSubMenu(
+        recentProjects().constructMenu("Open Recent", UserEventManager.sharedInstance(), new UserOperation() {
+          @Override
+          public void start() {
+            openProject(recentProjects().getCurrentFile());
+          }
+        }));
     addItem("project_open_next", "Open Next", new OpenNextProjectOper());
     m.addSeparator();
     if (false)
@@ -539,7 +542,7 @@ public final class ScrEdit extends GUIApp {
   public void userEventManagerListener(UserEvent event) {
     // Avoid repainting if default operation and just a mouse move
     // (though later we may want to render the mouse's position in an info box)
-    int repaintFlags =  UserEventManager.sharedInstance().getOperation().repaintRequiredFlags(event);
+    int repaintFlags = UserEventManager.sharedInstance().getOperation().repaintRequiredFlags(event);
     if (repaintFlags != 0)
       performRepaint(repaintFlags);
   }
@@ -594,7 +597,7 @@ public final class ScrEdit extends GUIApp {
     JPanel parentPanel = new JPanel(new BorderLayout());
     mComponentsContainer = parentPanel;
 
-    mEditorPanel = new EditorPanel(this,  UserEventManager.sharedInstance());
+    mEditorPanel = new EditorPanel(this, UserEventManager.sharedInstance());
     mInfoPanel = new InfoPanel(this);
     if (false) {
       mControlPanel = new JPanel() {
