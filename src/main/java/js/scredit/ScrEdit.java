@@ -38,7 +38,7 @@ import java.util.List;
 
 import javax.swing.*;
 
-import js.app.AppOper;
+import js.data.AbstractData;
 import js.file.Files;
 import js.geometry.IPoint;
 import js.graphics.Paint;
@@ -50,7 +50,6 @@ import js.scredit.gen.ProjectState;
 import js.scredit.gen.ScreditConfig;
 import js.scredit.gen.ScriptEditState;
 import js.scredit.oper.*;
-import js.system.SystemUtil;
 
 public final class ScrEdit extends GUIApp {
 
@@ -101,11 +100,8 @@ public final class ScrEdit extends GUIApp {
   }
 
   @Override
-  protected AppOper constructAppOper() {
-    return new ScrEditOper();
-  }
-
-  private void createAndShowGUI() {
+  public void createAndShowGUI() {
+    todo("Move event manager, keyboard shortcut manager into GUIApp");
     mUserEventManager = new UserEventManager(new DefaultOper().setEditor(this));
     mUserEventManager.setListener(this::processUserEvent);
     mKeyboardShortcutManager = new KeyboardShortcutManager(this.getClass());
@@ -127,45 +123,27 @@ public final class ScrEdit extends GUIApp {
   private UserEventManager mUserEventManager;
   private KeyboardShortcutManager mKeyboardShortcutManager;
 
-  // ------------------------------------------------------------------
-  // AppOper implementation
-  // ------------------------------------------------------------------
-  private class ScrEditOper extends AppOper {
+  @Override
+  public AbstractData defaultArgs() {
+    return ScreditConfig.DEFAULT_INSTANCE;
+  }
 
-    @Override
-    public String userCommand() {
-      return null;
+  @Override
+  public void processOptionalArgs() {
+    if (cmdLineArgs().hasNextArg()) {
+      mStartProjectFile = new File(cmdLineArgs().nextArg());
+      log(DASHES, "set start project:", INDENT, mStartProjectFile, VERT_SP);
     }
+  }
 
-    @Override
-    public ScreditConfig defaultArgs() {
-      return ScreditConfig.DEFAULT_INSTANCE;
-    }
+  @Override
+  public List<Object> getOptionalArgDescriptions() {
+    return arrayList("[<project directory>]");
+  }
 
-    @Override
-    public void perform() {
-      if (cmdLineArgs().hasNextArg()) {
-        mStartProjectFile = new File(cmdLineArgs().nextArg());
-        log(DASHES, "set start project:", INDENT, mStartProjectFile, VERT_SP);
-      }
-      if (cmdLineArgs().hasNextArg())
-        throw badArg("Unexpected argument(s):", cmdLineArgs().peekNextArg());
-      if (devMode()) {
-        SystemUtil.killProcesses("js.scredit");
-        SystemUtil.killAfterDelay("js.scredit");
-      }
-      startGUI(() -> createAndShowGUI());
-    }
-
-    @Override
-    protected List<Object> getAdditionalArgs() {
-      return arrayList("[<project directory>]");
-    }
-
-    @Override
-    protected String getHelpDescription() {
-      return "Graphics script editor";
-    }
+  @Override
+  protected String getProcessExpression() {
+    return "js.scredit";
   }
 
   private File mStartProjectFile = Files.DEFAULT;
