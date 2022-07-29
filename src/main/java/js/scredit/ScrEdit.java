@@ -100,10 +100,13 @@ public final class ScrEdit extends GUIApp {
   }
 
   @Override
+  public UserOperation getDefaultUserOperation() {
+    return new DefaultOper().setEditor(this);
+  }
+
+  @Override
   public void createAndShowGUI() {
     todo("Move event manager, keyboard shortcut manager into GUIApp");
-    mUserEventManager = new UserEventManager(new DefaultOper().setEditor(this));
-    mUserEventManager.setListener(this::processUserEvent);
     mKeyboardShortcutManager = new KeyboardShortcutManager(this.getClass());
     createFrame();
     openAppropriateProject();
@@ -120,7 +123,6 @@ public final class ScrEdit extends GUIApp {
     return true;
   }
 
-  private UserEventManager mUserEventManager;
   private KeyboardShortcutManager mKeyboardShortcutManager;
 
   @Override
@@ -206,7 +208,7 @@ public final class ScrEdit extends GUIApp {
       return;
 
     mKeyboardShortcutManager.clearAssignedOperationList();
-    OurMenuBar m = new OurMenuBar(mUserEventManager, mKeyboardShortcutManager);
+    OurMenuBar m = new OurMenuBar( UserEventManager.sharedInstance(), mKeyboardShortcutManager);
     mMenuBar = m;
     addProjectMenu(m);
     if (currentProject().definedAndNonEmpty()) {
@@ -224,7 +226,7 @@ public final class ScrEdit extends GUIApp {
     m.addMenu("Project");
     addItem("project_open", "Open", new ProjectOpenOper());
     addItem("project_close", "Close", new ProjectCloseOper());
-    mMenuBar.addSubMenu(recentProjects().constructMenu("Open Recent", mUserEventManager, new UserOperation() {
+    mMenuBar.addSubMenu(recentProjects().constructMenu("Open Recent", UserEventManager.sharedInstance(), new UserOperation() {
       @Override
       public void start() {
         openProject(recentProjects().getCurrentFile());
@@ -506,7 +508,7 @@ public final class ScrEdit extends GUIApp {
 
   public void perform(CommandOper oper) {
     oper.setEditor(this);
-    mUserEventManager.perform(oper);
+    UserEventManager.sharedInstance().perform(oper);
   }
 
   /**
@@ -533,10 +535,11 @@ public final class ScrEdit extends GUIApp {
   public static final int REPAINT_INFO = (1 << 1);
   public static final int REPAINT_ALL = ~0;
 
-  private void processUserEvent(UserEvent event) {
+  @Override
+  public void userEventManagerListener(UserEvent event) {
     // Avoid repainting if default operation and just a mouse move
     // (though later we may want to render the mouse's position in an info box)
-    int repaintFlags = mUserEventManager.getOperation().repaintRequiredFlags(event);
+    int repaintFlags =  UserEventManager.sharedInstance().getOperation().repaintRequiredFlags(event);
     if (repaintFlags != 0)
       performRepaint(repaintFlags);
   }
@@ -591,7 +594,7 @@ public final class ScrEdit extends GUIApp {
     JPanel parentPanel = new JPanel(new BorderLayout());
     mComponentsContainer = parentPanel;
 
-    mEditorPanel = new EditorPanel(this, mUserEventManager);
+    mEditorPanel = new EditorPanel(this,  UserEventManager.sharedInstance());
     mInfoPanel = new InfoPanel(this);
     if (false) {
       mControlPanel = new JPanel() {

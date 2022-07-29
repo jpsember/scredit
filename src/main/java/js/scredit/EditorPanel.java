@@ -53,6 +53,7 @@ public class EditorPanel extends JPanel implements UserEventSource, MouseListene
 
   public EditorPanel(ScrEdit editor, UserEventManager eventManager) {
     loadTools();
+    todo("event manager can be singleton");
     setBackground(new Color(185, 201, 179));
     mEditor = editor;
     mUserEventManager = eventManager;
