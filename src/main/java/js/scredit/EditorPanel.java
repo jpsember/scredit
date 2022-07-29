@@ -51,13 +51,10 @@ import static js.base.Tools.*;
 
 public class EditorPanel extends JPanel implements UserEventSource, MouseListener, MouseMotionListener {
 
-  public EditorPanel(ScrEdit editor, UserEventManager eventManager) {
+  public EditorPanel(ScrEdit editor) {
     loadTools();
-    todo("event manager can be singleton");
     setBackground(new Color(185, 201, 179));
     mEditor = editor;
-    mUserEventManager = eventManager;
-
     addMouseListener(this);
     addMouseMotionListener(this);
   }
@@ -162,7 +159,7 @@ public class EditorPanel extends JPanel implements UserEventSource, MouseListene
       g.drawRect(0, 0, imageSize.x, imageSize.y);
     }
 
-    UserOperation op = mUserEventManager.getOperation();
+    UserOperation op = UserEventManager.sharedInstance().getOperation();
 
     // If no filter is specified, render nominally, but with selected items as selected.
     // Otherwise, non-selected items are rendered disabled.
@@ -199,16 +196,10 @@ public class EditorPanel extends JPanel implements UserEventSource, MouseListene
   // ------------------------------------------------------------------
 
   @Override
-  public UserEventManager getManager() {
-    return mUserEventManager;
-  }
-
-  @Override
   public IPoint viewToWorld(IPoint viewPt) {
     return mViewToWorldTransform.apply(viewPt);
   }
 
-  private final UserEventManager mUserEventManager;
   private final ScrEdit mEditor;
 
   // ------------------------------------------------------------------
@@ -271,12 +262,12 @@ public class EditorPanel extends JPanel implements UserEventSource, MouseListene
     if (ScrEdit.devMode()) {
       // Note: this doesn't display stack traces in Eclipse in a way that supports clicking
       try {
-        getManager().processUserEvent(event);
+        UserEventManager.sharedInstance().processUserEvent(event);
       } catch (Throwable t) {
         haltProgram(t);
       }
     } else
-      getManager().processUserEvent(event);
+      UserEventManager.sharedInstance().processUserEvent(event);
   }
 
   // ------------------------------------------------------------------

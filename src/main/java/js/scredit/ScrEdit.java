@@ -209,8 +209,7 @@ public final class ScrEdit extends GUIApp {
     if (mMenuBar != null)
       return;
     KeyboardShortcutManager.sharedInstance().clearAssignedOperationList();
-    OurMenuBar m = new OurMenuBar(UserEventManager.sharedInstance(),
-        KeyboardShortcutManager.sharedInstance());
+    OurMenuBar m = new OurMenuBar(KeyboardShortcutManager.sharedInstance());
     mMenuBar = m;
     addProjectMenu(m);
     if (currentProject().definedAndNonEmpty()) {
@@ -597,7 +596,7 @@ public final class ScrEdit extends GUIApp {
     JPanel parentPanel = new JPanel(new BorderLayout());
     mComponentsContainer = parentPanel;
 
-    mEditorPanel = new EditorPanel(this, UserEventManager.sharedInstance());
+    mEditorPanel = new EditorPanel(this);
     mInfoPanel = new InfoPanel(this);
     if (false) {
       mControlPanel = new JPanel() {
