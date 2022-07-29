@@ -209,7 +209,7 @@ public final class ScrEdit extends GUIApp {
     if (mMenuBar != null)
       return;
     KeyboardShortcutManager.sharedInstance().clearAssignedOperationList();
-    OurMenuBar m = new OurMenuBar(KeyboardShortcutManager.sharedInstance());
+    OurMenuBar m = new OurMenuBar();
     mMenuBar = m;
     addProjectMenu(m);
     if (currentProject().definedAndNonEmpty()) {
