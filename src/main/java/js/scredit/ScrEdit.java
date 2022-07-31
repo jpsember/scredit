@@ -28,10 +28,7 @@ import static js.base.Tools.*;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,18 +109,15 @@ public final class ScrEdit extends GUIApp {
 
   @Override
   public void createAndShowGUI() {
-    createFrame();
+    //    createFrame();
     openAppropriateProject();
     startPeriodicBackgroundTask();
   }
 
-  /**
-   * Process request to close current window; return true if window should be
-   * closed
-   * 
-   * TODO: clean this up; i.e. how does this relate to exitProgram()?
-   */
-  private boolean requestWindowClose() {
+  @Override
+  public boolean requestWindowClose() {
+    pr("requestWindowClose called");
+    todo("should call this on Quit menu item as well");
     return true;
   }
 
@@ -152,37 +146,37 @@ public final class ScrEdit extends GUIApp {
 
   private File mStartProjectFile = Files.DEFAULT;
 
-  // ------------------------------------------------------------------
-  // Frame
-  // ------------------------------------------------------------------
+  //  // ------------------------------------------------------------------
+  //  // Frame
+  //  // ------------------------------------------------------------------
+  //
+  //  private void createFrame() {
+  //    mFrame = new OurAppFrame();
+  //
+  //    JFrame jFrame = mFrame.frame();
+  //
+  //    // Handle close window requests ourselves
+  //    //
+  //    jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+  //    jFrame.addWindowListener(new WindowAdapter() {
+  //      @Override
+  //      public void windowClosing(WindowEvent e) {
+  //        if (requestWindowClose()) {
+  //          closeProject();
+  //          jFrame.setVisible(false);
+  //          jFrame.dispose();
+  //          mFrame = null;
+  //        }
+  //      }
+  //    });
+  //    jFrame.setVisible(true);
+  //  }
+  //
+  //  private OurAppFrame mFrame;
 
-  private void createFrame() {
-    mFrame = new OurAppFrame();
-
-    JFrame jFrame = mFrame.frame();
-
-    // Handle close window requests ourselves
-    //
-    jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    jFrame.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(WindowEvent e) {
-        if (requestWindowClose()) {
-          closeProject();
-          jFrame.setVisible(false);
-          jFrame.dispose();
-          mFrame = null;
-        }
-      }
-    });
-    jFrame.setVisible(true);
-  }
-
-  private OurAppFrame mFrame;
-
-  public void setMouseCursor(int type) {
-    if (mFrame != null)
-      mFrame.frame().setCursor(Cursor.getPredefinedCursor(type));
+  @Override
+  public void prepareForProgramQuit() {
+    closeProject();
   }
 
   public int paddingPixels() {
@@ -201,16 +195,8 @@ public final class ScrEdit extends GUIApp {
   // Menu bar
   // ------------------------------------------------------------------
 
-  private void discardMenuBar() {
-    mMenuBar = null;
-  }
-
-  private void createMenuBarIfNec() {
-    if (mMenuBar != null)
-      return;
-    KeyboardShortcutManager.sharedInstance().clearAssignedOperationList();
-    OurMenuBar m = new OurMenuBar();
-    mMenuBar = m;
+  @Override
+  public void populateMenuBar(OurMenuBar m) {
     addProjectMenu(m);
     if (currentProject().definedAndNonEmpty()) {
       addFileMenu(m);
@@ -218,16 +204,34 @@ public final class ScrEdit extends GUIApp {
       addViewMenu(m);
       addCategoryMenu(m);
     }
-    mFrame.frame().setJMenuBar(m.jmenuBar());
   }
-
-  private OurMenuBar mMenuBar;
+  //  private void discardMenuBar() {
+  //    mMenuBar = null;
+  //  }
+  //
+  //  private void createMenuBarIfNec() {
+  //    if (mMenuBar != null)
+  //      return;
+  //    KeyboardShortcutManager.sharedInstance().clearAssignedOperationList();
+  //    OurMenuBar m = new OurMenuBar();
+  //    mMenuBar = m;
+  //    addProjectMenu(m);
+  //    if (currentProject().definedAndNonEmpty()) {
+  //      addFileMenu(m);
+  //      addEditMenu(m);
+  //      addViewMenu(m);
+  //      addCategoryMenu(m);
+  //    }
+  //    mFrame.frame().setJMenuBar(m.jmenuBar());
+  //  }
+  //
+  //  private OurMenuBar mMenuBar;
 
   private void addProjectMenu(OurMenuBar m) {
     m.addMenu("Project");
     addItem("project_open", "Open", new ProjectOpenOper());
     addItem("project_close", "Close", new ProjectCloseOper());
-    mMenuBar.addSubMenu(
+    m.addSubMenu(
         recentProjects().constructMenu("Open Recent", UserEventManager.sharedInstance(), new UserOperation() {
           @Override
           public void start() {
@@ -302,13 +306,14 @@ public final class ScrEdit extends GUIApp {
       m.addItem("category_" + i, "" + i, SetCategoryOper.buildSetCategoryOper(this, i));
   }
 
-  private JMenuItem addItem(String hotKeyId, String displayedName, UserOperation operation) {
-    // Store reference to ScrEdith within operation, if it is an appropriate subclass
+  @Override
+  public JMenuItem addItem(String hotKeyId, String displayedName, UserOperation operation) {
+    // Store reference to ScrEdit within operation, if it is an appropriate subclass
     if (operation instanceof EditorOper) {
       EditorOper ourOperation = (EditorOper) operation;
       ourOperation.setEditor(this);
     }
-    return mMenuBar.addItem(hotKeyId, displayedName, operation);
+    return super.addItem(hotKeyId, displayedName, operation);
   }
 
   // ------------------------------------------------------------------
@@ -350,7 +355,7 @@ public final class ScrEdit extends GUIApp {
     replaceCurrentScriptWith(currentProject().script());
 
     // TODO: restore panel visibilities, etc according to project
-    mFrame.setBounds(projectState().appFrame());
+    appFrame().setBounds(projectState().appFrame());
     updateTitle();
     discardMenuBar();
 
@@ -390,7 +395,7 @@ public final class ScrEdit extends GUIApp {
     if (!currentProject().defined())
       return;
     // Store the app frame location, in case it has changed
-    projectState().appFrame(mFrame.bounds());
+    projectState().appFrame(appFrame().bounds());
     currentProject().flush();
   }
 
@@ -547,6 +552,11 @@ public final class ScrEdit extends GUIApp {
   }
 
   public void performRepaint(int repaintFlags) {
+   if (mMenuBar == null) {
+     pr("...performRepaint called with no menu bar");
+     pr(ST);
+   }
+   
     // If there is no menu bar, create one
     createMenuBarIfNec();
 
@@ -582,7 +592,7 @@ public final class ScrEdit extends GUIApp {
     if (ScrEdit.devMode())
       title = title + " !!! DEV MODE !!!";
 
-    mFrame.frame().setTitle(title);
+    appFrame().frame().setTitle(title);
   }
 
   private void addUIElements() {
@@ -623,10 +633,6 @@ public final class ScrEdit extends GUIApp {
     // WTF, apparently this is necessary to get repainting to occur; see
     // https://groups.google.com/g/comp.lang.java.gui/c/vCbwLOX9Vow?pli=1
     contentPane().revalidate();
-  }
-
-  private JComponent contentPane() {
-    return (JComponent) mFrame.frame().getContentPane();
   }
 
   private void removeUIElements() {
