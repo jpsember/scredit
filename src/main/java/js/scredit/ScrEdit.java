@@ -64,7 +64,7 @@ public final class ScrEdit extends GUIApp {
   private ScrEdit() {
     guiAppConfig() //
         .appName("scredit") //
-        .processExpression("js.scredit");
+    ;
   }
 
   @Override
@@ -78,7 +78,7 @@ public final class ScrEdit extends GUIApp {
   }
 
   @Override
-  public void startGUI() {
+  public void startedGUI() {
     openAppropriateProject();
     startPeriodicBackgroundTask();
   }
@@ -101,7 +101,6 @@ public final class ScrEdit extends GUIApp {
     return arrayList("[<project directory>]");
   }
 
- 
   private File mStartProjectFile = Files.DEFAULT;
 
   public int paddingPixels() {
@@ -229,7 +228,7 @@ public final class ScrEdit extends GUIApp {
   }
 
   public void closeProject() {
-    if (currentProject() == Project.DEFAULT_INSTANCE)
+    if (currentProject().isDefault())
       return;
     flushProject();
     mCurrentProject = Project.DEFAULT_INSTANCE;
@@ -474,6 +473,8 @@ public final class ScrEdit extends GUIApp {
 
   @Override
   public void populateFrame(JPanel parentPanel) {
+    if (currentProject().isDefault())
+      return;
 
     mEditorPanel = new EditorPanel(this);
     mInfoPanel = new InfoPanel(this);
@@ -503,10 +504,8 @@ public final class ScrEdit extends GUIApp {
     contentPane().removeAll();
     mEditorPanel = null;
     mControlPanel = null;
-    mComponentsContainer = null;
   }
 
-  /* private */ JPanel mComponentsContainer;
   private EditorPanel mEditorPanel;
   private InfoPanel mInfoPanel;
   private JPanel mControlPanel;
