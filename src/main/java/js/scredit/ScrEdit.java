@@ -38,7 +38,6 @@ import javax.swing.*;
 import js.data.AbstractData;
 import js.file.Files;
 import js.geometry.IPoint;
-import js.graphics.Paint;
 import js.graphics.ScriptElement;
 import js.graphics.gen.Script;
 import js.guiapp.*;
@@ -108,8 +107,7 @@ public final class ScrEdit extends GUIApp {
   }
 
   @Override
-  public void createAndShowGUI() {
-    //    createFrame();
+  public void startGUI() {
     openAppropriateProject();
     startPeriodicBackgroundTask();
   }
@@ -117,7 +115,6 @@ public final class ScrEdit extends GUIApp {
   @Override
   public boolean requestWindowClose() {
     pr("requestWindowClose called");
-    todo("should call this on Quit menu item as well");
     return true;
   }
 
@@ -145,34 +142,6 @@ public final class ScrEdit extends GUIApp {
   }
 
   private File mStartProjectFile = Files.DEFAULT;
-
-  //  // ------------------------------------------------------------------
-  //  // Frame
-  //  // ------------------------------------------------------------------
-  //
-  //  private void createFrame() {
-  //    mFrame = new OurAppFrame();
-  //
-  //    JFrame jFrame = mFrame.frame();
-  //
-  //    // Handle close window requests ourselves
-  //    //
-  //    jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-  //    jFrame.addWindowListener(new WindowAdapter() {
-  //      @Override
-  //      public void windowClosing(WindowEvent e) {
-  //        if (requestWindowClose()) {
-  //          closeProject();
-  //          jFrame.setVisible(false);
-  //          jFrame.dispose();
-  //          mFrame = null;
-  //        }
-  //      }
-  //    });
-  //    jFrame.setVisible(true);
-  //  }
-  //
-  //  private OurAppFrame mFrame;
 
   @Override
   public void prepareForProgramQuit() {
@@ -205,27 +174,6 @@ public final class ScrEdit extends GUIApp {
       addCategoryMenu(m);
     }
   }
-  //  private void discardMenuBar() {
-  //    mMenuBar = null;
-  //  }
-  //
-  //  private void createMenuBarIfNec() {
-  //    if (mMenuBar != null)
-  //      return;
-  //    KeyboardShortcutManager.sharedInstance().clearAssignedOperationList();
-  //    OurMenuBar m = new OurMenuBar();
-  //    mMenuBar = m;
-  //    addProjectMenu(m);
-  //    if (currentProject().definedAndNonEmpty()) {
-  //      addFileMenu(m);
-  //      addEditMenu(m);
-  //      addViewMenu(m);
-  //      addCategoryMenu(m);
-  //    }
-  //    mFrame.frame().setJMenuBar(m.jmenuBar());
-  //  }
-  //
-  //  private OurMenuBar mMenuBar;
 
   private void addProjectMenu(OurMenuBar m) {
     m.addMenu("Project");
@@ -551,48 +499,22 @@ public final class ScrEdit extends GUIApp {
       performRepaint(repaintFlags);
   }
 
-  public void performRepaint(int repaintFlags) {
-   if (mMenuBar == null) {
-     pr("...performRepaint called with no menu bar");
-     pr(ST);
-   }
-   
-    // If there is no menu bar, create one
-    createMenuBarIfNec();
+  @Override
+  public void repaintPanels(int repaintFlags) {
 
-    String alertText = null;
-    if (!currentProject().defined())
-      alertText = "No project selected; open one from the Project menu";
-    else if (!currentProject().definedAndNonEmpty())
-      alertText = "This project is empty! Open another from the Project menu";
-
-    if (alertText != null) {
-      // Add placeholder text (it may get immediately replaced if we are in a close+open project cycle)
-      JLabel message = new JLabel(alertText, SwingConstants.CENTER);
-      message.setFont(Paint.BIG_FONT);
-      contentPane().removeAll();
-      contentPane().add(message);
-      contentPane().revalidate();
-    } else {
-      if (0 != (repaintFlags & REPAINT_EDITOR))
-        mEditorPanel.repaint();
-      if (0 != (repaintFlags & REPAINT_INFO))
-        mInfoPanel.refresh();
-    }
+    if (0 != (repaintFlags & REPAINT_EDITOR))
+      mEditorPanel.repaint();
+    if (0 != (repaintFlags & REPAINT_INFO))
+      mInfoPanel.refresh();
   }
 
-  private void updateTitle() {
-    String title = "(" + name() + " v" + getVersion() + ")";
+  @Override
+  public String getTitleText() {
     if (currentProject().defined()) {
       File dir = currentProject().directory();
-      String name = dir.getName();
-      title = title + " " + name;
+      return dir.getName();
     }
-
-    if (ScrEdit.devMode())
-      title = title + " !!! DEV MODE !!!";
-
-    appFrame().frame().setTitle(title);
+    return null;
   }
 
   private void addUIElements() {
@@ -673,4 +595,12 @@ public final class ScrEdit extends GUIApp {
   private SwingTaskManager mSwingTasks = new SwingTaskManager();
   private int mTaskTicker;
 
+  @Override
+  public String getAlertText() {
+    if (!currentProject().defined())
+      return "No project selected; open one from the Project menu";
+    if (!currentProject().definedAndNonEmpty())
+      return "This project is empty! Open another from the Project menu";
+    return null;
+  }
 }
