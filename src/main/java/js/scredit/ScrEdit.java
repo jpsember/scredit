@@ -113,12 +113,6 @@ public final class ScrEdit extends GUIApp {
   }
 
   @Override
-  public boolean requestWindowClose() {
-    pr("requestWindowClose called");
-    return true;
-  }
-
-  @Override
   public AbstractData defaultArgs() {
     return ScreditConfig.DEFAULT_INSTANCE;
   }
