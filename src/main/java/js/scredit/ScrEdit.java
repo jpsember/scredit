@@ -137,11 +137,6 @@ public final class ScrEdit extends GUIApp {
 
   private File mStartProjectFile = Files.DEFAULT;
 
-  @Override
-  public void prepareForProgramQuit() {
-    closeProject();
-  }
-
   public int paddingPixels() {
     return (int) (20 / zoomFactor());
   }
@@ -291,7 +286,7 @@ public final class ScrEdit extends GUIApp {
     mCurrentProject = project;
     recentProjects().setCurrentFile(project.directory());
     AppDefaults.sharedInstance().edit().recentProjects(recentProjects().state());
-    addUIElements();
+    rebuildFrameContent();
     mInfoPanel.opening(project);
 
     replaceCurrentScriptWith(currentProject().script());
@@ -495,7 +490,6 @@ public final class ScrEdit extends GUIApp {
 
   @Override
   public void repaintPanels(int repaintFlags) {
-
     if (0 != (repaintFlags & REPAINT_EDITOR))
       mEditorPanel.repaint();
     if (0 != (repaintFlags & REPAINT_INFO))
@@ -511,16 +505,8 @@ public final class ScrEdit extends GUIApp {
     return null;
   }
 
-  private void addUIElements() {
-    // Remove any placeholder message (in case no project was open)
-    contentPane().removeAll();
-
-    // We embed a JPanel that serves as a container for other components, 
-    // the main one being the editor window, but others that may include
-    // control panels or informational windows
-
-    JPanel parentPanel = new JPanel(new BorderLayout());
-    mComponentsContainer = parentPanel;
+  @Override
+  public void populateFrame(JPanel parentPanel) {
 
     mEditorPanel = new EditorPanel(this);
     mInfoPanel = new InfoPanel(this);
@@ -544,11 +530,6 @@ public final class ScrEdit extends GUIApp {
     if (mControlPanel != null)
       parentPanel.add(mControlPanel, BorderLayout.EAST);
     parentPanel.add(mInfoPanel, BorderLayout.SOUTH);
-    contentPane().add(parentPanel, BorderLayout.CENTER);
-
-    // WTF, apparently this is necessary to get repainting to occur; see
-    // https://groups.google.com/g/comp.lang.java.gui/c/vCbwLOX9Vow?pli=1
-    contentPane().revalidate();
   }
 
   private void removeUIElements() {
@@ -597,4 +578,5 @@ public final class ScrEdit extends GUIApp {
       return "This project is empty! Open another from the Project menu";
     return null;
   }
+
 }
