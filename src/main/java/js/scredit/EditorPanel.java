@@ -39,6 +39,7 @@ import javax.swing.*;
 import js.data.IntArray;
 import js.geometry.*;
 import js.graphics.Paint;
+import js.guiapp.GUIApp;
 import js.guiapp.UserEvent;
 import js.guiapp.UserEventManager;
 import js.guiapp.UserEventSource;
@@ -259,7 +260,7 @@ public class EditorPanel extends JPanel implements UserEventSource, MouseListene
 
     UserEvent event = new UserEvent(type, this, viewPoint, modifierFlags);
 
-    if (ScrEdit.devMode()) {
+    if (GUIApp.guiAppConfig().devMode()) {
       // Note: this doesn't display stack traces in Eclipse in a way that supports clicking
       try {
         UserEventManager.sharedInstance().processUserEvent(event);

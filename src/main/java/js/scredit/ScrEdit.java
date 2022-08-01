@@ -57,43 +57,14 @@ public final class ScrEdit extends GUIApp {
     new ScrEdit().startApplication(args);
   }
 
-  @Override
-  public String getVersion() {
-    return "1.0";
-  }
-
-  // ------------------------------------------------------------------
-  // Development mode
-  // ------------------------------------------------------------------
-
-  /**
-   * Determine if we're in development mode. If so, it will generate alert and
-   * todo messages
-   */
-  public static boolean devMode() {
-    if (sDevModeFlag == null)
-      setDevMode(true);
-    return sDevModeFlag;
-  }
-
-  /**
-   * Set development mode. This can only be set once. If it hasn't been
-   * explicitly set, it will be set true when devMode() is first called
-   */
-  public static void setDevMode(boolean flag) {
-    checkState(sDevModeFlag == null || sDevModeFlag == flag, "dev mode flag already set");
-    sDevModeFlag = flag;
-  }
-
-  private static Boolean sDevModeFlag;
-
   // ------------------------------------------------------------------
   // Construction
   // ------------------------------------------------------------------
 
   private ScrEdit() {
-    setDevMode(AppDefaults.sharedInstance().read().devFeatures());
-    setName("scredit");
+    guiAppConfig() //
+        .appName("scredit") //
+        .processExpression("js.scredit");
   }
 
   @Override
@@ -130,11 +101,7 @@ public final class ScrEdit extends GUIApp {
     return arrayList("[<project directory>]");
   }
 
-  @Override
-  protected String getProcessExpression() {
-    return "js.scredit";
-  }
-
+ 
   private File mStartProjectFile = Files.DEFAULT;
 
   public int paddingPixels() {
