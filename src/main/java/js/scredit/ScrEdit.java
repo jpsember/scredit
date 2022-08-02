@@ -34,7 +34,7 @@ import java.util.List;
 
 import javax.swing.*;
 
-import geom.AbstractEditorPanel;
+import geom.EditorPanel;
 import geom.GeomApp;
 import geom.ScriptWrapper;
 import js.data.AbstractData;
@@ -311,7 +311,7 @@ public final class ScrEdit extends GeomApp {
     if (currentProject().isDefault())
       return;
 
-    mEditorPanel = new AbstractEditorPanel();
+    mEditorPanel = new EditorPanel();
     mInfoPanel = new InfoPanel(this);
     if (false) {
       mControlPanel = new JPanel() {
@@ -341,7 +341,7 @@ public final class ScrEdit extends GeomApp {
     mControlPanel = null;
   }
 
-  private AbstractEditorPanel mEditorPanel;
+  private EditorPanel mEditorPanel;
   private InfoPanel mInfoPanel;
   private JPanel mControlPanel;
 
@@ -382,7 +382,7 @@ public final class ScrEdit extends GeomApp {
   }
 
   @Override
-  public AbstractEditorPanel getEditorPanel() {
+  public EditorPanel getEditorPanel() {
     return mEditorPanel;
   }
 }
