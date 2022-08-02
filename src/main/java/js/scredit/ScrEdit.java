@@ -64,17 +64,13 @@ public final class ScrEdit extends GUIApp {
   private ScrEdit() {
     guiAppConfig() //
         .appName("scredit") //
+        .keyboardShortcutRegistry(JSMap.fromResource(this.getClass(), "key_shortcut_defaults.json")) //;
     ;
   }
 
   @Override
   public UserOperation getDefaultUserOperation() {
     return new DefaultOper().setEditor(this);
-  }
-
-  @Override
-  public JSMap getKeyboardShortcutRegistry() {
-    return JSMap.fromResource(this.getClass(), "key_shortcut_defaults.json");
   }
 
   @Override
