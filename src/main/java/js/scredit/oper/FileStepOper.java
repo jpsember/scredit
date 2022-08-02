@@ -27,13 +27,15 @@ package js.scredit.oper;
 import static js.base.Tools.*;
 
 import js.geometry.MyMath;
+import js.guiapp.UserOperation;
 import js.scredit.Project;
+import static geom.GeomTools.*;
 
 /**
  * This affects the current project's settings, not individual scripts; so it's
  * not a command operation
  */
-public final class FileStepOper extends EditorOper {
+public final class FileStepOper extends UserOperation {
 
   public FileStepOper(int stepVelocity) {
     loadTools();

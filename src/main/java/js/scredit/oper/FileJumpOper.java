@@ -26,9 +26,11 @@ package js.scredit.oper;
 
 import static js.base.Tools.*;
 
+import js.guiapp.UserOperation;
 import js.scredit.Project;
+import static geom.GeomTools.*;
 
-public final class FileJumpOper extends EditorOper {
+public final class FileJumpOper extends UserOperation {
 
   public FileJumpOper(int direction) {
     loadTools();

@@ -29,8 +29,8 @@ import js.scredit.ScrEdit;
 
 public class MaskEditOper extends RectEditOper {
 
-  public MaskEditOper(ScrEdit editor, UserEvent event, int slot, int handle) {
-    super(editor, event, slot, handle);
+  public MaskEditOper(  UserEvent event, int slot, int handle) {
+    super(  event, slot, handle);
   }
 
 }

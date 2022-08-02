@@ -26,18 +26,16 @@ package js.scredit.oper;
 
 import static js.base.Tools.*;
 
+import geom.EditorElement;
 import js.graphics.RectElement;
 import js.graphics.gen.ElementProperties;
 import js.scredit.gen.ScriptEditState;
-import js.scredit.EditorElement;
-import js.scredit.ScrEdit;
 import js.scredit.gen.Command.Builder;
 
 public class ToggleRotationOper extends CommandOper {
 
-  public ToggleRotationOper(ScrEdit editor) {
+  public ToggleRotationOper() {
     loadTools();
-    setEditor(editor);
   }
 
   @Override

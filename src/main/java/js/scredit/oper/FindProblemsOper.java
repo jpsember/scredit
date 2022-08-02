@@ -35,8 +35,9 @@ import js.graphics.gen.Script;
 import js.json.JSMap;
 import js.scredit.Project;
 import js.scredit.ScriptWrapper;
+import static geom.GeomTools.*;
 
-public final class FindProblemsOper extends EditorOper {
+public final class FindProblemsOper extends UserOperation {
 
   @Override
   public void start() {

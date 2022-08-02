@@ -26,21 +26,20 @@ package js.scredit.oper;
 
 import static js.base.Tools.*;
 
+import geom.EditorElement;
 import js.graphics.gen.ElementProperties;
 import js.scredit.gen.ScriptEditState;
-import js.scredit.EditorElement;
 import js.scredit.ScrEdit;
 import js.scredit.gen.Command.Builder;
 
 public class SetCategoryOper extends CommandOper {
 
-  public static SetCategoryOper buildSetCategoryOper(ScrEdit editor, int category) {
-    return new SetCategoryOper(editor, category);
+  public static SetCategoryOper buildSetCategoryOper(int category) {
+    return new SetCategoryOper(category);
   }
 
- private SetCategoryOper(ScrEdit editor, int newCategory) {
+  private SetCategoryOper(int newCategory) {
     loadTools();
-    setEditor(editor);
     mNewCategory = newCategory;
   }
 

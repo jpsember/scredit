@@ -31,19 +31,20 @@ import static js.scredit.StateTools.*;
 import java.awt.Cursor;
 import java.util.List;
 
+import geom.EditorElement;
 import js.data.IntArray;
 import js.geometry.IPoint;
 import js.geometry.Matrix;
 import js.guiapp.UserEvent;
-import js.scredit.EditorElement;
+import js.guiapp.UserOperation;
 import js.scredit.ScrEdit;
 import js.scredit.gen.Command;
 import js.scredit.gen.ScriptEditState;
+import static geom.GeomTools.*;
 
-public class MoveElementsOper extends EditorOper implements UserEvent.Listener {
+public class MoveElementsOper extends UserOperation implements UserEvent.Listener {
 
-  public MoveElementsOper(ScrEdit editor, UserEvent initialDownEvent) {
-    setEditor(editor);
+  public MoveElementsOper(UserEvent initialDownEvent) {
     mDownEventWorldLocation = initialDownEvent.getWorldLocation();
     mCommand = editor().buildCommand("");
     mInitialState = mCommand.newState();

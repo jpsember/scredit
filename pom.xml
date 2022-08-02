@@ -16,21 +16,16 @@
     <!-- Appends '&' to launch command -->
     <run.background>true</run.background>
 
-    <!--  Custom properties start {~properties:  -->
-    <!--  Custom properties end   ~}             -->
-
   </properties>
 
   <dependencies>
 
-    <!--  Custom dependencies start {~dependencies: -->
-
-    <dependency>
+<!--     <dependency>
       <groupId>com.jsbase</groupId>
       <artifactId>base</artifactId>
       <version>1.0</version>
     </dependency>
-
+ -->
     <dependency>
       <groupId>com.jsbase</groupId>
       <artifactId>testutil</artifactId>
@@ -40,15 +35,10 @@
 
     <dependency>
       <groupId>com.jsbase</groupId>
-      <artifactId>gui</artifactId>
+      <artifactId>geom</artifactId>
       <version>1.0</version>
     </dependency>
 
-    <!--  Custom dependencies end   ~}              -->
-
   </dependencies>
-
-  <!--  Custom elements start {~elements:         -->
-  <!--  Custom elements end   ~}                  -->
 
 </project>

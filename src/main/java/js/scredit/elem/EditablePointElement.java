@@ -26,6 +26,9 @@ package js.scredit.elem;
 
 import java.awt.Color;
 
+import geom.AbstractEditorPanel;
+import geom.EditorElement;
+
 import static js.base.Tools.*;
 
 import js.geometry.*;
@@ -33,8 +36,6 @@ import js.graphics.Paint;
 import js.graphics.PointElement;
 import js.graphics.ScriptElement;
 import js.graphics.gen.ElementProperties;
-import js.scredit.EditorElement;
-import js.scredit.EditorPanel;
 
 public class EditablePointElement extends PointElement implements EditorElement {
 
@@ -74,7 +75,7 @@ public class EditablePointElement extends PointElement implements EditorElement 
   private static final FRect SELECTED_RELATIVE_BOUNDS = new FRect(-6, -6, 6 * 2, 6 * 2);
 
   @Override
-  public void render(EditorPanel panel, Render appearance) {
+  public void render(AbstractEditorPanel panel, Render appearance) {
     loadTools();
     panel.pushFocusOn(bounds().toRect());
     if (appearance == Render.SELECTED)

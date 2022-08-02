@@ -30,6 +30,8 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.geom.Path2D;
 
+import geom.EditorElement;
+import geom.EditorElement.Render;
 import js.base.StateMachine;
 import js.data.IntArray;
 import js.geometry.IPoint;
@@ -37,14 +39,14 @@ import js.geometry.IRect;
 import js.geometry.MyMath;
 import js.graphics.Paint;
 import js.guiapp.UserEvent;
-import js.scredit.EditorElement;
-import js.scredit.EditorElement.Render;
+import js.guiapp.UserOperation;
 import js.scredit.EditorPanel;
 import js.scredit.StateTools;
 import js.scredit.elem.EditableRectElement;
 import js.scredit.gen.Command;
+import static geom.GeomTools.*;
 
-public class RectAddOper extends EditorOper implements UserEvent.Listener {
+public class RectAddOper extends UserOperation implements UserEvent.Listener {
 
   protected String getObjectMenuName() {
     return "Box";

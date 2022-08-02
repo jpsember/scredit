@@ -28,16 +28,19 @@ import static js.base.Tools.*;
 
 import java.awt.Cursor;
 
+import geom.EditorElement;
+import geom.GeomApp;
 import js.guiapp.UserEvent;
 import js.guiapp.UserOperation;
-import js.scredit.EditorElement;
 import js.scredit.ScrEdit;
 import js.scredit.SlotList;
 import js.scredit.gen.ScriptEditState;
 
 import js.data.IntArray;
 
-public final class DefaultOper extends EditorOper implements UserEvent.Listener {
+import static geom.GeomTools.*;
+
+public final class DefaultOper extends UserOperation implements UserEvent.Listener {
 
   public DefaultOper() {
     loadTools();
@@ -212,7 +215,7 @@ public final class DefaultOper extends EditorOper implements UserEvent.Listener 
      *
      * [] start move focus operation
      */
-    ScrEdit ed = editor();
+    GeomApp ed = editor();
 
     if (!event.isShift()) {
       UserOperation oper = findOperationForEditableObject();
@@ -221,7 +224,7 @@ public final class DefaultOper extends EditorOper implements UserEvent.Listener 
         return;
       }
       if (!pickSetSelected().isEmpty()) {
-        oper = new MoveElementsOper(editor(), mInitialDownEvent);
+        oper = new MoveElementsOper(mInitialDownEvent);
         event.setOperation(oper);
       } else if (!pickSet().isEmpty()) {
 
@@ -235,15 +238,15 @@ public final class DefaultOper extends EditorOper implements UserEvent.Listener 
         if (oper == null) {
           IntArray selItem = IntArray.with(slot);
           editor().perform(new SetSelectedElementsOper(selItem));
-          oper = new MoveElementsOper(editor(), mInitialDownEvent);
+          oper = new MoveElementsOper(mInitialDownEvent);
         }
         event.setOperation(oper);
       } else {
-        oper = SelectElementsWithBoxOper.build(editor(), mInitialDownEvent);
+        oper = SelectElementsWithBoxOper.build(mInitialDownEvent);
         event.setOperation(oper);
       }
     } else {
-      event.setOperation(SelectElementsWithBoxOper.build(editor(), mInitialDownEvent));
+      event.setOperation(SelectElementsWithBoxOper.build(mInitialDownEvent));
     }
   }
 

@@ -33,14 +33,16 @@ import js.file.DirWalk;
 import js.file.Files;
 import js.graphics.ImgUtil;
 import js.graphics.ScriptUtil;
+import js.guiapp.UserOperation;
 import js.scredit.Project;
 import js.scredit.ScriptWrapper;
+import static geom.GeomTools.*;
 
 /**
  * This affects the current project's settings, not individual scripts; so it's
  * not a command operation
  */
-public final class RenameScriptsOper extends EditorOper {
+public final class RenameScriptsOper extends UserOperation {
 
   public RenameScriptsOper() {
   }

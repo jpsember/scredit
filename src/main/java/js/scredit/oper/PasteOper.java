@@ -26,10 +26,10 @@ package js.scredit.oper;
 
 import java.util.List;
 
+import geom.EditorElement;
 import js.data.IntArray;
 import js.geometry.IPoint;
 import js.geometry.Matrix;
-import js.scredit.EditorElement;
 import js.scredit.SlotList;
 import js.scredit.StateTools;
 import js.scredit.gen.Command;

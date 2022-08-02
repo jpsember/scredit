@@ -35,6 +35,8 @@ import java.util.List;
 
 import javax.swing.*;
 
+import geom.EditorElement;
+import geom.GeomApp;
 import js.data.AbstractData;
 import js.file.Files;
 import js.geometry.IPoint;
@@ -48,7 +50,7 @@ import js.scredit.gen.ScreditConfig;
 import js.scredit.gen.ScriptEditState;
 import js.scredit.oper.*;
 
-public final class ScrEdit extends GUIApp {
+public final class ScrEdit extends GeomApp {
 
   public static final boolean DISABLE_FLUSH_CHANGES = false && alert("Saving script changes is DISABLED");
 
@@ -69,7 +71,7 @@ public final class ScrEdit extends GUIApp {
 
   @Override
   public UserOperation getDefaultUserOperation() {
-    return new DefaultOper().setEditor(this);
+    return new DefaultOper();
   }
 
   @Override
@@ -137,8 +139,6 @@ public final class ScrEdit extends GUIApp {
         }));
     addItem("project_open_next", "Open Next", new OpenNextProjectOper());
     m.addSeparator();
-    if (false)
-      addItem("", "Rename Scripts", new RenameScriptsOper());
     addItem("project_find_problems", "Find Problems", new FindProblemsOper());
   }
 
@@ -160,7 +160,9 @@ public final class ScrEdit extends GUIApp {
     addItem("script_jump_last", "Last", new FileJumpOper(1));
   }
 
-  private void addEditMenu(OurMenuBar m) {
+  @Override
+  public void addEditMenu(OurMenuBar m) {
+    todo("move method to GeomApp");
     m.addMenu("Edit", null);
     // The labels will be fetched via getLabelText(), so use placeholders ('_')
     addItem("undo", "_", new UndoOper());
@@ -178,11 +180,11 @@ public final class ScrEdit extends GUIApp {
     addItem("box_add", "Add Box", new RectAddOper());
     addItem("mask_add", "Add Mask", new MaskAddOper());
     addItem("pt_add", "Add Point", new PointAddOper());
-    addItem("polygon_add", "Add Polygon", PolygonEditOper.buildAddOper(this));
-    addItem("rotation_toggle", "Toggle Rotation", new ToggleRotationOper(this));
+    addItem("polygon_add", "Add Polygon", PolygonEditOper.buildAddOper());
+    addItem("rotation_toggle", "Toggle Rotation", new ToggleRotationOper());
 
     {
-      EditorOper oper = PolygonEditOper.buildAddCurveOper(this);
+      UserOperation oper = PolygonEditOper.buildAddCurveOper(this);
       addItem("curve_add", "Add Curve", oper);
       addItem("curve_add2", "Add Curve (2)", oper);
     }
@@ -190,7 +192,9 @@ public final class ScrEdit extends GUIApp {
     addItem("yolo_merge", "Yolo Merge", new NonMaxSuppressOper());
   }
 
-  private void addViewMenu(OurMenuBar m) {
+  @Override
+  public void addViewMenu(OurMenuBar m) {
+    todo("move method to GeomApp");
     m.addMenu("View");
     addItem("zoom_in", "Zoom In", ZoomOper.buildIn());
     addItem("zoom_out", "Zoom Out", ZoomOper.buildOut());
@@ -201,16 +205,6 @@ public final class ScrEdit extends GUIApp {
     m.addMenu("Category");
     for (int i = 0; i < 10; i++)
       m.addItem("category_" + i, "" + i, SetCategoryOper.buildSetCategoryOper(this, i));
-  }
-
-  @Override
-  public JMenuItem addItem(String hotKeyId, String displayedName, UserOperation operation) {
-    // Store reference to ScrEdit within operation, if it is an appropriate subclass
-    if (operation instanceof EditorOper) {
-      EditorOper ourOperation = (EditorOper) operation;
-      ourOperation.setEditor(this);
-    }
-    return super.addItem(hotKeyId, displayedName, operation);
   }
 
   // ------------------------------------------------------------------
@@ -240,8 +234,6 @@ public final class ScrEdit extends GUIApp {
 
     // If there are recent projects, use their state as the default for this one in case it is a new project
 
-    if (false && alert("logging for issue #12"))
-      project.setVerbose();
     project.open(recentProjects().getMostRecentFile());
     mCurrentProject = project;
     recentProjects().setCurrentFile(project.directory());
@@ -408,7 +400,6 @@ public final class ScrEdit extends GUIApp {
   }
 
   public void perform(CommandOper oper) {
-    oper.setEditor(this);
     UserEventManager.sharedInstance().perform(oper);
   }
 
@@ -467,7 +458,7 @@ public final class ScrEdit extends GUIApp {
     if (currentProject().isDefault())
       return;
 
-    mEditorPanel = new EditorPanel(this);
+    mEditorPanel = new EditorPanel( );
     mInfoPanel = new InfoPanel(this);
     if (false) {
       mControlPanel = new JPanel() {

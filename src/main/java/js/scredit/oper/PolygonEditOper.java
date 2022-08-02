@@ -30,8 +30,8 @@ import js.geometry.IPoint;
 import js.geometry.MyMath;
 import js.geometry.Polygon;
 import js.guiapp.UserEvent;
+import js.guiapp.UserOperation;
 import js.json.JSMap;
-import js.scredit.EditorElement;
 import js.scredit.MergePoly;
 import js.scredit.ScrEdit;
 import js.scredit.StateTools;
@@ -42,36 +42,36 @@ import js.scredit.elem.EditablePolygonElement;
 import java.awt.Cursor;
 import java.util.List;
 
-public class PolygonEditOper extends EditorOper implements UserEvent.Listener {
+import geom.EditorElement;
 
-  public static PolygonEditOper buildAddOper(ScrEdit editor) {
-    return new PolygonEditOper(editor, false);
+import static geom.GeomTools.*;
+
+public class PolygonEditOper extends UserOperation implements UserEvent.Listener {
+
+  public static PolygonEditOper buildAddOper() {
+    return new PolygonEditOper(false);
   }
 
-  public static PolygonEditOper buildAddCurveOper(ScrEdit editor) {
-    return new PolygonEditOper(editor, true);
+  public static PolygonEditOper buildAddCurveOper() {
+    return new PolygonEditOper(true);
   }
 
-  public static PolygonEditOper buildEditExistingOper(ScrEdit editor, UserEvent event, int slot,
-      int vertexIndex) {
-    return new PolygonEditOper(editor, event.getWorldLocation(), slot, vertexIndex);
+  public static PolygonEditOper buildEditExistingOper(UserEvent event, int slot, int vertexIndex) {
+    return new PolygonEditOper(event.getWorldLocation(), slot, vertexIndex);
   }
 
   /**
    * Constructor for adding a new polygon (or curve)
    */
-  private PolygonEditOper(ScrEdit editor, boolean curveMode) {
-    setEditor(editor);
+  private PolygonEditOper(boolean curveMode) {
     mAddMode = true;
     mCurveMode = curveMode;
-    //alertVerbose();
   }
 
   /**
    * Constructor for editing existing polygon, starting at a vertex
    */
-  private PolygonEditOper(ScrEdit editor, IPoint mouseDownLoc, int slot, int vertexIndex) {
-    setEditor(editor);
+  private PolygonEditOper(IPoint mouseDownLoc, int slot, int vertexIndex) {
     setState(STATE_ADJUST);
     mVertexIndex = vertexIndex;
     mSlot = slot;

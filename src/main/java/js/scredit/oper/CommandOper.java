@@ -27,14 +27,16 @@ package js.scredit.oper;
 import static js.base.Tools.*;
 
 import js.guiapp.UserEvent;
+import js.guiapp.UserOperation;
 import js.scredit.gen.Command;
 import js.scredit.gen.ScriptEditState;
+import static geom.GeomTools.*;
 
 /**
  * Subclass of UserOperation for operations that construct and perform commands,
  * without user interaction
  */
-public abstract class CommandOper extends EditorOper {
+public abstract class CommandOper extends UserOperation {
 
   public CommandOper() {
     checkState(!(this instanceof UserEvent.Listener));

@@ -24,12 +24,14 @@
  **/
 package js.scredit.oper;
 
+import js.guiapp.UserOperation;
 import js.scredit.ScrEdit;
 import js.scredit.UndoManager;
 import js.scredit.gen.Command;
 import js.scredit.gen.ScriptEditState;
+import static geom.GeomTools.*;
 
-public class RedoOper extends EditorOper {
+public class RedoOper extends UserOperation {
   @Override
   public boolean shouldBeEnabled() {
     return undoManager().getRedo() != null;

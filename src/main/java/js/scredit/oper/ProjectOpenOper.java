@@ -30,9 +30,11 @@ import static js.base.Tools.*;
 
 import js.file.Files;
 import js.guiapp.SwingUtils;
+import js.guiapp.UserOperation;
 import js.scredit.Project;
+import static geom.GeomTools.*;
 
-public class ProjectOpenOper extends EditorOper {
+public class ProjectOpenOper extends UserOperation {
 
   @Override
   public void start() {

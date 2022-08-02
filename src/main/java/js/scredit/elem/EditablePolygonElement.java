@@ -30,6 +30,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import geom.EditorElement;
 import js.geometry.FPoint;
 import js.geometry.FRect;
 import js.geometry.IPoint;
@@ -45,7 +46,6 @@ import js.graphics.ScriptUtil;
 import js.graphics.gen.ElementProperties;
 import js.guiapp.UserEvent;
 import js.guiapp.UserOperation;
-import js.scredit.EditorElement;
 import js.scredit.EditorPanel;
 import js.scredit.ScrEdit;
 import js.scredit.oper.PolygonEditOper;

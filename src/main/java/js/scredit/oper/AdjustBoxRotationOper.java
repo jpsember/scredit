@@ -26,6 +26,7 @@ package js.scredit.oper;
 
 import static js.base.Tools.*;
 
+import geom.EditorElement;
 import js.data.IntArray;
 import js.geometry.FPoint;
 import js.geometry.IPoint;
@@ -33,17 +34,17 @@ import js.geometry.MyMath;
 import js.graphics.ScriptUtil;
 import js.graphics.gen.ElementProperties;
 import js.guiapp.UserEvent;
-import js.scredit.EditorElement;
+import js.guiapp.UserOperation;
 import js.scredit.ScrEdit;
 import js.scredit.StateTools;
 import js.scredit.elem.EditableRectElement;
 import js.scredit.gen.Command;
+import static geom.GeomTools.*;
 
-public class AdjustBoxRotationOper extends EditorOper implements UserEvent.Listener {
+public class AdjustBoxRotationOper extends UserOperation implements UserEvent.Listener {
 
-  public AdjustBoxRotationOper(ScrEdit editor, UserEvent event, int slot) {
+  public AdjustBoxRotationOper(UserEvent event, int slot) {
     loadTools();
-    setEditor(editor);
     mSlot = slot;
     mMouseDownLoc = event.getWorldLocation();
   }

@@ -29,13 +29,13 @@ import static js.base.Tools.*;
 import java.util.Comparator;
 import java.util.List;
 
+import geom.EditorElement;
 import js.geometry.IPoint;
 import js.geometry.IRect;
 import js.geometry.MyMath;
 import js.graphics.RectElement;
 import js.graphics.ScriptElement;
 import js.graphics.ScriptUtil;
-import js.scredit.EditorElement;
 import js.scredit.gen.Command;
 import js.scredit.gen.ScriptEditState;
 

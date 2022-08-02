@@ -35,6 +35,7 @@ import js.scredit.gen.ProjectState;
  * A subclass of UserOperation that maintains a reference to its ScrEdit
  * instance
  */
+@Deprecated
 public abstract class EditorOper extends UserOperation {
 
   public final EditorOper setEditor(ScrEdit editor) {

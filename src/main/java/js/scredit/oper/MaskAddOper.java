@@ -24,8 +24,8 @@
  **/
 package js.scredit.oper;
 
+import geom.EditorElement;
 import js.geometry.IRect;
-import js.scredit.EditorElement;
 import js.scredit.elem.EditableMaskElement;
 
 public class MaskAddOper extends RectAddOper {

@@ -28,6 +28,7 @@ import static js.base.Tools.*;
 
 import java.util.Map;
 
+import geom.EditorElement;
 import js.graphics.ScriptUtil;
 import js.graphics.gen.ElementProperties;
 import js.json.JSMap;

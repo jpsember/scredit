@@ -28,21 +28,22 @@ import static js.base.Tools.*;
 
 import java.awt.Cursor;
 
+import geom.EditorElement;
 import js.data.IntArray;
 import js.geometry.IPoint;
 import js.geometry.IRect;
 import js.graphics.RectElement;
 import js.guiapp.UserEvent;
-import js.scredit.EditorElement;
+import js.guiapp.UserOperation;
 import js.scredit.ScrEdit;
 import js.scredit.StateTools;
 import js.scredit.elem.EditableRectElement;
 import js.scredit.gen.Command;
+import static geom.GeomTools.*;
 
-public class RectEditOper extends EditorOper implements UserEvent.Listener {
+public class RectEditOper extends UserOperation implements UserEvent.Listener {
 
-  public RectEditOper(ScrEdit editor, UserEvent event, int slot, int handle) {
-    setEditor(editor);
+  public RectEditOper(  UserEvent event, int slot, int handle) {
     mHandle = handle;
     mSlot = slot;
     mMouseDownLoc = event.getWorldLocation();

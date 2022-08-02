@@ -30,11 +30,13 @@ import java.awt.Cursor;
 
 import js.geometry.IPoint;
 import js.guiapp.UserEvent;
+import js.guiapp.UserOperation;
 import js.scredit.StateTools;
 import js.scredit.elem.EditablePointElement;
 import js.scredit.gen.Command;
+import static geom.GeomTools.*;
 
-public class PointAddOper extends EditorOper implements UserEvent.Listener {
+public class PointAddOper extends UserOperation implements UserEvent.Listener {
 
   @Override
   public void start() {

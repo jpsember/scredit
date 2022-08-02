@@ -28,6 +28,7 @@ import static js.base.Tools.*;
 
 import java.util.List;
 
+import geom.EditorElement;
 import js.data.IntArray;
 import js.scredit.gen.Command;
 import js.scredit.gen.ScriptEditState;

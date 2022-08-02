@@ -30,6 +30,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 
+import geom.EditorElement;
 import js.geometry.FPoint;
 import js.geometry.FRect;
 import js.geometry.IPoint;
@@ -42,7 +43,6 @@ import js.graphics.ScriptElement;
 import js.graphics.gen.ElementProperties;
 import js.guiapp.UserEvent;
 import js.guiapp.UserOperation;
-import js.scredit.EditorElement;
 import js.scredit.EditorPanel;
 import js.scredit.ScrEdit;
 import js.scredit.oper.AdjustBoxRotationOper;
@@ -98,7 +98,7 @@ public class EditableRectElement extends RectElement implements EditorElement {
   private static final int[] sSegmentScript = { 0, 1, 2, 3, 4, 5 };
 
   @Override
-  public void render(EditorPanel panel, Render appearance) {
+  public void render(AbstractEditorPanel panel, Render appearance) {
     FRect bounds = panel.pushFocusOn(bounds().toRect());
 
     // Draw thick colored frame, with a half pixel overlap with the black single-pixel frames

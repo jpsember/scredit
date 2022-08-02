@@ -28,6 +28,7 @@ import static js.base.Tools.*;
 
 import java.awt.Color;
 
+import geom.EditorElement;
 import js.data.IntArray;
 import js.geometry.FRect;
 import js.geometry.IPoint;
@@ -35,13 +36,13 @@ import js.geometry.IRect;
 import js.graphics.Paint;
 import js.guiapp.UserEvent;
 import js.guiapp.UserOperation;
-import js.scredit.EditorElement;
 import js.scredit.EditorPanel;
 import js.scredit.ScrEdit;
 import js.scredit.SlotList;
 import js.scredit.gen.ScriptEditState;
+import static geom.GeomTools.*;
 
-public class SelectElementsWithBoxOper extends EditorOper implements UserEvent.Listener {
+public class SelectElementsWithBoxOper extends UserOperation implements UserEvent.Listener {
 
   @Override
   public void processUserEvent(UserEvent event) {
@@ -56,13 +57,12 @@ public class SelectElementsWithBoxOper extends EditorOper implements UserEvent.L
     }
   }
 
-  public static UserOperation build(ScrEdit editor, UserEvent event) {
-    return new SelectElementsWithBoxOper(editor, event);
+  public static UserOperation build(UserEvent event) {
+    return new SelectElementsWithBoxOper(event);
   }
 
-  private SelectElementsWithBoxOper(ScrEdit editor, UserEvent event) {
+  private SelectElementsWithBoxOper(UserEvent event) {
     loadTools();
-    setEditor(editor);
     mInitialEvent = event;
   }
 

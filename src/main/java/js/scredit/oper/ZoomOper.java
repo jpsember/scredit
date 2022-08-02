@@ -32,7 +32,7 @@ import static js.base.Tools.*;
  * This affects the current project's settings, not individual scripts; so it's
  * not a command operation
  */
-public final class ZoomOper extends EditorOper {
+public final class ZoomOper extends UserOperation {
 
   public static UserOperation buildIn() {
     loadTools();

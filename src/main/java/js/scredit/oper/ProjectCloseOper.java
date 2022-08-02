@@ -23,8 +23,11 @@
  * 
  **/
 package js.scredit.oper;
+import static geom.GeomTools.*;
 
-public class ProjectCloseOper extends EditorOper {
+import js.guiapp.UserOperation;
+
+public class ProjectCloseOper extends UserOperation {
 
   @Override
   public boolean shouldBeEnabled() {

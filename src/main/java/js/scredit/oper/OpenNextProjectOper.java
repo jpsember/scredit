@@ -31,9 +31,11 @@ import static js.base.Tools.*;
 
 import js.file.Files;
 import js.geometry.MyMath;
+import js.guiapp.UserOperation;
 import js.scredit.Project;
+import static geom.GeomTools.*;
 
-public class OpenNextProjectOper extends EditorOper {
+public class OpenNextProjectOper extends UserOperation {
 
   @Override
   public void start() {
