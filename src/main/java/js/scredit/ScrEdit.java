@@ -73,11 +73,6 @@ public final class ScrEdit extends GeomApp {
   }
 
   @Override
-  public UserOperation getDefaultUserOperation() {
-    return new DefaultOper();
-  }
-
-  @Override
   public void startedGUI() {
     openAppropriateProject();
   }
@@ -102,16 +97,14 @@ public final class ScrEdit extends GeomApp {
 
   private File mStartProjectFile = Files.DEFAULT;
 
-  public int paddingPixels() {
-    return (int) (20 / zoomFactor());
-  }
-
-  /**
-   * This is needed for some operations that occur outside of rendering
-   * operation
-   */
+  @Override
   public float zoomFactor() {
     return projectState().zoomFactor();
+  }
+
+  @Override
+  public void setZoomFactor(float zoom) {
+    projectState().zoomFactor(zoom);
   }
 
   // ------------------------------------------------------------------
@@ -119,7 +112,7 @@ public final class ScrEdit extends GeomApp {
   // ------------------------------------------------------------------
 
   @Override
-  public void populateMenuBar(OurMenuBar m) {
+  public void populateMenuBar(MenuBarWrapper m) {
     addProjectMenu(m);
     if (currentProject().definedAndNonEmpty()) {
       addFileMenu(m);
@@ -129,7 +122,7 @@ public final class ScrEdit extends GeomApp {
     }
   }
 
-  private void addProjectMenu(OurMenuBar m) {
+  private void addProjectMenu(MenuBarWrapper m) {
     m.addMenu("Project");
     addItem("project_open", "Open", new ProjectOpenOper());
     addItem("project_close", "Close", new ProjectCloseOper());
@@ -145,7 +138,7 @@ public final class ScrEdit extends GeomApp {
     addItem("project_find_problems", "Find Problems", new FindProblemsOper());
   }
 
-  private void addFileMenu(OurMenuBar m) {
+  private void addFileMenu(MenuBarWrapper m) {
     m.addMenu("File", null);
     UserOperation prevOper = new FileStepOper(-1);
     UserOperation nextOper = new FileStepOper(1);
@@ -164,26 +157,11 @@ public final class ScrEdit extends GeomApp {
   }
 
   @Override
-  public void addEditMenu(OurMenuBar m) {
-    todo("move method to GeomApp");
-    m.addMenu("Edit", null);
-    // The labels will be fetched via getLabelText(), so use placeholders ('_')
-    addItem("undo", "_", new UndoOper());
-    addItem("redo", "_", new RedoOper());
+  public void addEditMenu(MenuBarWrapper m) {
+    super.addEditMenu(m);
 
     m.addSeparator();
-
-    addItem("cut", "Cut", new CutOper());
-    addItem("copy", "Copy", new CopyOper());
-    addItem("paste", "Paste", new PasteOper());
-    m.addSeparator();
-    addItem("select_none", "Select None", new SelectNoneOper());
-    addItem("select_all", "Select All", new SelectAllOper());
-    m.addSeparator();
-    addItem("box_add", "Add Box", new RectAddOper());
     addItem("mask_add", "Add Mask", new MaskAddOper());
-    addItem("pt_add", "Add Point", new PointAddOper());
-    addItem("polygon_add", "Add Polygon", PolygonEditOper.buildAddOper());
     addItem("rotation_toggle", "Toggle Rotation", new ToggleRotationOper());
 
     {
@@ -195,16 +173,7 @@ public final class ScrEdit extends GeomApp {
     addItem("yolo_merge", "Yolo Merge", new NonMaxSuppressOper());
   }
 
-  @Override
-  public void addViewMenu(OurMenuBar m) {
-    todo("move method to GeomApp");
-    m.addMenu("View");
-    addItem("zoom_in", "Zoom In", ZoomOper.buildIn());
-    addItem("zoom_out", "Zoom Out", ZoomOper.buildOut());
-    addItem("zoom_reset", "Zoom Reset", ZoomOper.buildReset());
-  }
-
-  private void addCategoryMenu(OurMenuBar m) {
+  private void addCategoryMenu(MenuBarWrapper m) {
     m.addMenu("Category");
     for (int i = 0; i < 10; i++)
       m.addItem("category_" + i, "" + i, SetCategoryOper.buildSetCategoryOper(i));
