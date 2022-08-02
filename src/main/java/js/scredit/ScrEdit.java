@@ -215,7 +215,7 @@ public final class ScrEdit extends GeomApp {
   private void addCategoryMenu(OurMenuBar m) {
     m.addMenu("Category");
     for (int i = 0; i < 10; i++)
-      m.addItem("category_" + i, "" + i, SetCategoryOper.buildSetCategoryOper(  i));
+      m.addItem("category_" + i, "" + i, SetCategoryOper.buildSetCategoryOper(i));
   }
 
   // ------------------------------------------------------------------
@@ -303,7 +303,6 @@ public final class ScrEdit extends GeomApp {
   public ProjectState.Builder projectState() {
     return currentProject().state();
   }
-
 
   public RecentFiles recentProjects() {
     if (mRecentProjects == null) {
@@ -416,4 +415,8 @@ public final class ScrEdit extends GeomApp {
     return null;
   }
 
+  @Override
+  public ScriptWrapper getScript() {
+    return currentProject().script();
+  }
 }
