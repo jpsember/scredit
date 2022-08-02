@@ -80,7 +80,6 @@ public final class ScrEdit extends GUIApp {
   @Override
   public void startedGUI() {
     openAppropriateProject();
-    startPeriodicBackgroundTask();
   }
 
   @Override
@@ -514,14 +513,11 @@ public final class ScrEdit extends GUIApp {
   // Periodic background tasks (e.g. flushing changes to script)
   // ------------------------------------------------------------------
 
-  private void startPeriodicBackgroundTask() {
-    mSwingTasks = new SwingTaskManager();
-    mSwingTasks.addTask(() -> swingBackgroundTask()).start();
-  }
-
-  private void swingBackgroundTask() {
+  @Override
+  public void swingBackgroundTask() {
     if (!currentProject().defined())
       return;
+
     mTaskTicker++;
     flushScript();
     if ((mTaskTicker & 0x3) == 0) {
@@ -533,7 +529,6 @@ public final class ScrEdit extends GUIApp {
     }
   }
 
-  private SwingTaskManager mSwingTasks = new SwingTaskManager();
   private int mTaskTicker;
 
   @Override
