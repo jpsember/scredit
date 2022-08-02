@@ -46,7 +46,6 @@ import js.guiapp.UserEvent;
 import js.guiapp.UserEventManager;
 import js.guiapp.UserEventSource;
 import js.guiapp.UserOperation;
-import js.scredit.gen.ScriptEditState;
 
 import static js.base.Tools.*;
 

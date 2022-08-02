@@ -27,6 +27,7 @@ package js.scredit;
 import java.io.File;
 import java.util.*;
 
+import geom.ScriptWrapper;
 import js.base.BaseObject;
 import js.data.DataUtil;
 import js.file.Files;
@@ -39,8 +40,6 @@ import js.graphics.gen.ScriptFileEntry;
 import static js.base.Tools.*;
 
 public final class Project extends BaseObject {
-
-  public static final boolean SCREDIT_PROB = false && alert("investigating ScrEdit problem");
 
   public static final Project DEFAULT_INSTANCE = new Project();
 
@@ -145,9 +144,6 @@ public final class Project extends BaseObject {
     int logCount = 0;
     for (ScriptFileEntry entry : scriptFileList) {
       File scriptFile = new File(scriptsDirectory, entry.scriptName());
-      if (SCREDIT_PROB) {
-        pr("reading:", scripts.size(), entry.scriptName());
-      }
       if (logCount++ < 10)
         log("reading script:", entry.scriptName());
       scripts.add(new ScriptWrapper(scriptFile));

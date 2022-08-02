@@ -22,58 +22,22 @@
  * SOFTWARE.
  * 
  **/
-package js.scredit;
+package js.scredit.oper;
+import static geom.GeomTools.*;
+import static js.scredit.ScrEditTools.*;
 
-import static js.base.Tools.*;
+import js.guiapp.UserOperation;
 
-import java.util.List;
-import java.util.Map;
+public class ProjectCloseOper extends UserOperation {
 
-import js.base.BaseObject;
-import js.geometry.MyMath;
-
-/**
- * In-memory cache; thread safe
- */
-public class ObjectCache<KEY, VALUE> extends BaseObject {
-
-  public VALUE get(KEY scriptFile) {
-    return mCache.get(scriptFile);
+  @Override
+  public boolean shouldBeEnabled() {
+    return seditor().currentProject().defined();
   }
 
-  public VALUE put(KEY key, VALUE image) {
-    if (image == null)
-      badArg("No object for key:", key);
-    trim();
-    log("Storing", key);
-    mCache.put(key, image);
-    return image;
+  @Override
+  public void start() {
+    seditor().closeProject();
   }
 
-  private void trim() {
-    int size = mCache.size();
-    log("trim; size:", size, "capacity:", mCapacity);
-    if (size < mCapacity)
-      return;
-    auxTrim();
-  }
-
-  private synchronized void auxTrim() {
-    List<KEY> keys = arrayList();
-    keys.addAll(mCache.keySet());
-    MyMath.permute(keys, null);
-    int end = keys.size();
-    for (int i = mCapacity / 2; i < end; i++) {
-      KEY key = keys.get(i);
-      log("removing", key);
-      mCache.remove(key);
-    }
-  }
-
-  public ObjectCache(int capacity) {
-    mCapacity = capacity;
-  }
-
-  private Map<KEY, VALUE> mCache = concurrentHashMap();
-  private int mCapacity = 100;
 }

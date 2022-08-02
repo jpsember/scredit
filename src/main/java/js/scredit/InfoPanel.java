@@ -27,6 +27,8 @@ package js.scredit;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+import geom.ScriptWrapper;
+
 import static js.base.Tools.*;
 
 import js.geometry.IPoint;

@@ -38,6 +38,7 @@ import javax.swing.*;
 import geom.EditorElement;
 import geom.EditorElementRegistry;
 import geom.GeomApp;
+import geom.ScriptWrapper;
 import js.data.AbstractData;
 import js.file.Files;
 import js.geometry.IPoint;
@@ -47,6 +48,13 @@ import js.guiapp.*;
 import js.json.JSMap;
 import js.scredit.gen.ProjectState;
 import js.scredit.gen.ScreditConfig;
+import js.scredit.oper.FileJumpOper;
+import js.scredit.oper.FileStepOper;
+import js.scredit.oper.FileStepUsedOper;
+import js.scredit.oper.FindProblemsOper;
+import js.scredit.oper.OpenNextProjectOper;
+import js.scredit.oper.ProjectCloseOper;
+import js.scredit.oper.ProjectOpenOper;
 import geom.SlotList;
 import geom.StateTools;
 import geom.gen.Command;
@@ -187,7 +195,7 @@ public final class ScrEdit extends GeomApp {
     addItem("rotation_toggle", "Toggle Rotation", new ToggleRotationOper());
 
     {
-      UserOperation oper = PolygonEditOper.buildAddCurveOper(this);
+      UserOperation oper = PolygonEditOper.buildAddCurveOper();
       addItem("curve_add", "Add Curve", oper);
       addItem("curve_add2", "Add Curve (2)", oper);
     }
@@ -207,7 +215,7 @@ public final class ScrEdit extends GeomApp {
   private void addCategoryMenu(OurMenuBar m) {
     m.addMenu("Category");
     for (int i = 0; i < 10; i++)
-      m.addItem("category_" + i, "" + i, SetCategoryOper.buildSetCategoryOper(this, i));
+      m.addItem("category_" + i, "" + i, SetCategoryOper.buildSetCategoryOper(  i));
   }
 
   // ------------------------------------------------------------------
@@ -276,10 +284,6 @@ public final class ScrEdit extends GeomApp {
     openProject(desiredProjFile);
   }
 
-  public void flushScript() {
-    mScript.flush();
-  }
-
   private void flushProject() {
     if (!currentProject().defined())
       return;
@@ -300,45 +304,6 @@ public final class ScrEdit extends GeomApp {
     return currentProject().state();
   }
 
-  private void replaceCurrentScriptWith(ScriptWrapper newScript) {
-    if (newScript == mScript)
-      return;
-
-    // Copy the clipboard from the current script, so we can copy or paste with the new script
-    ScriptEditState oldState = mState;
-    mScript = newScript;
-
-    // Parse the ScriptElement objects, constructing an appropriate
-    // EditorElement for each
-    List<EditorElement> editorElements = arrayList();
-    for (ScriptElement element : newScript.data().items()) {
-      // It is possible that elements are null, if they were unable to be parsed
-      if (element == null)
-        continue;
-      EditorElement parser = EditorElementRegistry.sharedInstance().factoryForTag(element.tag(), false);
-      if (parser == null) {
-        pr("*** No EditorElement parser found for tag:", quote(element.tag()));
-        continue;
-      }
-      EditorElement elem = parser.toEditorElement(element);
-      EditorElement validatedElement = elem.validate();
-      if (validatedElement == null) {
-        pr("*** failed to validate element:", INDENT, elem);
-        continue;
-      }
-      editorElements.add(validatedElement);
-    }
-
-    setState(ScriptEditState.newBuilder() //
-        .elements(editorElements)//
-        .clipboard(oldState.clipboard())//
-    );
-
-    // Discard undo manager, since it refers to a different script
-    // TODO: have some support for keeping around multiple undo managers, one for each script,
-    // or some finite number of them to keep memory usage down
-    mUndoManager = null;
-  }
 
   public RecentFiles recentProjects() {
     if (mRecentProjects == null) {
@@ -386,7 +351,7 @@ public final class ScrEdit extends GeomApp {
     if (currentProject().isDefault())
       return;
 
-    mEditorPanel = new EditorPanel( );
+    mEditorPanel = new EditorPanel();
     mInfoPanel = new InfoPanel(this);
     if (false) {
       mControlPanel = new JPanel() {
