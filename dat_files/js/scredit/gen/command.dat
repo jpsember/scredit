@@ -1,9 +1,0 @@
-// Encapsulates a command that modifies the state of what is being edited.
-
-fields {
-  string description;
-  ScriptEditState new_state;
-  bool merge_disabled;
-  // If true, this command is not pushed onto the undo/redo stack
-  bool skip_undo;
-}

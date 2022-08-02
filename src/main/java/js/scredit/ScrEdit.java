@@ -36,6 +36,7 @@ import java.util.List;
 import javax.swing.*;
 
 import geom.EditorElement;
+import geom.EditorElementRegistry;
 import geom.GeomApp;
 import js.data.AbstractData;
 import js.file.Files;
@@ -44,11 +45,13 @@ import js.graphics.ScriptElement;
 import js.graphics.gen.Script;
 import js.guiapp.*;
 import js.json.JSMap;
-import js.scredit.gen.Command;
 import js.scredit.gen.ProjectState;
 import js.scredit.gen.ScreditConfig;
-import js.scredit.gen.ScriptEditState;
-import js.scredit.oper.*;
+import geom.SlotList;
+import geom.StateTools;
+import geom.gen.Command;
+import geom.gen.ScriptEditState;
+import geom.oper.*;
 
 public final class ScrEdit extends GeomApp {
 
@@ -349,83 +352,8 @@ public final class ScrEdit extends GeomApp {
   private Project mCurrentProject = Project.DEFAULT_INSTANCE;
 
   // ------------------------------------------------------------------
-  // Current script and edit state
-  // ------------------------------------------------------------------
-
-  /**
-   * Get (immutable) current script state
-   */
-  public ScriptEditState state() {
-    return mState;
-  }
-
-  public void setState(ScriptEditState state) {
-    mState = state.build();
-    if (mScript.defined()) {
-      // We have to construct an array of ScriptElements, since we can't
-      // just pass an array of EditorElements (even though each element implements ScriptElement)
-      List<ScriptElement> elements = new ArrayList<>(mState.elements());
-      Script.Builder b = Script.newBuilder();
-      b.usage(mScript.data().usage());
-      b.items(elements);
-      mScript.setData(b.build());
-    }
-  }
-
-  public ScriptWrapper currentScript() {
-    return mScript;
-  }
-
-  private ScriptWrapper mScript = ScriptWrapper.DEFAULT_INSTANCE;
-  private ScriptEditState mState = ScriptEditState.DEFAULT_INSTANCE;
-
-  // ------------------------------------------------------------------
-  // Commands
-  // ------------------------------------------------------------------
-
-  /**
-   * Construct a command, with the final state initially set to the current
-   * state
-   */
-  public Command.Builder buildCommand(String description) {
-    Command.Builder b = Command.newBuilder().description(description);
-    b.newState(state());
-    return b;
-  }
-
-  public void perform(Command command) {
-    command = command.build();
-    undoManager().record(command);
-    setState(command.newState());
-  }
-
-  public void perform(CommandOper oper) {
-    UserEventManager.sharedInstance().perform(oper);
-  }
-
-  /**
-   * Delete the last registered command from the undo list, in case the command
-   * didn't end up producing anything useful, e.g. an incomplete polygon.
-   */
-  public void discardLastCommand() {
-    undoManager().discardLastCommand();
-  }
-
-  public UndoManager undoManager() {
-    if (mUndoManager == null)
-      mUndoManager = new UndoManager(state());
-    return mUndoManager;
-  }
-
-  private UndoManager mUndoManager;
-
-  // ------------------------------------------------------------------
   // User interface elements within frame
   // ------------------------------------------------------------------
-
-  public static final int REPAINT_EDITOR = (1 << 0);
-  public static final int REPAINT_INFO = (1 << 1);
-  public static final int REPAINT_ALL = ~0;
 
   @Override
   public void userEventManagerListener(UserEvent event) {
