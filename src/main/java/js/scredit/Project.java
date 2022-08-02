@@ -140,9 +140,6 @@ public final class Project extends BaseObject {
     List<ScriptFileEntry> scriptFileList = ScriptUtil.buildScriptList(directory());
     List<ScriptWrapper> scripts = arrayList();
 
-    if (ScrEdit.ISSUE_14)
-      checkpoint("buildScriptList start");
-
     File scriptsDirectory = ScriptUtil.scriptDirForProject(directory());
 
     int logCount = 0;

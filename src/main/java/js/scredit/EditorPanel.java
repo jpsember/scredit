@@ -66,8 +66,6 @@ public class EditorPanel extends JPanel implements UserEventSource, MouseListene
 
   @Override
   public void paintComponent(Graphics g) {
-    if (ScrEdit.ISSUE_14)
-      pr("EditorPanel.paintComponent");
     ScriptWrapper script = getScript();
     if (!script.isNone()) {
       mGraphics = (Graphics2D) g;
@@ -81,8 +79,6 @@ public class EditorPanel extends JPanel implements UserEventSource, MouseListene
 
     // To avoid having the InfoPanel (or some Swing widgets within it) intercepting keyboard events
     // (that we'd like available for the menu items), always have the editor panel request the focus:
-    if (ScrEdit.ISSUE_14)
-      pr("EditorPanel.requestFocus");
     requestFocus();
   }
 
@@ -224,10 +220,6 @@ public class EditorPanel extends JPanel implements UserEventSource, MouseListene
 
   @Override
   public void mouseMoved(MouseEvent ev) {
-    if (ScrEdit.ISSUE_14) {
-      alert("ignoring mouseMoved event");
-      return;
-    }
     generateMouseEvent(ev, UserEvent.CODE_MOVE);
   }
 

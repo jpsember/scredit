@@ -64,9 +64,6 @@ public class InfoPanel extends JPanel {
   }
 
   public void refresh() {
-    if (ScrEdit.ISSUE_14)
-      pr("InfoPanel.refresh");
-
     ScriptWrapper script = mEditor.currentScript();
 
     String scriptDisplay = "";

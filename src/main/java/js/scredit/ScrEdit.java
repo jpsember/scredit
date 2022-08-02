@@ -50,7 +50,6 @@ import js.scredit.oper.*;
 
 public final class ScrEdit extends GUIApp {
 
-  public static final boolean ISSUE_14 = false && alert("ISSUE_14 logging");
   public static final boolean DISABLE_FLUSH_CHANGES = false && alert("Saving script changes is DISABLED");
 
   public static void main(String[] args) {
@@ -256,9 +255,6 @@ public final class ScrEdit extends GUIApp {
     appFrame().setBounds(projectState().appFrame());
     updateTitle();
     discardMenuBar();
-
-    if (ISSUE_14)
-      pr("EditorPanel requesting focus");
 
     // Make sure the UI is updated to represent this project's state,
     // and to make sure the keyboard shortcuts work (something to do with focus?)
