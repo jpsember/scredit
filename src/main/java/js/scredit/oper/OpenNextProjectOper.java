@@ -33,11 +33,6 @@ import js.file.Files;
 import js.geometry.MyMath;
 import js.guiapp.UserOperation;
 import js.scredit.Project;
-import geom.EditorElement;
-import geom.SlotList;
-import geom.StateTools;
-import geom.gen.Command;
-import geom.gen.ScriptEditState;import static geom.GeomTools.*;
 import static js.scredit.ScrEditTools.*;
 
 public class OpenNextProjectOper extends UserOperation {

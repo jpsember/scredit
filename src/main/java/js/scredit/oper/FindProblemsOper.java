@@ -35,12 +35,7 @@ import js.graphics.gen.Script;
 import js.guiapp.UserOperation;
 import js.json.JSMap;
 import js.scredit.Project;
-import geom.EditorElement;
 import geom.ScriptWrapper;
-import geom.SlotList;
-import geom.StateTools;
-import geom.gen.Command;
-import geom.gen.ScriptEditState;import static geom.GeomTools.*;
 import static js.scredit.ScrEditTools.*;
 
 public final class FindProblemsOper extends UserOperation {

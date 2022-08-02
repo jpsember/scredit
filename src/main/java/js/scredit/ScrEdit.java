@@ -30,20 +30,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
 
-import geom.EditorElement;
-import geom.EditorElementRegistry;
+import geom.AbstractEditorPanel;
 import geom.GeomApp;
 import geom.ScriptWrapper;
 import js.data.AbstractData;
 import js.file.Files;
 import js.geometry.IPoint;
-import js.graphics.ScriptElement;
-import js.graphics.gen.Script;
 import js.guiapp.*;
 import js.json.JSMap;
 import js.scredit.gen.ProjectState;
@@ -55,10 +51,6 @@ import js.scredit.oper.FindProblemsOper;
 import js.scredit.oper.OpenNextProjectOper;
 import js.scredit.oper.ProjectCloseOper;
 import js.scredit.oper.ProjectOpenOper;
-import geom.SlotList;
-import geom.StateTools;
-import geom.gen.Command;
-import geom.gen.ScriptEditState;
 import geom.oper.*;
 
 public final class ScrEdit extends GeomApp {
@@ -350,7 +342,7 @@ public final class ScrEdit extends GeomApp {
     if (currentProject().isDefault())
       return;
 
-    mEditorPanel = new EditorPanel();
+    mEditorPanel = new AbstractEditorPanel();
     mInfoPanel = new InfoPanel(this);
     if (false) {
       mControlPanel = new JPanel() {
@@ -380,7 +372,7 @@ public final class ScrEdit extends GeomApp {
     mControlPanel = null;
   }
 
-  private EditorPanel mEditorPanel;
+  private AbstractEditorPanel mEditorPanel;
   private InfoPanel mInfoPanel;
   private JPanel mControlPanel;
 
@@ -418,5 +410,10 @@ public final class ScrEdit extends GeomApp {
   @Override
   public ScriptWrapper getScript() {
     return currentProject().script();
+  }
+
+  @Override
+  public AbstractEditorPanel getEditorPanel() {
+    return mEditorPanel;
   }
 }

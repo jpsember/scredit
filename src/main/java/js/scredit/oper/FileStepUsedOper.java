@@ -30,7 +30,6 @@ import geom.ScriptWrapper;
 import js.geometry.MyMath;
 import js.guiapp.UserOperation;
 import js.scredit.Project;
-import static geom.GeomTools.*;
 import static js.scredit.ScrEditTools.*;
 
 /**

@@ -23,7 +23,7 @@
  * 
  **/
 package js.scredit.oper;
-import static geom.GeomTools.*;
+
 import static js.scredit.ScrEditTools.*;
 
 import js.guiapp.UserOperation;

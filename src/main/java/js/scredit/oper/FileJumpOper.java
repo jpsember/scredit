@@ -28,7 +28,6 @@ import static js.base.Tools.*;
 
 import js.guiapp.UserOperation;
 import js.scredit.Project;
-import static geom.GeomTools.*;
 import static js.scredit.ScrEditTools.*;
 
 public final class FileJumpOper extends UserOperation {
