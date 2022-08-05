@@ -34,7 +34,6 @@ import java.util.List;
 
 import javax.swing.*;
 
-import geom.EditorPanel;
 import geom.GeomApp;
 import geom.ScriptWrapper;
 import js.data.AbstractData;
@@ -292,7 +291,7 @@ public final class ScrEdit extends GeomApp {
   @Override
   public void repaintPanels(int repaintFlags) {
     if (0 != (repaintFlags & REPAINT_EDITOR))
-      mEditorPanel.repaint();
+      getEditorPanel().repaint();
     if (0 != (repaintFlags & REPAINT_INFO))
       mInfoPanel.refresh();
   }
@@ -311,7 +310,8 @@ public final class ScrEdit extends GeomApp {
     if (currentProject().isDefault())
       return;
 
-    mEditorPanel = new EditorPanel();
+    todo("who creates the editor panel?");
+    constructEditorPanel();
     mInfoPanel = new InfoPanel(this);
     if (false) {
       mControlPanel = new JPanel() {
@@ -327,7 +327,7 @@ public final class ScrEdit extends GeomApp {
     // Allow the control panel to occupy the full vertical height by putting it in its own panel
     {
       JPanel subPanel = new JPanel(new BorderLayout());
-      subPanel.add(mEditorPanel, BorderLayout.CENTER);
+      subPanel.add(getEditorPanel(), BorderLayout.CENTER);
       parentPanel.add(subPanel, BorderLayout.CENTER);
     }
     if (mControlPanel != null)
@@ -337,11 +337,10 @@ public final class ScrEdit extends GeomApp {
 
   private void removeUIElements() {
     contentPane().removeAll();
-    mEditorPanel = null;
+    todo("who owns the EditorPanel?  Do we need to get rid of it here?");
     mControlPanel = null;
   }
 
-  private EditorPanel mEditorPanel;
   private InfoPanel mInfoPanel;
   private JPanel mControlPanel;
 
@@ -381,8 +380,4 @@ public final class ScrEdit extends GeomApp {
     return currentProject().script();
   }
 
-  @Override
-  public EditorPanel getEditorPanel() {
-    return mEditorPanel;
-  }
 }
