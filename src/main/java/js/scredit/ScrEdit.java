@@ -24,6 +24,7 @@
  **/
 package js.scredit;
 
+import static geom.GeomTools.*;
 import static js.base.Tools.*;
 
 import java.awt.BorderLayout;
@@ -35,6 +36,7 @@ import java.util.List;
 import javax.swing.*;
 
 import geom.GeomApp;
+import geom.ScriptManager;
 import geom.ScriptWrapper;
 import js.data.AbstractData;
 import js.file.Files;
@@ -73,6 +75,7 @@ public final class ScrEdit extends GeomApp {
 
   @Override
   public void startedGUI() {
+    ScriptManager.setSingleton(new ScriptManager());
     openAppropriateProject();
   }
 
@@ -193,7 +196,7 @@ public final class ScrEdit extends GeomApp {
     mCurrentProject = Project.DEFAULT_INSTANCE;
     removeUIElements();
     recentProjects().setCurrentFile(null);
-    replaceCurrentScriptWith(ScriptWrapper.DEFAULT_INSTANCE);
+    scriptManager().replaceCurrentScriptWith(ScriptWrapper.DEFAULT_INSTANCE);
     discardMenuBar();
     updateTitle();
   }
@@ -212,7 +215,7 @@ public final class ScrEdit extends GeomApp {
     rebuildFrameContent();
     mInfoPanel.opening(project);
 
-    replaceCurrentScriptWith(currentProject().script());
+    scriptManager().replaceCurrentScriptWith(currentProject().script());
 
     // TODO: restore panel visibilities, etc according to project
     appFrame().setBounds(projectState().appFrame());
@@ -253,10 +256,10 @@ public final class ScrEdit extends GeomApp {
   }
 
   public void switchToScript(int index) {
-    flushScript();
+    scriptManager().flushScript();
     if (currentProject().scriptIndex() != index) {
       currentProject().setScriptIndex(index);
-      replaceCurrentScriptWith(currentProject().script());
+      scriptManager().replaceCurrentScriptWith(currentProject().script());
     }
   }
 
@@ -354,7 +357,7 @@ public final class ScrEdit extends GeomApp {
       return;
 
     mTaskTicker++;
-    flushScript();
+    scriptManager().flushScript();
     if ((mTaskTicker & 0x3) == 0) {
       if (currentProject().defined())
         flushProject();
@@ -373,11 +376,6 @@ public final class ScrEdit extends GeomApp {
     if (!currentProject().definedAndNonEmpty())
       return "This project is empty! Open another from the Project menu";
     return null;
-  }
-
-  @Override
-  public ScriptWrapper getScript() {
-    return currentProject().script();
   }
 
 }

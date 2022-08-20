@@ -35,6 +35,7 @@ import js.geometry.IPoint;
 import js.widget.SwingWidgetManager;
 import js.widget.Widget;
 import js.widget.WidgetManager;
+import static geom.GeomTools.*;
 
 public class InfoPanel extends JPanel {
 
@@ -66,7 +67,7 @@ public class InfoPanel extends JPanel {
   }
 
   public void refresh() {
-    ScriptWrapper script = mEditor.currentScript();
+    ScriptWrapper script = scriptManager().currentScript();
 
     String scriptDisplay = "";
     if (!script.isNone()) {
