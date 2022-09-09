@@ -35,13 +35,10 @@ import java.util.List;
 
 import javax.swing.*;
 
+import geom.AppDefaults;
 import geom.GeomApp;
-import geom.Project;
-import geom.ProjectState;
 import geom.ScriptManager;
-import geom.ScriptWrapper;
 import js.data.AbstractData;
-import js.file.Files;
 import js.geometry.IPoint;
 import js.guiapp.*;
 import js.json.JSMap;
@@ -50,9 +47,6 @@ import js.scredit.oper.FileJumpOper;
 import js.scredit.oper.FileStepOper;
 import js.scredit.oper.FileStepUsedOper;
 import js.scredit.oper.FindProblemsOper;
-import js.scredit.oper.OpenNextProjectOper;
-import js.scredit.oper.ProjectCloseOper;
-import js.scredit.oper.ProjectOpenOper;
 import geom.oper.*;
 
 public final class ScrEdit extends GeomApp {
@@ -85,20 +79,11 @@ public final class ScrEdit extends GeomApp {
     return ScreditConfig.DEFAULT_INSTANCE;
   }
 
-  @Override
-  public void processOptionalArgs() {
-    if (cmdLineArgs().hasNextArg()) {
-      mStartProjectFile = new File(cmdLineArgs().nextArg());
-      log(DASHES, "set start project:", INDENT, mStartProjectFile, VERT_SP);
-    }
-  }
 
   @Override
   public List<Object> getOptionalArgDescriptions() {
     return arrayList("[<project directory>]");
   }
-
-  private File mStartProjectFile = Files.DEFAULT;
 
   @Override
   public float zoomFactor() {
@@ -115,6 +100,11 @@ public final class ScrEdit extends GeomApp {
   // ------------------------------------------------------------------
 
   @Override
+  public boolean usesProjects() {
+    return true;
+  }
+
+  @Override
   public void populateMenuBar(MenuBarWrapper m) {
     addProjectMenu(m);
     if (currentProject().definedAndNonEmpty()) {
@@ -125,19 +115,9 @@ public final class ScrEdit extends GeomApp {
     }
   }
 
-  private void addProjectMenu(MenuBarWrapper m) {
-    todo("Issue #1: move to geom project");
-    m.addMenu("Project");
-    addItem("project_open", "Open", new ProjectOpenOper());
-    addItem("project_close", "Close", new ProjectCloseOper());
-    m.addSubMenu(
-        recentProjects().constructMenu("Open Recent", UserEventManager.sharedInstance(), new UserOperation() {
-          @Override
-          public void start() {
-            openProject(recentProjects().getCurrentFile());
-          }
-        }));
-    addItem("project_open_next", "Open Next", new OpenNextProjectOper());
+  @Override
+  public void addProjectMenu(MenuBarWrapper m) {
+    super.addProjectMenu(m);
     m.addSeparator();
     addItem("project_find_problems", "Find Problems", new FindProblemsOper());
   }
@@ -184,103 +164,6 @@ public final class ScrEdit extends GeomApp {
   }
 
   // ------------------------------------------------------------------
-  // Current project
-  // ------------------------------------------------------------------
-
-  public Project currentProject() {
-    return mCurrentProject;
-  }
-
-  public void closeProject() {
-    if (currentProject().isDefault())
-      return;
-    flushProject();
-    mCurrentProject = Project.DEFAULT_INSTANCE;
-    removeUIElements();
-    recentProjects().setCurrentFile(null);
-    scriptManager().replaceCurrentScriptWith(ScriptWrapper.DEFAULT_INSTANCE);
-    discardMenuBar();
-    updateTitle();
-  }
-
-  public void openProject(File file) {
-    closeProject();
-
-    Project project = new Project(file);
-
-    // If there are recent projects, use their state as the default for this one in case it is a new project
-
-    project.open(recentProjects().getMostRecentFile());
-    mCurrentProject = project;
-    recentProjects().setCurrentFile(project.directory());
-    AppDefaults.sharedInstance().edit().recentProjects(recentProjects().state());
-    rebuildFrameContent();
-    mInfoPanel.opening(project);
-
-    scriptManager().replaceCurrentScriptWith(currentProject().script());
-
-    // TODO: restore panel visibilities, etc according to project
-    appFrame().setBounds(projectState().appFrame());
-    updateTitle();
-    discardMenuBar();
-
-    // Make sure the UI is updated to represent this project's state,
-    // and to make sure the keyboard shortcuts work (something to do with focus?)
-    //
-    performRepaint(REPAINT_ALL);
-  }
-
-  private void openAppropriateProject() {
-    AppDefaults def = AppDefaults.sharedInstance();
-    recentProjects().restore(def.read().recentProjects());
-    def.edit().recentProjects(recentProjects().state());
-
-    File desiredProjFile = mStartProjectFile;
-    if (Files.empty(desiredProjFile))
-      desiredProjFile = recentProjects().getMostRecentFile();
-    if (Files.empty(desiredProjFile))
-      desiredProjFile = Files.currentDirectory();
-
-    if (!desiredProjFile.isDirectory()) {
-      pr("*** No such project directory:", desiredProjFile);
-      desiredProjFile = Files.currentDirectory();
-    }
-    desiredProjFile = Files.absolute(desiredProjFile);
-    openProject(desiredProjFile);
-  }
-
-  private void flushProject() {
-    if (!currentProject().defined())
-      return;
-    // Store the app frame location, in case it has changed
-    projectState().appFrame(appFrame().bounds());
-    currentProject().flush();
-  }
-
-  public void switchToScript(int index) {
-    scriptManager().flushScript();
-    if (currentProject().scriptIndex() != index) {
-      currentProject().setScriptIndex(index);
-      scriptManager().replaceCurrentScriptWith(currentProject().script());
-    }
-  }
-
-  public ProjectState.Builder projectState() {
-    return currentProject().state();
-  }
-
-  public RecentFiles recentProjects() {
-    if (mRecentProjects == null) {
-      mRecentProjects = new RecentFiles();
-      mRecentProjects.setDirectoryMode();
-    }
-    return mRecentProjects;
-  }
-
-  private RecentFiles mRecentProjects;
-  private Project mCurrentProject = Project.DEFAULT_INSTANCE;
-
-  // ------------------------------------------------------------------
   // User interface elements within frame
   // ------------------------------------------------------------------
 
@@ -297,8 +180,10 @@ public final class ScrEdit extends GeomApp {
   public void repaintPanels(int repaintFlags) {
     if (0 != (repaintFlags & REPAINT_EDITOR))
       getEditorPanel().repaint();
-    if (0 != (repaintFlags & REPAINT_INFO))
-      mInfoPanel.refresh();
+
+    if (infoPanel() != null)
+      if (0 != (repaintFlags & REPAINT_INFO))
+        infoPanel().refresh();
   }
 
   @Override
@@ -317,7 +202,7 @@ public final class ScrEdit extends GeomApp {
 
     todo("who creates the editor panel?");
     constructEditorPanel();
-    mInfoPanel = new InfoPanel(this);
+    constructInfoPanel();
     if (false) {
       mControlPanel = new JPanel() {
         @Override
@@ -337,16 +222,10 @@ public final class ScrEdit extends GeomApp {
     }
     if (mControlPanel != null)
       parentPanel.add(mControlPanel, BorderLayout.EAST);
-    parentPanel.add(mInfoPanel, BorderLayout.SOUTH);
+    if (infoPanel() != null)
+      parentPanel.add(infoPanel(), BorderLayout.SOUTH);
   }
 
-  private void removeUIElements() {
-    contentPane().removeAll();
-    todo("who owns the EditorPanel?  Do we need to get rid of it here?");
-    mControlPanel = null;
-  }
-
-  private InfoPanel mInfoPanel;
   private JPanel mControlPanel;
 
   // ------------------------------------------------------------------
@@ -355,6 +234,7 @@ public final class ScrEdit extends GeomApp {
 
   @Override
   public void swingBackgroundTask() {
+    todo("Move this to geom project");
     if (!currentProject().defined())
       return;
 
@@ -373,7 +253,8 @@ public final class ScrEdit extends GeomApp {
 
   @Override
   public String getAlertText() {
-    if (!currentProject().defined())
+    todo("Move this to geom project");
+     if (!currentProject().defined())
       return "No project selected; open one from the Project menu";
     if (!currentProject().definedAndNonEmpty())
       return "This project is empty! Open another from the Project menu";
