@@ -26,10 +26,11 @@ package js.scredit.oper;
 
 import static js.base.Tools.*;
 
+import geom.Project;
 import geom.ScriptWrapper;
 import js.geometry.MyMath;
 import js.guiapp.UserOperation;
-import js.scredit.Project;
+
 import static js.scredit.ScrEditTools.*;
 
 /**

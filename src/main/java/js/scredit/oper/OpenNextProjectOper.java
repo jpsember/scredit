@@ -27,12 +27,14 @@ package js.scredit.oper;
 import java.io.File;
 import java.util.List;
 
+import geom.Project;
+
 import static js.base.Tools.*;
 
 import js.file.Files;
 import js.geometry.MyMath;
 import js.guiapp.UserOperation;
-import js.scredit.Project;
+
 import static js.scredit.ScrEditTools.*;
 
 public class OpenNextProjectOper extends UserOperation {

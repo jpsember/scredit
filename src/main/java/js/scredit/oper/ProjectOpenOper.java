@@ -26,12 +26,13 @@ package js.scredit.oper;
 
 import java.io.File;
 
+import geom.Project;
+
 import static js.base.Tools.*;
 
 import js.file.Files;
 import js.guiapp.SwingUtils;
 import js.guiapp.UserOperation;
-import js.scredit.Project;
 
 import static js.scredit.ScrEditTools.*;
 

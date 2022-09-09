@@ -28,8 +28,10 @@ import static js.base.Tools.*;
 
 import js.geometry.MyMath;
 import js.guiapp.UserOperation;
-import js.scredit.Project;
+
 import static js.scredit.ScrEditTools.*;
+
+import geom.Project;
 
 /**
  * This affects the current project's settings, not individual scripts; so it's

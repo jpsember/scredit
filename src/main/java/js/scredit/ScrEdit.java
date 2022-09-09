@@ -36,6 +36,8 @@ import java.util.List;
 import javax.swing.*;
 
 import geom.GeomApp;
+import geom.Project;
+import geom.ProjectState;
 import geom.ScriptManager;
 import geom.ScriptWrapper;
 import js.data.AbstractData;
@@ -43,7 +45,6 @@ import js.file.Files;
 import js.geometry.IPoint;
 import js.guiapp.*;
 import js.json.JSMap;
-import js.scredit.gen.ProjectState;
 import js.scredit.gen.ScreditConfig;
 import js.scredit.oper.FileJumpOper;
 import js.scredit.oper.FileStepOper;
@@ -125,6 +126,7 @@ public final class ScrEdit extends GeomApp {
   }
 
   private void addProjectMenu(MenuBarWrapper m) {
+    todo("Issue #1: move to geom project");
     m.addMenu("Project");
     addItem("project_open", "Open", new ProjectOpenOper());
     addItem("project_close", "Close", new ProjectCloseOper());

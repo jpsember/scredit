@@ -34,7 +34,7 @@ import js.graphics.ScriptUtil;
 import js.graphics.gen.Script;
 import js.guiapp.UserOperation;
 import js.json.JSMap;
-import js.scredit.Project;
+import geom.Project;
 import geom.ScriptWrapper;
 import static js.scredit.ScrEditTools.*;
 
