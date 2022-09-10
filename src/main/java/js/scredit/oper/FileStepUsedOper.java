@@ -31,7 +31,7 @@ import geom.ScriptWrapper;
 import js.geometry.MyMath;
 import js.guiapp.UserOperation;
 
-import static js.scredit.ScrEditTools.*;
+import static geom.GeomTools.*;
 
 /**
  * This affects the current project's settings, not individual scripts; so it's
@@ -46,8 +46,9 @@ public final class FileStepUsedOper extends UserOperation {
 
   @Override
   public boolean shouldBeEnabled() {
+    todo("move to geom");
     mNextFileIndex = null;
-    Project project = seditor().currentProject();
+    Project project = editor().currentProject();
     if (!project.definedAndNonEmpty())
       return false;
 
@@ -74,7 +75,7 @@ public final class FileStepUsedOper extends UserOperation {
   public void start() {
     if (mNextFileIndex == null)
       return;
-    seditor().switchToScript(mNextFileIndex);
+    editor().switchToScript(mNextFileIndex);
   }
 
   private int stepSign() {

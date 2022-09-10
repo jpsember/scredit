@@ -36,14 +36,14 @@ import js.guiapp.UserOperation;
 import js.json.JSMap;
 import geom.Project;
 import geom.ScriptWrapper;
-import static js.scredit.ScrEditTools.*;
+import static geom.GeomTools.*;
 
 public final class FindProblemsOper extends UserOperation {
 
   @Override
   public void start() {
 
-    Project proj = seditor().currentProject();
+    Project proj =  editor().currentProject();
     if (proj.isDefault())
       return;
 
@@ -73,7 +73,7 @@ public final class FindProblemsOper extends UserOperation {
     pr("Project:", proj.directory());
     if (firstProblem >= 0) {
       pr("Problems:", INDENT, summary);
-      seditor().switchToScript(firstProblem);
+       editor().switchToScript(firstProblem);
     } else
       pr("...no problems");
   }

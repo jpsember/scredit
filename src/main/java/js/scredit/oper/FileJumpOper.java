@@ -28,21 +28,20 @@ import static js.base.Tools.*;
 
 import js.guiapp.UserOperation;
 
-import static js.scredit.ScrEditTools.*;
-
 import geom.Project;
+import static geom.GeomTools.*;
 
 public final class FileJumpOper extends UserOperation {
 
   public FileJumpOper(int direction) {
-    loadTools();
+    todo("move to geom");
     mStepDirection = direction;
   }
 
   @Override
   public boolean shouldBeEnabled() {
     mNextFileIndex = null;
-    Project project = seditor().currentProject();
+    Project project =  editor().currentProject();
     if (project.definedAndNonEmpty()) {
       mNextFileIndex = (mStepDirection < 0) ? 0 : project.scriptCount() - 1;
     }
@@ -53,7 +52,7 @@ public final class FileJumpOper extends UserOperation {
   public void start() {
     if (mNextFileIndex == null)
       return;
-    seditor().switchToScript(mNextFileIndex);
+     editor().switchToScript(mNextFileIndex);
   }
 
   private final int mStepDirection;

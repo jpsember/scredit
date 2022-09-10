@@ -29,7 +29,7 @@ import static js.base.Tools.*;
 import js.geometry.MyMath;
 import js.guiapp.UserOperation;
 
-import static js.scredit.ScrEditTools.*;
+import static geom.GeomTools.*;
 
 import geom.Project;
 
@@ -40,6 +40,7 @@ import geom.Project;
 public final class FileStepOper extends UserOperation {
 
   public FileStepOper(int stepVelocity) {
+    todo("move this to geom project");
     loadTools();
     mStepVelocity = stepVelocity;
     mStepSpeed = Math.abs(mStepVelocity);
@@ -53,7 +54,7 @@ public final class FileStepOper extends UserOperation {
   @Override
   public boolean shouldBeEnabled() {
     mNextFileIndex = null;
-    Project project = seditor().currentProject();
+    Project project = editor().currentProject();
     if (!project.definedAndNonEmpty())
       return false;
 
@@ -97,7 +98,7 @@ public final class FileStepOper extends UserOperation {
   public void start() {
     if (mNextFileIndex == null)
       return;
-    seditor().switchToScript(mNextFileIndex);
+    editor().switchToScript(mNextFileIndex);
     mLastOperationTime = System.currentTimeMillis();
   }
 

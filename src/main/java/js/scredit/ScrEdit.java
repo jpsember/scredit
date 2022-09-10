@@ -100,11 +100,6 @@ public final class ScrEdit extends GeomApp {
   // ------------------------------------------------------------------
 
   @Override
-  public boolean usesProjects() {
-    return true;
-  }
-
-  @Override
   public void populateMenuBar(MenuBarWrapper m) {
     addProjectMenu(m);
     if (currentProject().definedAndNonEmpty()) {
