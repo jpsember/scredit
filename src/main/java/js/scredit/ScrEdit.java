@@ -43,10 +43,6 @@ import js.geometry.IPoint;
 import js.guiapp.*;
 import js.json.JSMap;
 import js.scredit.gen.ScreditConfig;
-import js.scredit.oper.FileJumpOper;
-import js.scredit.oper.FileStepOper;
-import js.scredit.oper.FileStepUsedOper;
-import js.scredit.oper.FindProblemsOper;
 import geom.oper.*;
 
 public final class ScrEdit extends GeomApp {
@@ -79,7 +75,6 @@ public final class ScrEdit extends GeomApp {
     return ScreditConfig.DEFAULT_INSTANCE;
   }
 
-
   @Override
   public List<Object> getOptionalArgDescriptions() {
     return arrayList("[<project directory>]");
@@ -100,14 +95,9 @@ public final class ScrEdit extends GeomApp {
   // ------------------------------------------------------------------
 
   @Override
-  public void populateMenuBar(MenuBarWrapper m) {
-    addProjectMenu(m);
-    if (currentProject().definedAndNonEmpty()) {
-      addFileMenu(m);
-      addEditMenu(m);
-      addViewMenu(m);
-      addCategoryMenu(m);
-    }
+  public void populateMenuBarForProject(MenuBarWrapper m) {
+    super.populateMenuBarForProject(m);
+    addCategoryMenu(m);
   }
 
   @Override
@@ -115,24 +105,6 @@ public final class ScrEdit extends GeomApp {
     super.addProjectMenu(m);
     m.addSeparator();
     addItem("project_find_problems", "Find Problems", new FindProblemsOper());
-  }
-
-  private void addFileMenu(MenuBarWrapper m) {
-    m.addMenu("File", null);
-    UserOperation prevOper = new FileStepOper(-1);
-    UserOperation nextOper = new FileStepOper(1);
-    UserOperation prevUsedOper = new FileStepUsedOper(-1);
-    UserOperation nextUsedOper = new FileStepUsedOper(1);
-    addItem("script_step_bwd", "Prev", prevOper);
-    addItem("script_step_fwd", "Next", nextOper);
-    addItem("script_step_bwd2", "Prev_", prevOper);
-    addItem("script_step_fwd2", "Next_", nextOper);
-    addItem("script_page_bwd", "Page Bwd", new FileStepOper(-1).withAccel());
-    addItem("script_page_fwd", "Page Fwd", new FileStepOper(1).withAccel());
-    addItem("script_used_prev", "Prev Used", prevUsedOper);
-    addItem("script_used_next", "Next Used", nextUsedOper);
-    addItem("script_jump_first", "First", new FileJumpOper(-1));
-    addItem("script_jump_last", "Last", new FileJumpOper(1));
   }
 
   @Override
@@ -249,7 +221,7 @@ public final class ScrEdit extends GeomApp {
   @Override
   public String getAlertText() {
     todo("Move this to geom project");
-     if (!currentProject().defined())
+    if (!currentProject().defined())
       return "No project selected; open one from the Project menu";
     if (!currentProject().definedAndNonEmpty())
       return "This project is empty! Open another from the Project menu";
