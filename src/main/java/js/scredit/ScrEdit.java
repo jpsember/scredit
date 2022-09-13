@@ -24,20 +24,16 @@
  **/
 package js.scredit;
 
-import static geom.GeomTools.*;
 import static js.base.Tools.*;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
-import java.util.List;
 
 import javax.swing.*;
 
-import geom.AppDefaults;
 import geom.GeomApp;
-import geom.ScriptManager;
 import js.data.AbstractData;
 import js.geometry.IPoint;
 import js.guiapp.*;
@@ -47,10 +43,13 @@ import geom.oper.*;
 
 public final class ScrEdit extends GeomApp {
 
-  public static final boolean DISABLE_FLUSH_CHANGES = false && alert("Saving script changes is DISABLED");
-
   public static void main(String[] args) {
     new ScrEdit().startApplication(args);
+  }
+
+  @Override
+  public final boolean hasImageSupport() {
+    return true;
   }
 
   // ------------------------------------------------------------------
@@ -65,19 +64,8 @@ public final class ScrEdit extends GeomApp {
   }
 
   @Override
-  public void startedGUI() {
-    ScriptManager.setSingleton(new ScriptManager());
-    openAppropriateProject();
-  }
-
-  @Override
   public AbstractData defaultArgs() {
     return ScreditConfig.DEFAULT_INSTANCE;
-  }
-
-  @Override
-  public List<Object> getOptionalArgDescriptions() {
-    return arrayList("[<project directory>]");
   }
 
   @Override
@@ -194,38 +182,5 @@ public final class ScrEdit extends GeomApp {
   }
 
   private JPanel mControlPanel;
-
-  // ------------------------------------------------------------------
-  // Periodic background tasks (e.g. flushing changes to script)
-  // ------------------------------------------------------------------
-
-  @Override
-  public void swingBackgroundTask() {
-    todo("Move this to geom project");
-    if (!currentProject().defined())
-      return;
-
-    mTaskTicker++;
-    scriptManager().flushScript();
-    if ((mTaskTicker & 0x3) == 0) {
-      if (currentProject().defined())
-        flushProject();
-      else
-        alert("wtf? current project was not defined");
-      AppDefaults.sharedInstance().flush();
-    }
-  }
-
-  private int mTaskTicker;
-
-  @Override
-  public String getAlertText() {
-    todo("Move this to geom project");
-    if (!currentProject().defined())
-      return "No project selected; open one from the Project menu";
-    if (!currentProject().definedAndNonEmpty())
-      return "This project is empty! Open another from the Project menu";
-    return null;
-  }
 
 }
