@@ -123,7 +123,7 @@ public final class ScrEdit extends GeomApp {
     c.setPendingContainer(controlPanel());
     c.open("ControlPanel");
     {
-      c.addLabel("(controls)");
+      c.label("(controls)").addLabel();
     }
     c.close("ControlPanel");
     parentPanel.add(controlPanel(), BorderLayout.LINE_END);
