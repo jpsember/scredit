@@ -24,21 +24,20 @@
  **/
 package js.scredit;
 
+import static geom.GeomTools.*;
 import static js.base.Tools.*;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.io.File;
 
 import javax.swing.*;
 
 import geom.GeomApp;
 import js.data.AbstractData;
-import js.geometry.IPoint;
 import js.guiapp.*;
 import js.json.JSMap;
 import js.scredit.gen.ScreditConfig;
+import js.widget.WidgetManager;
 import geom.oper.*;
 
 public final class ScrEdit extends GeomApp {
@@ -57,6 +56,7 @@ public final class ScrEdit extends GeomApp {
   // ------------------------------------------------------------------
 
   private ScrEdit() {
+    loadTools();
     guiAppConfig() //
         .appName("scredit") //
         .keyboardShortcutRegistry(JSMap.fromResource(this.getClass(), "key_shortcut_defaults.json")) //;
@@ -66,16 +66,6 @@ public final class ScrEdit extends GeomApp {
   @Override
   public AbstractData defaultArgs() {
     return ScreditConfig.DEFAULT_INSTANCE;
-  }
-
-  @Override
-  public float zoomFactor() {
-    return projectState().zoomFactor();
-  }
-
-  @Override
-  public void setZoomFactor(float zoom) {
-    projectState().zoomFactor(zoom);
   }
 
   // ------------------------------------------------------------------
@@ -155,19 +145,9 @@ public final class ScrEdit extends GeomApp {
     if (currentProject().isDefault())
       return;
 
-    todo("who creates the editor panel?");
     constructEditorPanel();
+    constructControlPanel();
     constructInfoPanel();
-    if (false) {
-      mControlPanel = new JPanel() {
-        @Override
-        public Dimension getPreferredSize() {
-          todo("!this is a placeholder until there's an actual control panel");
-          return new IPoint(120, 40).toDimension();
-        }
-      };
-      mControlPanel.setBackground(Color.blue);
-    }
 
     // Allow the control panel to occupy the full vertical height by putting it in its own panel
     {
@@ -175,12 +155,29 @@ public final class ScrEdit extends GeomApp {
       subPanel.add(getEditorPanel(), BorderLayout.CENTER);
       parentPanel.add(subPanel, BorderLayout.CENTER);
     }
-    if (mControlPanel != null)
-      parentPanel.add(mControlPanel, BorderLayout.EAST);
+    if (controlPanel() != null) {
+      WidgetManager c = widgets();
+
+      c.setPendingContainer(controlPanel());
+      c.open("ControlPanel");
+      {
+        c.addLabel("(controls)");
+      }
+      c.close("ControlPanel");
+      parentPanel.add(controlPanel(), BorderLayout.LINE_END);
+    }
     if (infoPanel() != null)
       parentPanel.add(infoPanel(), BorderLayout.SOUTH);
   }
 
-  private JPanel mControlPanel;
+  public JPanel controlPanel() {
+    return mMainControlPanel;
+  }
+
+  private void constructControlPanel() {
+    mMainControlPanel = new JPanel();
+  }
+
+  private JPanel mMainControlPanel;
 
 }
