@@ -28,7 +28,6 @@ import static geom.GeomTools.*;
 import static js.base.Tools.*;
 
 import java.awt.BorderLayout;
-import java.io.File;
 
 import javax.swing.*;
 
@@ -119,25 +118,6 @@ public final class ScrEdit extends GeomApp {
     int repaintFlags = UserEventManager.sharedInstance().getOperation().repaintRequiredFlags(event);
     if (repaintFlags != 0)
       performRepaint(repaintFlags);
-  }
-
-  @Override
-  public void repaintPanels(int repaintFlags) {
-    if (0 != (repaintFlags & REPAINT_EDITOR))
-      getEditorPanel().repaint();
-
-    if (infoPanel() != null)
-      if (0 != (repaintFlags & REPAINT_INFO))
-        infoPanel().refresh();
-  }
-
-  @Override
-  public String getTitleText() {
-    if (currentProject().defined()) {
-      File dir = currentProject().directory();
-      return dir.getName();
-    }
-    return null;
   }
 
   @Override
