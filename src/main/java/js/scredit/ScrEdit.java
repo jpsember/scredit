@@ -107,19 +107,6 @@ public final class ScrEdit extends GeomApp {
       m.addItem("category_" + i, "" + i, SetCategoryOper.buildSetCategoryOper(i));
   }
 
-  // ------------------------------------------------------------------
-  // User interface elements within frame
-  // ------------------------------------------------------------------
-
-  @Override
-  public void userEventManagerListener(UserEvent event) {
-    // Avoid repainting if default operation and just a mouse move
-    // (though later we may want to render the mouse's position in an info box)
-    int repaintFlags = UserEventManager.sharedInstance().getOperation().repaintRequiredFlags(event);
-    if (repaintFlags != 0)
-      performRepaint(repaintFlags);
-  }
-
   @Override
   public void populateFrame(JPanel parentPanel) {
     if (currentProject().isDefault())
@@ -129,6 +116,7 @@ public final class ScrEdit extends GeomApp {
     constructControlPanel();
     constructInfoPanel();
 
+    todo("refactor/simplify?");
     // Allow the control panel to occupy the full vertical height by putting it in its own panel
     {
       JPanel subPanel = new JPanel(new BorderLayout());
