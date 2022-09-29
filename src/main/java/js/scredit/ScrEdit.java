@@ -116,26 +116,17 @@ public final class ScrEdit extends GeomApp {
     constructControlPanel();
     constructInfoPanel();
 
-    todo("refactor/simplify?");
-    // Allow the control panel to occupy the full vertical height by putting it in its own panel
+    parentPanel.add(getEditorPanel(), BorderLayout.CENTER);
+    parentPanel.add(infoPanel(), BorderLayout.SOUTH);
+   
+    WidgetManager c = widgets();
+    c.setPendingContainer(controlPanel());
+    c.open("ControlPanel");
     {
-      JPanel subPanel = new JPanel(new BorderLayout());
-      subPanel.add(getEditorPanel(), BorderLayout.CENTER);
-      parentPanel.add(subPanel, BorderLayout.CENTER);
+      c.addLabel("(controls)");
     }
-    if (controlPanel() != null) {
-      WidgetManager c = widgets();
-
-      c.setPendingContainer(controlPanel());
-      c.open("ControlPanel");
-      {
-        c.addLabel("(controls)");
-      }
-      c.close("ControlPanel");
-      parentPanel.add(controlPanel(), BorderLayout.LINE_END);
-    }
-    if (infoPanel() != null)
-      parentPanel.add(infoPanel(), BorderLayout.SOUTH);
+    c.close("ControlPanel");
+    parentPanel.add(controlPanel(), BorderLayout.LINE_END);
   }
 
   public JPanel controlPanel() {
