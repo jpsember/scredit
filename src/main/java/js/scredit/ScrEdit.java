@@ -33,6 +33,7 @@ import javax.swing.*;
 
 import geom.GeomApp;
 import js.data.AbstractData;
+import js.file.Files;
 import js.guiapp.*;
 import js.json.JSMap;
 import js.scredit.gen.ScreditConfig;
@@ -58,8 +59,7 @@ public final class ScrEdit extends GeomApp {
     loadTools();
     guiAppConfig() //
         .appName("scredit") //
-        .keyboardShortcutRegistry(JSMap.fromResource(this.getClass(), "key_shortcut_defaults.json")) //;
-    ;
+        .keyboardShortcutRegistry(new JSMap(Files.readString(this.getClass(), "key_shortcut_defaults.json")));
   }
 
   @Override
@@ -118,7 +118,7 @@ public final class ScrEdit extends GeomApp {
 
     parentPanel.add(getEditorPanel(), BorderLayout.CENTER);
     parentPanel.add(infoPanel(), BorderLayout.SOUTH);
-   
+
     WidgetManager c = widgets();
     c.setPendingContainer(controlPanel());
     c.open("ControlPanel");
