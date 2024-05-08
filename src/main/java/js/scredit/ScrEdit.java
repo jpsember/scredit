@@ -28,17 +28,24 @@ import static geom.GeomTools.*;
 import static js.base.Tools.*;
 
 import java.awt.BorderLayout;
+import java.io.File;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 
 import geom.GeomApp;
+import geom.oper.FindProblemsOper;
+import geom.oper.MaskAddOper;
+import geom.oper.NonMaxSuppressOper;
+import geom.oper.PolygonEditOper;
+import geom.oper.SetCategoryOper;
+import geom.oper.ToggleRotationOper;
 import js.data.AbstractData;
 import js.file.Files;
-import js.guiapp.*;
+import js.guiapp.MenuBarWrapper;
+import js.guiapp.UserOperation;
 import js.json.JSMap;
 import js.scredit.gen.ScreditConfig;
 import js.widget.WidgetManager;
-import geom.oper.*;
 
 public final class ScrEdit extends GeomApp {
 
@@ -51,15 +58,33 @@ public final class ScrEdit extends GeomApp {
     return true;
   }
 
+  public static String filesReadString(Class theClass, String resourceName, String altPathIfError) {
+    try {
+      return Files.readString(theClass, resourceName);
+    } catch (Throwable t) {
+      if (nullOrEmpty(altPathIfError))
+        throw t;
+
+      pr("unable to read string via openResource(); trying with alt path:", altPathIfError);
+
+      File dir = new File(altPathIfError);
+      Files.assertDirectoryExists(dir);
+      File path = new File(dir, resourceName);
+      return Files.readString(path);
+    }
+  }
+
   // ------------------------------------------------------------------
   // Construction
   // ------------------------------------------------------------------
 
   private ScrEdit() {
     loadTools();
+
     guiAppConfig() //
         .appName("scredit") //
-        .keyboardShortcutRegistry(new JSMap(Files.readString(this.getClass(), "key_shortcut_defaults.json")));
+        .keyboardShortcutRegistry(new JSMap(filesReadString(this.getClass(), "key_shortcut_defaults.json",
+            "/Users/home/github_projects/scredit/src/main/resources/js/scredit")));
   }
 
   @Override
