@@ -7,10 +7,6 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-    <!-- Appends '&' to launch command -->
-    <run.background>true</run.background>
-
   </properties>
 
   <build>
