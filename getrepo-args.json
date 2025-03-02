@@ -1,7 +1,17 @@
 {
   "entries" : [
+
+
+    // Still not sure whether it's good to refer to repos
+    // that other repos refer to (e.g. java-geom)
+    // {
+    //   "repo_name":"jpsember/java-core",
+    // },
+    // {
+    //   "repo_name":"jpsember/java-testutil",
+    // },
     {
-      "repo_name":"jpsember/java-geom",  "commit_hash":"4062c44", "version":"3.0",
+      "repo_name":"jpsember/java-geom",
     },
   ]
 
