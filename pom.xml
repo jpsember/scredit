@@ -61,6 +61,13 @@
       <scope>test</scope>
     </dependency>
 
+
+    <dependency>
+      <groupId>com.jsbase</groupId>
+      <artifactId>java-gui</artifactId>
+      <version>1000</version>
+    </dependency>
+
     <dependency>
       <groupId>com.jsbase</groupId>
       <artifactId>java-geom</artifactId>

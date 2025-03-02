@@ -10,6 +10,10 @@
     // {
     //   "repo_name":"jpsember/java-testutil",
     // },
+
+    {
+      "repo_name":"jpsember/java-gui",
+    },
     {
       "repo_name":"jpsember/java-geom",
     },
